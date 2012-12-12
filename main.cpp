@@ -81,6 +81,7 @@ void init(void *filename)
     cm->t_dat_max = cm->data.getData(cm->data.getDataNum() - 1)->getTime();
     cm->frame_max = (int)(cm->t_dat_max / cm->interval) + 1;
     cm->frame_dat = cm->data.initList() - 1;
+    printf("%s(%d)\n",__FILE__,__LINE__);
     cout << setprecision(15)
 	 << "time_max: " << cm->t_dat_max
 	 << " interval: " << cm->interval
@@ -89,6 +90,8 @@ void init(void *filename)
 	 << endl;
     cout << setprecision(15)
 	 << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
+    printf("%s(%d)\n",__FILE__,__LINE__);
+    fflush(stdout);
 	
 #if 0
     printf("INPUT --------------------------------------------\n");
@@ -142,6 +145,7 @@ void init(void *filename)
   glNewList(theArrow[CAVEUniqueIndex()],GL_COMPILE);
   the_arrow();
   glEndList();
+    printf("%s(%d)\n",__FILE__,__LINE__);
 }
 
 void end(void)
@@ -155,10 +159,6 @@ void end(void)
 
 void step(void)
 {
-  //  vector<int> curlist = cm->data.getCurrentList();
-  //  vector<int>::iterator p;
-  //  PARTICLE_POS pos;
-  //  PARTICLE_INF pos_inf;
   if (CAVEMasterDisplay()) {
     vector<int> curlist = cm->data.getCurrentList();
     vector<int>::iterator p;
@@ -167,8 +167,9 @@ void step(void)
     double incl = 0.001;
     vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
     poslistV.clear();
+    //    printf("%s(%d)\n",__FILE__,__LINE__);
     if (cm->runstate == 0) {
-	Motion::GetInstance()->init();
+      //Motion::GetInstance()->init();
       if (cm->is_acc && cm->interval + incl < 1.0) {
 	cm->interval += incl;
 	cm->is_acc = false;
@@ -202,7 +203,7 @@ void step(void)
       CAVEDisplayBarrier();
       return;
     }
-
+    //    printf("%s(%d)\n",__FILE__,__LINE__);
     float headpos[3];
     CAVEGetPosition(CAVE_HEAD, headpos);
     //		cout << "head pos: " << headpos[0] << " " << headpos[1] << " " << headpos[2] << endl;
@@ -214,7 +215,7 @@ void step(void)
 	cm->t_sys = 0;
 	cm->frame_dat = -1;
 	cm->allClear();
-	Motion::GetInstance()->init();
+	//	Motion::GetInstance()->init();
       }
 
       while (cm->frame_dat < cm->data.getDataNum() - 1) {
@@ -231,7 +232,7 @@ void step(void)
 	cm->t_sys = ((int)(cm->t_dat_max / cm->interval) + 1) * cm->interval;
 	cm->frame_dat = cm->data.getDataNum();
 	cm->allClear();
-	Motion::GetInstance()->init();
+	//	Motion::GetInstance()->init();
       }
       while (cm->frame_dat > 0) {
 	if (cm->data.getData(cm->frame_dat - 1)->getTime() < cm->t_sys) {
@@ -470,22 +471,17 @@ void Cross(double *orientV,double *diff_velV,GLdouble *ang_momV){
   ang_momV[2] = (orientV[0]*diff_velV[1] - orientV[1]*diff_velV[0])/2.0; 
 }
 
-void get_omega(PARTICLE_POS *pos,PARTICLE_VEL *vel,GLdouble omega[3]){
+void get_omega(PARTICLE_POS *pos,PARTICLE_VEL *vel,double dist,GLdouble omega[3]){
   double orientV[3],diff_velV[3];
-  double length=0.0;
   GLdouble ang_momV[3];
   for(int i=0;i<3;i++){
     orientV[i] = pos[0].pos[i] - pos[1].pos[i];
     diff_velV[i] = vel[0].vel[i] - vel[1].vel[i];
   }
 
-  for(int i=0;i<3;i++){
-    length += pow((orientV[i]),2);
-  }
-
   Cross(orientV,diff_velV,ang_momV);
   for(int i=0;i<3;i++){
-    omega[i] = ang_momV[i]/length;
+    omega[i] = ang_momV[i]/dist;
   }
 
 }
@@ -526,7 +522,7 @@ void draw_binary()
     
     for(bp=binlist.begin();bp!=binlist.end();bp++){
       glColor4d(1.0,1.0,1.0,(double)(bp->count)/30.0);
-      get_omega(bp->pos,bp->vel,omega);
+      get_omega(bp->pos,bp->vel,bp->dist,omega);
       get_inf_V(omega,&angular,&azimuth,&length);
       draw_arrow(bp->com,angular,azimuth,length);
     }
