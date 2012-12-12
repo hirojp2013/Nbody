@@ -2,26 +2,22 @@
 
 void Motion::init(void)
 {
-  printf("%s(%d)\n",__FILE__,__LINE__);
-  binlist.clear();
-  box_initialize(200);
+  //  box_initialize(200);
 }
 
 
-
+/*
 void Motion::box_initialize(int max_index){
-  printf("%s(%d)\n",__FILE__,__LINE__);
-  printf("max_index %d\n",max_index);
   this->cell_data.resize(max_index);
-  printf("%s(%d)\n",__FILE__,__LINE__);
   for(int i=0;i<max_index;i++){
     this->cell_data[i].resize(max_index);
     for(int j=0;j<max_index;j++){
       this->cell_data[i][j].resize(max_index);
     }
   }
-  printf("%s(%d)\n",__FILE__,__LINE__);
 }
+*/
+
 void Motion::bin_map_initialize(){
   map<string,BINARY2>::iterator it;
   it = bin_map.begin();
@@ -29,15 +25,11 @@ void Motion::bin_map_initialize(){
     (*it).second.tag = false;
     it++;
   }
-  //  printf("%s(%d)\n",__FILE__,__LINE__);
 }
 
 void Motion::FindBinary_initialize(){
-  //  box_initialize(cell_data,max_index);
-  //  printf("%s(%d)\n",__FILE__,__LINE__);
   bin_map_initialize();
   binary_list.clear();
-  key_list.clear();
 }
 
 bool Motion::isInBox(int x,int y,int z,int max_index){
@@ -62,32 +54,47 @@ void Motion::bin_map_erase(){
     }
   }
 }
-
-void Motion::Grid_decomp(double half_length,double cell_length){
+/*
+void Motion::box_clear(){
+  for(int i=0;i<200;i++){
+    for(int j=0;j<200;j++){
+      for(int k=0;k<200;k++){
+	cell_data[i][j][k].clear();
+      }
+    }
+  }
+}
+*/
+void Motion::Grid_decomp(double half_length,double cell_length,multimap<string,PARTICLE_INF>& cell_data){
 
   Common *cm = Common::GetInstance();
   vector<PARTICLE_INF>poslistV(cm->data.getCurrentPosInf());
-  POS_KEY key;
-  printf("%s(%d)\n",__FILE__,__LINE__);
-  printf("x cell_data %d\n",cell_data.size());
+  int x,y,z;
+  char idstr[100];
+  string name;
+  //  printf("%s(%d)\n",__FILE__,__LINE__);
+  //  printf("%f\n",cell_length);
   for(int i=0;i<poslistV.size();i++){
-    key.x =(int)(poslistV[i].pos.pos[0]+half_length)/cell_length;
-    key.y =(int)(poslistV[i].pos.pos[1]+half_length)/cell_length;
-    key.z =(int)(poslistV[i].pos.pos[2]+half_length)/cell_length;
-    //    printf("%s(%d)\n",__FILE__,__LINE__);
-    //    printf("cell_length %f\n",cell_length);
-    //    printf("cell_data %d ,key.x %d key.y %d key.z %d\n",cell_data.size(),key.x,key.y,key.z);
-    //    printf("%s(%d)\n",__FILE__,__LINE__);
-    cell_data[key.x][key.y][key.z].push_back(poslistV[i]);
-    //    printf("%s(%d)\n",__FILE__,__LINE__);
-
-    //    printf("%s(%d)\n",__FILE__,__LINE__);
-    key_list.push_back(key);
+    x =(int)(poslistV[i].pos.pos[0]/cell_length);
+     //   printf("%f %d\n",poslistV[i].pos.pos[0]/cell_length,x);
+     y =(int)(poslistV[i].pos.pos[1]/cell_length);
+     z =(int)(poslistV[i].pos.pos[2]/cell_length);
+     //     printf("%s(%d)\n",__FILE__,__LINE__);
+     //     printf("x %d y %d z %d\n",x,y,z);
+     //     printf("%s(%d)\n",__FILE__,__LINE__);
+    sprintf(idstr,"%d,%d,%d",x,y,z);
+    name = idstr;
+    cell_data.insert(pair<string,PARTICLE_INF>(name,poslistV[i]));
   }
 }
 
 void Motion::Find_io_CellBinary(vector<PARTICLE_INF>& ilist,vector<PARTICLE_INF>& target_list,
-				GLdouble scale,I_OR_O I_O){
+				GLdouble scale,I_OR_O I_O,string iname,string tname){
+
+  //  printf("%s(%d)\n",__FILE__,__LINE__);
+  //  printf("I_O %d,isize %d tsize %d\n",I_O,ilist.size(),target_list.size());
+  //  printf("%s(%d)\n",__FILE__,__LINE__);
+  
   int id[2];
   char idstr[32];
   string name;
@@ -98,6 +105,7 @@ void Motion::Find_io_CellBinary(vector<PARTICLE_INF>& ilist,vector<PARTICLE_INF>
   BINARY binary;
   int count;
   Common *cm = Common::GetInstance();
+  double scale2 = scale * scale;
   for(int i=0;i<ilist.size();i++){
     int j;
     if(I_O==I_TARGET){
@@ -105,24 +113,42 @@ void Motion::Find_io_CellBinary(vector<PARTICLE_INF>& ilist,vector<PARTICLE_INF>
     }else{
       j=0; 
     }
+    //      printf("%s(%d)\n",__FILE__,__LINE__);
+    //      printf("j %d target_list.size() %d\n",j,target_list.size());
+    //      printf("%s(%d)\n",__FILE__,__LINE__);
     for( ;j<target_list.size();j++){
       id[0] = ilist[i].id;
-      id[1] = ilist[j].id;
+      id[1] = target_list[j].id;
       pos[0] = ilist[i].pos;
-      pos[1] = ilist[j].pos;
+      pos[1] = target_list[j].pos;
       sprintf(idstr,"%d,%d",id[0],id[1]);
       name = idstr;
       dist = cm->GetParticleDist(&pos[0],&pos[1]);
-      if(dist <= DIST_THRESH/scale){
+      //      printf("%s(%d)\n",__FILE__,__LINE__);
+      //      printf("pos[0].x %f,pos[0].y %f,pos[0].z %f\n",pos[0].pos[0],pos[0].pos[1],pos[0].pos[2]);
+      //      printf("pos[1].x %f,pos[1].y %f,pos[1].z %f\n",pos[1].pos[1],pos[1].pos[1],pos[1].pos[2]);
+      //      printf("dist %f DIST_TRHESH2%f\n",dist,DIST_THRESH2/scale2);
+      //      printf("%s(%d)\n",__FILE__,__LINE__);
+
+      if(dist <= DIST_THRESH2/(scale2)){
+
 	//	printf("%s(%d)\n",__FILE__,__LINE__);
+	//	cout << "pos" << endl;
+	//	cout << pos[0].pos[0] << " " << pos[0].pos[1] << " "<<pos[0].pos[2]<<endl ;
+	
+	//	printf("I_O %d id0 %d,id1 %d\n",I_O,id[0],id[1]);
+	//	std::cout << "iname " << iname << "tname "<<tname << std::endl ;
 	BINARY2 binary2;
 	binary2.id[0] = id[0];
 	binary2.id[1] = id[1];
+	binary2.pos[0] = pos[0];
+	binary2.pos[1] = pos[1];
 	GetCOM(pos,&(binary2.com),2);
 	binary2.vel[0] = ilist[i].vel;
-	binary2.vel[1] = ilist[j].vel;
-	map<string,BINARY2>::iterator it = bin_map.find(name);
+	binary2.vel[1] = target_list[j].vel;
 	binary2.tag = true;
+	binary2.dist = dist;
+	map<string,BINARY2>::iterator it = bin_map.find(name);
 	if(it != bin_map.end()){
 	  binary2.count = (*it).second.count + 1;
 	  (*it).second = binary2;
@@ -133,9 +159,7 @@ void Motion::Find_io_CellBinary(vector<PARTICLE_INF>& ilist,vector<PARTICLE_INF>
       }
     }
   }
-  if(I_O==I_TARGET){
-    target_list.clear();
-  }
+  //  printf("%s(%d)\n\n",__FILE__,__LINE__);
 }
 
 void Motion::bin_map_to_binary_list(){
@@ -148,46 +172,72 @@ void Motion::bin_map_to_binary_list(){
 }
 
 void Motion::FindBinary(GLdouble tcur,GLdouble scale,double half_length){
-
-  printf("%s(%d)\n",__FILE__,__LINE__);
   int max_index;
   double cell_length = CELL_LENGTH / scale;
-  max_index = 2*(int)(half_length/cell_length) + 1;
+  //  max_index = 2*(int)(half_length/cell_length) + 1;
+  multimap<string,PARTICLE_INF> cell_data;
   FindBinary_initialize();
-  printf("%s(%d)\n",__FILE__,__LINE__);
-  printf("x cell_data %d\n",this->cell_data.size());
-  Grid_decomp(half_length,cell_length);
-  printf("x cell_data %d\n",cell_data.size());
-  printf("%s(%d)\n",__FILE__,__LINE__);
-  vector<POS_KEY>::iterator it = key_list.begin();
-  printf("%s(%d)\n",__FILE__,__LINE__);
-  while(it!=key_list.end()){
+  Grid_decomp(half_length,cell_length,cell_data);
+  multimap<string,PARTICLE_INF>::iterator it = cell_data.begin();
+  char idstr[100];
+  string name;
+  string iname;
+  it = cell_data.begin();
+  while(it!=cell_data.end()){
+    iname = (*it).first;
+    vector<PARTICLE_INF>ilist;
+    multimap<string,PARTICLE_INF>::iterator tenit = cell_data.lower_bound(iname);
+    while(tenit!=cell_data.upper_bound(iname)){
+      ilist.push_back((*tenit).second);
+      tenit++;
+    }
     int ix,iy,iz;
-    ix = (*it).x;iy = (*it).y;iz = (*it).z;
-    printf("ix %d,iy %d iz %d\n",ix,iy,iz);
-    printf("x cell_data %d\n",cell_data.size());
-    vector<PARTICLE_INF>&ilist = cell_data[ix][iy][iz];
-    printf("%s(%d)\n",__FILE__,__LINE__);
+    sscanf(iname.c_str(),"%d,%d,%d",&ix,&iy,&iz);
     for(int i=ix-1;i<=ix+1;i++){
       for(int j=iy-1;j<=iy+1;j++){
 	for(int k=iz-1;k<=iz+1;k++){
 	  if(i==ix&&j==iy&&k==iz){
-	    Find_io_CellBinary(ilist,ilist,scale,I_TARGET);
+	    Find_io_CellBinary(ilist,ilist,scale,I_TARGET,iname,iname);
+	    int num = cell_data.count(iname);
+	    for(int l=0;l <num;l++){
+	      it++;
+	    }
+	    cell_data.erase(iname);
+	    //	    printf("%s(%d)\n",__FILE__,__LINE__);
 	  }else{
-	    if(isInBox(i,j,k,1000)){
-	      vector<PARTICLE_INF>& target_list = cell_data[i][j][k];
-	      Find_io_CellBinary(ilist,target_list,scale,OTHER_TARGET);
+	    sprintf(idstr,"%d,%d,%d",i,j,k);
+	    name = idstr;
+	    vector<PARTICLE_INF> target_list;
+	    tenit = cell_data.lower_bound(name);
+	    if(tenit != cell_data.upper_bound(name)){
+	      while(tenit!=cell_data.upper_bound(name)){
+		target_list.push_back((*tenit).second);
+		tenit++;
+	      }
+	      Find_io_CellBinary(ilist,target_list,scale,OTHER_TARGET,iname,name);
 	    }
 	  }
 	}
       }
+      
     }
-    it++;
+
   }
   bin_map_erase();
   bin_map_to_binary_list();
+  /*
   printf("%s(%d)\n",__FILE__,__LINE__);
-  printf("bianry_list %d\n",binary_list.size());
+  vector<BINARY2>::iterator bit = binary_list.begin();
+  while(bit != binary_list.end()){
+    cout << "pos" << endl;
+    cout << (*bit).pos[0].pos[0] << " " << (*bit).pos[0].pos[1] << " "<<(*bit).pos[0].pos[2]<<endl ;
+    cout << "com" << endl;
+    cout << (*bit).com.pos[0] << " "<<(*bit).com.pos[1] << " " << (*bit).com.pos[2] << endl;
+    cout << "count" << endl;
+    cout << (*bit).count << endl;
+    bit++;
+  }
+  */
 }
 
 void Motion::FindBinary(GLdouble tcur,GLdouble scale)
@@ -200,7 +250,6 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale)
   int id1,id2;
   PARTICLE_POS pos[2];
   string name;
-
   for(i=0;i<poslistV.size();i++){
     pos[0]=poslistV[i].pos;
     id1 = poslistV[i].id;
