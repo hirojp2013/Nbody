@@ -43,7 +43,7 @@ double Common::GetParticleDist(PARTICLE_POS *p1, PARTICLE_POS *p2)
     dist += (p1->pos[i] - p2->pos[i]) * (p1->pos[i] - p2->pos[i]);
   }
 
-  return sqrt(dist);
+  return dist;
 }
 
 void Common::clearTraj(){
