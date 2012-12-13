@@ -72,7 +72,7 @@ void init(void *filename)
   GLfloat light_position[] = { 0.0f, 30.0f, 50.0f, 0.0f };
   if (CAVEMasterDisplay()) {
     cm->display_num = CAVENumPipes();
-    //		cout << "display_num: " << cm->display_num << endl;
+    cout << "display_num: " << cm->display_num << endl;
     bool ret = cm->data.readData((const char *)filename);
     if (!ret) {
       cout << "Can't read the input data." << endl;
@@ -145,7 +145,6 @@ void init(void *filename)
   glNewList(theArrow[CAVEUniqueIndex()],GL_COMPILE);
   the_arrow();
   glEndList();
-    printf("%s(%d)\n",__FILE__,__LINE__);
 }
 
 void end(void)
@@ -167,9 +166,7 @@ void step(void)
     double incl = 0.001;
     vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
     poslistV.clear();
-    //    printf("%s(%d)\n",__FILE__,__LINE__);
     if (cm->runstate == 0) {
-      //Motion::GetInstance()->init();
       if (cm->is_acc && cm->interval + incl < 1.0) {
 	cm->interval += incl;
 	cm->is_acc = false;
@@ -179,18 +176,14 @@ void step(void)
 	cm->interval -= incl;
 	cm->is_dec = false;
       }
-      double max_length = -1.;
       for (p = curlist.begin(); p != curlist.end(); p++) {
 	if(*p<0){
 	  continue;
 	}
 	Particle *pt = cm->data.getData(*p);
-	double length_cand;
 	pt->extrapolate(cm->t_dat, cm->scale, &pos);
 	pos_inf.id = pt->getId();
 	pos_inf.pos = pos;
-	//	length_cand = pt->max_particle_coord(pos);
-	//	max_length = max(max_length,length_cand);
 	pt->getV(&(pos_inf.vel),cm->scale);
 	poslistV.push_back(pos_inf);
       }
@@ -203,11 +196,8 @@ void step(void)
       CAVEDisplayBarrier();
       return;
     }
-    //    printf("%s(%d)\n",__FILE__,__LINE__);
     float headpos[3];
     CAVEGetPosition(CAVE_HEAD, headpos);
-    //		cout << "head pos: " << headpos[0] << " " << headpos[1] << " " << headpos[2] << endl;
-
     if (cm->inc > 0) {
       if (cm->t_sys < cm->t_dat_max) {
 	cm->t_sys += cm->interval;
@@ -243,7 +233,6 @@ void step(void)
       }
     }
 
-    double max_length = -1.;
     for (p = curlist.begin(); p != curlist.end(); p++) {
       if(*p<0){
 	continue;
@@ -253,8 +242,6 @@ void step(void)
       pt->extrapolate(cm->t_dat, cm->scale, &pos);
       pos_inf.id = pt->getId();
       pos_inf.pos = pos;
-      //      length_cand = pt->max_particle_coord(pos);
-      //      max_length = max(max_length,length_cand);
       pt->getV(&(pos_inf.vel),cm->scale);                            
       poslistV.push_back(pos_inf);
 
