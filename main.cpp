@@ -189,8 +189,8 @@ void step(void)
 	pt->extrapolate(cm->t_dat, cm->scale, &pos);
 	pos_inf.id = pt->getId();
 	pos_inf.pos = pos;
-	length_cand = pt->max_particle_coord(pos);
-	max_length = max(max_length,length_cand);
+	//	length_cand = pt->max_particle_coord(pos);
+	//	max_length = max(max_length,length_cand);
 	pt->getV(&(pos_inf.vel),cm->scale);
 	poslistV.push_back(pos_inf);
       }
@@ -253,8 +253,8 @@ void step(void)
       pt->extrapolate(cm->t_dat, cm->scale, &pos);
       pos_inf.id = pt->getId();
       pos_inf.pos = pos;
-      length_cand = pt->max_particle_coord(pos);
-      max_length = max(max_length,length_cand);
+      //      length_cand = pt->max_particle_coord(pos);
+      //      max_length = max(max_length,length_cand);
       pt->getV(&(pos_inf.vel),cm->scale);                            
       poslistV.push_back(pos_inf);
 
