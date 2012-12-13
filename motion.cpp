@@ -88,8 +88,7 @@ void Motion::Grid_decomp(double half_length,double cell_length,multimap<string,P
   }
 }
 
-void Motion::Find_io_CellBinary(vector<PARTICLE_INF>& ilist,vector<PARTICLE_INF>& target_list,
-				GLdouble scale,I_OR_O I_O,string iname,string tname){
+void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale,I_OR_O I_O,string iname,string tname){
 
   //  printf("%s(%d)\n",__FILE__,__LINE__);
   //  printf("I_O %d,isize %d tsize %d\n",I_O,ilist.size(),target_list.size());
@@ -106,21 +105,26 @@ void Motion::Find_io_CellBinary(vector<PARTICLE_INF>& ilist,vector<PARTICLE_INF>
   int count;
   Common *cm = Common::GetInstance();
   double scale2 = scale * scale;
-  for(int i=0;i<ilist.size();i++){
-    int j;
+  multimap<string,PARTICLE_INF>::iterator i_it = cell_data.lower_bound(iname);
+  multimap<string,PARTICLE_INF>::iterator t_it;
+  for(;i_it!=cell_data.upper_bound(iname);i_it++){
     if(I_O==I_TARGET){
-      j=i+1;
+      t_it = i_it;
+      t_it++; 
     }else{
-      j=0; 
+      t_it = cell_data.lower_bound(tname);
     }
     //      printf("%s(%d)\n",__FILE__,__LINE__);
     //      printf("j %d target_list.size() %d\n",j,target_list.size());
     //      printf("%s(%d)\n",__FILE__,__LINE__);
-    for( ;j<target_list.size();j++){
-      id[0] = ilist[i].id;
-      id[1] = target_list[j].id;
-      pos[0] = ilist[i].pos;
-      pos[1] = target_list[j].pos;
+    for(;t_it!=cell_data.upper_bound(tname);t_it++){
+//      id[0] = ilist[i].id;
+      id[0] = (*i_it).second.id;
+      //      id[1] = target_list[j].id;
+      id[1] = (*t_it).second.id;
+      //      pos[0] = ilist[i].pos;
+      pos[0] = (*i_it).second.pos;
+      pos[1] = (*t_it).second.pos;
       sprintf(idstr,"%d,%d",id[0],id[1]);
       name = idstr;
       dist = cm->GetParticleDist(&pos[0],&pos[1]);
@@ -144,8 +148,10 @@ void Motion::Find_io_CellBinary(vector<PARTICLE_INF>& ilist,vector<PARTICLE_INF>
 	binary2.pos[0] = pos[0];
 	binary2.pos[1] = pos[1];
 	GetCOM(pos,&(binary2.com),2);
-	binary2.vel[0] = ilist[i].vel;
-	binary2.vel[1] = target_list[j].vel;
+	//	binary2.vel[0] = ilist[i].vel;
+	binary2.vel[0] = (*i_it).second.vel;
+	//	binary2.vel[1] = target_list[j].vel;
+	binary2.vel[1] = (*t_it).second.vel;
 	binary2.tag = true;
 	binary2.dist = dist;
 	map<string,BINARY2>::iterator it = bin_map.find(name);
@@ -197,7 +203,7 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale,double half_length){
       for(int j=iy-1;j<=iy+1;j++){
 	for(int k=iz-1;k<=iz+1;k++){
 	  if(i==ix&&j==iy&&k==iz){
-	    Find_io_CellBinary(ilist,ilist,scale,I_TARGET,iname,iname);
+	    Find_io_CellBinary(cell_data,scale,I_TARGET,iname,iname);
 	    int num = cell_data.count(iname);
 	    for(int l=0;l <num;l++){
 	      it++;
@@ -214,7 +220,7 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale,double half_length){
 		target_list.push_back((*tenit).second);
 		tenit++;
 	      }
-	      Find_io_CellBinary(ilist,target_list,scale,OTHER_TARGET,iname,name);
+	      Find_io_CellBinary(cell_data,scale,OTHER_TARGET,iname,name);
 	    }
 	  }
 	}
@@ -225,6 +231,7 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale,double half_length){
   }
   bin_map_erase();
   bin_map_to_binary_list();
+  printf("binary_list_size %d\n",binary_list.size());
   /*
   printf("%s(%d)\n",__FILE__,__LINE__);
   vector<BINARY2>::iterator bit = binary_list.begin();

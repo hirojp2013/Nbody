@@ -50,8 +50,7 @@ class Motion {
   }
   void init();
 
-  void Find_io_CellBinary(vector<PARTICLE_INF>& ilist,vector<PARTICLE_INF>& target_list,
-			  GLdouble scale,I_OR_O I_O,string iname,string tname);
+  void Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data, GLdouble scale,I_OR_O I_O,string iname,string tname);
   void bin_map_to_binary_list();
   void FindBinary(GLdouble tcur,GLdouble scale,double length);
   void FindBinary(GLdouble tcur,GLdouble scale);
