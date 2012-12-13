@@ -125,6 +125,11 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
       //      pos[0] = ilist[i].pos;
       pos[0] = (*i_it).second.pos;
       pos[1] = (*t_it).second.pos;
+
+      if(iname == "-1,2,-4"&&tname=="0,2,-3"){
+	dist = cm->GetParticleDist(&pos[0],&pos[1]);
+	printf("dist %f\n",dist);
+      }
       sprintf(idstr,"%d,%d",id[0],id[1]);
       name = idstr;
       dist = cm->GetParticleDist(&pos[0],&pos[1]);
@@ -134,7 +139,8 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
       //      printf("dist %f DIST_TRHESH2%f\n",dist,DIST_THRESH2/scale2);
       //      printf("%s(%d)\n",__FILE__,__LINE__);
 
-      if(dist <= DIST_THRESH2/(scale2)){
+        if(dist <= DIST_THRESH2/(scale2)){
+      //      if(dist <= DIST_THRESH / scale){
 
 	//	printf("%s(%d)\n",__FILE__,__LINE__);
 	//	cout << "pos" << endl;
@@ -208,11 +214,23 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale,double half_length){
 	    for(int l=0;l <num;l++){
 	      it++;
 	    }
-	    cell_data.erase(iname);
+
 	    //	    printf("%s(%d)\n",__FILE__,__LINE__);
 	  }else{
 	    sprintf(idstr,"%d,%d,%d",i,j,k);
 	    name = idstr;
+	    if(ix == -1&&iy==2&&iz == -4){
+	      if(i == 0&& j == 2 && k == -3){
+		printf("%s(%d)\n",__FILE__,__LINE__);
+	      printf("x %d,y %d z %d\n",i,j,k);
+	      printf("count %d\n",cell_data.count("0,2,-3"));
+	      cout <<(*cell_data.find("0,2,-3")).second.pos.pos[0]
+		   <<(*cell_data.find("0,2,-3")).second.pos.pos[1]
+		   <<(*cell_data.find("0,2,-3")).second.pos.pos[2] << endl;
+	      cout << iname << " "<< name << endl;
+	      }
+	    }
+	  
 	    vector<PARTICLE_INF> target_list;
 	    tenit = cell_data.lower_bound(name);
 	    if(tenit != cell_data.upper_bound(name)){
@@ -227,17 +245,38 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale,double half_length){
       }
       
     }
-
+    cell_data.erase(iname);
   }
   bin_map_erase();
   bin_map_to_binary_list();
-  printf("binary_list_size %d\n",binary_list.size());
   /*
+  printf("binary_list_size %d\n",binary_list.size());
+  
   printf("%s(%d)\n",__FILE__,__LINE__);
   vector<BINARY2>::iterator bit = binary_list.begin();
+
   while(bit != binary_list.end()){
-    cout << "pos" << endl;
-    cout << (*bit).pos[0].pos[0] << " " << (*bit).pos[0].pos[1] << " "<<(*bit).pos[0].pos[2]<<endl ;
+    double x,y,z,x2,y2,z2;
+    x =(*bit).pos[0].pos[0];
+    y =(*bit).pos[0].pos[1];
+    z =(*bit).pos[0].pos[2];
+    x2 =(*bit).pos[1].pos[0];
+    y2 =(*bit).pos[1].pos[1];
+    z2 =(*bit).pos[1].pos[2];
+
+    int x_t,y_t,z_t,x_t2,y_t2,z_t2;
+    x_t = (int)(x/DIST_THRESH/scale);
+    y_t = (int)(y/DIST_THRESH/scale);
+    z_t = (int)(z/DIST_THRESH/scale);
+    x_t2 = (int)(x2/DIST_THRESH/scale);
+    y_t2 = (int)(y2/DIST_THRESH/scale);
+    z_t2 = (int)(z2/DIST_THRESH/scale);
+    printf("scale %f\n",scale);
+   cout <<x_t<<" "<<y_t <<" "<<z_t<<endl; 
+   cout <<x_t2<<" "<<y_t2 <<" "<<z_t2<<endl; 
+   cout << "pos" << endl;
+   cout << x << " "<<y<<" "<<z<<endl ;
+   cout << x2 << " "<<y2<<" "<<z2<<endl ;
     cout << "com" << endl;
     cout << (*bit).com.pos[0] << " "<<(*bit).com.pos[1] << " " << (*bit).com.pos[2] << endl;
     cout << "count" << endl;
@@ -245,6 +284,7 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale,double half_length){
     bit++;
   }
   */
+  
 }
 
 void Motion::FindBinary(GLdouble tcur,GLdouble scale)
