@@ -1,4 +1,7 @@
 #include "motion.h"
+void Motion::init(){
+  bin_map.clear();
+}
 
 void Motion::bin_map_initialize(){
   map<string,BINARY>::iterator it;

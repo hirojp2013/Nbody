@@ -205,7 +205,7 @@ void step(void)
 	cm->t_sys = 0;
 	cm->frame_dat = -1;
 	cm->allClear();
-	//	Motion::GetInstance()->init();
+	Motion::GetInstance()->init();
       }
 
       while (cm->frame_dat < cm->data.getDataNum() - 1) {
@@ -222,7 +222,7 @@ void step(void)
 	cm->t_sys = ((int)(cm->t_dat_max / cm->interval) + 1) * cm->interval;
 	cm->frame_dat = cm->data.getDataNum();
 	cm->allClear();
-	//	Motion::GetInstance()->init();
+	Motion::GetInstance()->init();
       }
       while (cm->frame_dat > 0) {
 	if (cm->data.getData(cm->frame_dat - 1)->getTime() < cm->t_sys) {
