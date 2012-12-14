@@ -82,7 +82,7 @@ class Motion {
   bool isInBox(int x,int y,int z,int max_index);
   void bin_map_erase();
   void box_clear();
-  void Grid_decomp(double half_length,double cell_length,multimap<string,PARTICLE_INF>& cell_data);
+  void Grid_decomp(multimap<string,PARTICLE_INF>& cell_data,double cell_length);
   double GetTotalVelocity(Particle *pt[], int num);
   void GetCOM(PARTICLE_POS *pos,PARTICLE_POS *com,int num);
   double GetCOMDiff(Particle *pt[], double *com_prev, int num);

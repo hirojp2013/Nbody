@@ -26,7 +26,7 @@ void Motion::bin_map_erase(){
   }
 }
 
-void Motion::Grid_decomp(double half_length,double cell_length,multimap<string,PARTICLE_INF>& cell_data){
+void Motion::Grid_decomp(multimap<string,PARTICLE_INF>& cell_data,double cell_length){
 
   Common *cm = Common::GetInstance();
   vector<PARTICLE_INF>poslistV(cm->data.getCurrentPosInf());
@@ -105,12 +105,11 @@ void Motion::bin_map_to_binary_list(){
   }
 }
 
-void Motion::FindBinary(GLdouble tcur,GLdouble scale,double half_length){
-  int max_index;
+void Motion::FindBinary(GLdouble tcur,GLdouble scale){
   double cell_length = CELL_LENGTH / scale;
   multimap<string,PARTICLE_INF> cell_data;
   FindBinary_initialize();
-  Grid_decomp(half_length,cell_length,cell_data);
+  Grid_decomp(cell_data,cell_length);
   multimap<string,PARTICLE_INF>::iterator it = cell_data.begin();
   char idstr[100];
   string name;
@@ -142,53 +141,6 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale,double half_length){
   bin_map_erase();
   bin_map_to_binary_list();
 }
-
-void Motion::FindBinary(GLdouble tcur,GLdouble scale)
-{
-
-  Common *cm = Common::GetInstance();
-  vector<PARTICLE_INF>poslistV = cm->data.getCurrentPosInf();
-  char idstr[32];
-  int i,j;
-  int id1,id2;
-  PARTICLE_POS pos[2];
-  string name;
-  for(i=0;i<poslistV.size();i++){
-    pos[0]=poslistV[i].pos;
-    id1 = poslistV[i].id;
-    for(j=i+1;j<poslistV.size();j++){
-      pos[1]=poslistV[j].pos;
-      id2 = poslistV[j].id;
-      sprintf(idstr,"%d,%d",id1,id2);
-      name = idstr;
-      double dist = cm->GetParticleDist(&pos[0],&pos[1]);
-      if(dist <= DIST_THRESH/scale){
-	if(binlist.find(name)==binlist.end()){
-	  BINARY init = BINARY_INIT;
-	  binlist[name]=init;
-	  binlist[name].id[0] = id1;
-	  binlist[name].id[1] = id2;
-	}
-	binlist[name].vel[0] = poslistV[i].vel;
-	binlist[name].vel[1] = poslistV[j].vel;
-	for(int k=0;k<2;k++){
-	  binlist[name].pos[k] = pos[k];
-	}
-	GetCOM(pos,&(binlist[name].com),2);
-	if(binlist[name].count < 30){
-	  binlist[name].count++;
-	}
-      }else{
-	if(binlist.find(name)!=binlist.end()){
-	  binlist.erase(name);
-	}
-      }
-    }
-  }
-  return;
-}
-
-
 
 void Motion::GetCOM(PARTICLE_POS *pos, PARTICLE_POS *com, int num)
 {
