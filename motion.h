@@ -18,20 +18,7 @@ typedef struct{
   int count;
   bool tag;
   double dist;
-}BINARY2;
-
-typedef struct{
-  int id[2];
-  PARTICLE_POS pos[2];
-  PARTICLE_POS com;
-  PARTICLE_VEL vel[2];
-  int count;
-  bool tag;
-  double dist;
 }BINARY;
-
-
-
 
 enum I_OR_O{I_TARGET =0,OTHER_TARGET = 1,};
 
@@ -51,17 +38,15 @@ class Motion {
   void init();
 
   void Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data, GLdouble scale,I_OR_O I_O,string iname,string tname);
-  void bin_map_to_binary_list();
+  //  void bin_map_to_binary_list();
   void FindBinary(GLdouble tcur,GLdouble scale,double length);
   void FindBinary(GLdouble tcur,GLdouble scale);
-  map<string, BINARY>& GetBinaryList() { return binlist; }
-  vector<BINARY2>& GetBinary_List(){return binary_list;}
+  map<string, BINARY>& GetBinaryMap() { return bin_map; }
+  //  vector<BINARY2>& GetBinary_List(){return binary_list;}
 
  private:
-  //  BOX_ cell_data;
-  map<string, BINARY> binlist;
-  map<string,BINARY2> bin_map;
-  vector<BINARY2> binary_list;
+  map<string,BINARY> bin_map;
+  //  vector<BINARY2> binary_list;
   double DIST_THRESH;
   double DIST_THRESH2;
   double COMDIFF_THRESH;

@@ -498,8 +498,10 @@ void draw_binary()
 {
   double angular,azimuth,length;
   GLdouble omega[3];
-  vector<BINARY2>binlist(Motion::GetInstance()->GetBinary_List());
-  vector<BINARY2>::iterator bp;
+  Motion *mo = Motion::GetInstance();
+  vector< pair<string,BINARY> >binlist(mo->GetBinaryMap().begin(),mo->GetBinaryMap().end());
+  vector< pair<string,BINARY> >::iterator bp;
+  BINARY bi_buff;
   glPushMatrix();
   {
     glEnable(GL_LIGHTING);
@@ -508,10 +510,11 @@ void draw_binary()
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     
     for(bp=binlist.begin();bp!=binlist.end();bp++){
-      glColor4d(1.0,1.0,1.0,(double)(bp->count)/30.0);
-      get_omega(bp->pos,bp->vel,bp->dist,omega);
+      bi_buff = (*bp).second;
+      glColor4d(1.0,1.0,1.0,(double)(bi_buff.count)/30.0);
+      get_omega(bi_buff.pos,bi_buff.vel,bi_buff.dist,omega);
       get_inf_V(omega,&angular,&azimuth,&length);
-      draw_arrow(bp->com,angular,azimuth,length);
+      draw_arrow(bi_buff.com,angular,azimuth,length);
     }
     glDisable(GL_ALPHA_TEST);
     glDisable(GL_BLEND);
@@ -526,21 +529,10 @@ void draw_binary()
     glBegin(GL_LINES);
 
     for(bp = binlist.begin();bp!=binlist.end();bp++){
-#ifdef DEBUG
-      CAVEDisplayBarrier();
-      {
-	printf("draw_binary prn %d size %d\n",CAVEUniqueIndex(),binlist.size());fflush(stdout);
-	printf("bp->pos[0] %f %f %f\n",bp->pos[0].pos[0],
-	       bp->pos[0].pos[1],bp->pos[0].pos[2]);fflush(stdout);
-	printf("bp->pos[1] %f %f %f\n\n",bp->pos[1].pos[0],bp->pos[1].pos[1],
-	       bp->pos[1].pos[2]);fflush(stdout);
-      }
-      CAVEDisplayBarrier();
-#endif
+      bi_buff = (*bp).second;
+      glVertex3d(bi_buff.pos[0].pos[0],bi_buff.pos[0].pos[1],bi_buff.pos[0].pos[2]);
 
-      glVertex3d(bp->pos[0].pos[0],bp->pos[0].pos[1],bp->pos[0].pos[2]);
-
-      glVertex3d(bp->pos[1].pos[0],bp->pos[1].pos[1],bp->pos[1].pos[2]);
+      glVertex3d(bi_buff.pos[1].pos[0],bi_buff.pos[1].pos[1],bi_buff.pos[1].pos[2]);
 #ifdef DEBUG
       CAVEDisplayBarrier();
       {
@@ -556,10 +548,6 @@ void draw_binary()
   glPopMatrix();
   CAVEDisplayBarrier();
 }
-
-
-
-
 
 void display(void)
 {
