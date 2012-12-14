@@ -187,7 +187,7 @@ void step(void)
 	pt->getV(&(pos_inf.vel),cm->scale);
 	poslistV.push_back(pos_inf);
       }
-      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale,max_length);
+      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
       if(cm->beam_flag){
 	cm->SelectParticle();
       }else if(cm->beam_clear_flag){
@@ -282,7 +282,7 @@ void step(void)
 		<< " frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat 
 		<< " time: " << CAVEGetTime() << endl;
     */
-    Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale,max_length);
+    Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
     if(cm->beam_flag){
       cm->SelectParticle();
     }else if(cm->beam_clear_flag){
