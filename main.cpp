@@ -6,6 +6,10 @@
 #include<algorithm>
 #include<cassert>
 
+#define TEXHEIGHT 64
+#define TEXWIDTH 64
+static const char texture[] = "ball.raw";
+
 static UI *ui = NULL;
 static Common *cm = NULL;
 static GLUquadricObj *sphereObj[CAVE_MAX_WALLS] = { NULL };
@@ -70,6 +74,13 @@ void the_arrow(){
 void init(void *filename)
 {
   GLfloat light_position[] = { 0.0f, 30.0f, 50.0f, 0.0f };
+  /*
+ *** texture
+ */
+
+  static GLubyte image[TEXHEIGHT][TEXWIDTH][4];
+
+
   if (CAVEMasterDisplay()) {
     cm->display_num = CAVENumPipes();
     cout << "display_num: " << cm->display_num << endl;
@@ -125,13 +136,49 @@ void init(void *filename)
     printf("INPUT end ----------------------------------------\n");
 #endif
   }
+
+
+  /*
+ *** texture start
+ */
+  std::ifstream file(texture, std::ios::in | std::ios::binary);
+  if(file) {
+    file.read((char *)image, sizeof image);
+    file.close();
+  }
+  else{
+    std::cerr << texture << "can not open" << std::endl;
+    exit(1);
+  }
+
   CAVEDisplayBarrier();
 
+  glPixelStorei(GL_UNPACK_ALIGNMENT,4);
+
+  glTexParameteri(GL_TEXTURE_2D,GL_GENERATE_MIPMAP,GL_TRUE);
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+
+
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
+
+  glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+  glTexEnvi(GL_POINT_SPRITE,GL_COORD_REPLACE,GL_TRUE);
+
+  glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,TEXWIDTH,TEXHEIGHT,0,
+	       GL_RGBA,GL_UNSIGNED_BYTE,image);
+  glAlphaFunc(GL_GREATER, 0.5);
+  /*
+ *** texture end
+   */
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glShadeModel(GL_SMOOTH);
   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
   glEnable(GL_LIGHT0);
   glEnable(GL_NORMALIZE);
+
+
 
   //multithead tID
   sphereObj[CAVEUniqueIndex()] = gluNewQuadric();
@@ -594,7 +641,19 @@ void display(void)
 	glTranslated(p->pos.pos[0],
 		     p->pos.pos[1],
 		     p->pos.pos[2]);
-	gluSphere(sphereObj[CAVEUniqueIndex()], r, 10, 6);
+	//	gluSphere(sphereObj[CAVEUniqueIndex()], r, 10, 6);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_POINT_SPRITE);
+	glEnable(GL_ALPHA_TEST);
+	glPointSize(30.);
+	glBegin(GL_POINTS);
+	{
+	  glVertex3d(0.,0.,0.);
+	}
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_POINT_SPRITE);
+	glDisable(GL_ALPHA_TEST);
       }
       glPopMatrix();
       glDisable(GL_LIGHTING);
@@ -671,9 +730,6 @@ void display(void)
     draw_binary();
   }
   glPopMatrix();
-#ifdef DEBUG
-  error_check_gl();
-#endif
 }
 
 int main(int argc, char *argv[])
