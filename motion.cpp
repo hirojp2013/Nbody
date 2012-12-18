@@ -14,7 +14,6 @@ void Motion::bin_map_initialize(){
 
 void Motion::FindBinary_initialize(){
   bin_map_initialize();
-  //  binary_list.clear();
 }
 
 void Motion::bin_map_erase(){
