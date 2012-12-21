@@ -57,6 +57,7 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
   int count;
   Common *cm = Common::GetInstance();
   double scale2 = scale * scale;
+  double thresh_hold_scale = DIST_THRESH2 / scale2;
   multimap<string,PARTICLE_INF>::iterator i_it = cell_data.lower_bound(iname);
   multimap<string,PARTICLE_INF>::iterator t_it;
   for(;i_it!=cell_data.upper_bound(iname);i_it++){
@@ -67,14 +68,14 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
       t_it = cell_data.lower_bound(tname);
     }
     for(;t_it!=cell_data.upper_bound(tname);t_it++){
-      id[0] = (*i_it).second.id;
-      id[1] = (*t_it).second.id;
       pos[0] = (*i_it).second.pos;
       pos[1] = (*t_it).second.pos;
-      sprintf(idstr,"%d,%d",id[0],id[1]);
-      name = idstr;
       dist = cm->GetParticleDist(&pos[0],&pos[1]);
-      if(dist <= DIST_THRESH2/scale2){
+      if(dist <= thresh_hold_scale){
+	id[0] = (*i_it).second.id;
+	id[1] = (*t_it).second.id;
+	sprintf(idstr,"%d,%d",id[0],id[1]);
+	name = idstr;
 	BINARY binary;
 	binary.id[0] = id[0];
 	binary.id[1] = id[1];
@@ -97,17 +98,6 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
     }
   }
 }
-
-/*
-void Motion::bin_map_to_binary_list(){
-  map<string,BINARY >::iterator it;
-  it = bin_map.begin();
-  while(it != bin_map.end()){
-    binary_list.push_back((*it).second);
-    it++;
-  }
-}
-*/
 
 void Motion::FindBinary(GLdouble tcur,GLdouble scale){
   double cell_length = CELL_LENGTH / scale;
@@ -143,7 +133,6 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale){
     cell_data.erase(iname);
   }
   bin_map_erase();
-  //  bin_map_to_binary_list();
 }
 
 void Motion::GetCOM(PARTICLE_POS *pos, PARTICLE_POS *com, int num)
