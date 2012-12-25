@@ -72,7 +72,7 @@ void init(void *filename)
   GLfloat light_position[] = { 0.0f, 30.0f, 50.0f, 0.0f };
   if (CAVEMasterDisplay()) {
     cm->display_num = CAVENumPipes();
-    //		cout << "display_num: " << cm->display_num << endl;
+    cout << "display_num: " << cm->display_num << endl;
     bool ret = cm->data.readData((const char *)filename);
     if (!ret) {
       cout << "Can't read the input data." << endl;
@@ -81,6 +81,7 @@ void init(void *filename)
     cm->t_dat_max = cm->data.getData(cm->data.getDataNum() - 1)->getTime();
     cm->frame_max = (int)(cm->t_dat_max / cm->interval) + 1;
     cm->frame_dat = cm->data.initList() - 1;
+    printf("%s(%d)\n",__FILE__,__LINE__);
     cout << setprecision(15)
 	 << "time_max: " << cm->t_dat_max
 	 << " interval: " << cm->interval
@@ -89,6 +90,8 @@ void init(void *filename)
 	 << endl;
     cout << setprecision(15)
 	 << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
+    printf("%s(%d)\n",__FILE__,__LINE__);
+    fflush(stdout);
 	
 #if 0
     printf("INPUT --------------------------------------------\n");
@@ -155,10 +158,6 @@ void end(void)
 
 void step(void)
 {
-  //  vector<int> curlist = cm->data.getCurrentList();
-  //  vector<int>::iterator p;
-  //  PARTICLE_POS pos;
-  //  PARTICLE_INF pos_inf;
   if (CAVEMasterDisplay()) {
     vector<int> curlist = cm->data.getCurrentList();
     vector<int>::iterator p;
@@ -168,7 +167,6 @@ void step(void)
     vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
     poslistV.clear();
     if (cm->runstate == 0) {
-	Motion::GetInstance()->init();
       if (cm->is_acc && cm->interval + incl < 1.0) {
 	cm->interval += incl;
 	cm->is_acc = false;
@@ -178,22 +176,18 @@ void step(void)
 	cm->interval -= incl;
 	cm->is_dec = false;
       }
-      double max_length = -1.;
       for (p = curlist.begin(); p != curlist.end(); p++) {
 	if(*p<0){
 	  continue;
 	}
 	Particle *pt = cm->data.getData(*p);
-	double length_cand;
 	pt->extrapolate(cm->t_dat, cm->scale, &pos);
 	pos_inf.id = pt->getId();
 	pos_inf.pos = pos;
-	length_cand = pt->max_particle_coord(pos);
-	max_length = max(max_length,length_cand);
 	pt->getV(&(pos_inf.vel),cm->scale);
 	poslistV.push_back(pos_inf);
       }
-      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale,max_length);
+      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
       if(cm->beam_flag){
 	cm->SelectParticle();
       }else if(cm->beam_clear_flag){
@@ -202,11 +196,8 @@ void step(void)
       CAVEDisplayBarrier();
       return;
     }
-
     float headpos[3];
     CAVEGetPosition(CAVE_HEAD, headpos);
-    //		cout << "head pos: " << headpos[0] << " " << headpos[1] << " " << headpos[2] << endl;
-
     if (cm->inc > 0) {
       if (cm->t_sys < cm->t_dat_max) {
 	cm->t_sys += cm->interval;
@@ -242,7 +233,6 @@ void step(void)
       }
     }
 
-    double max_length = -1.;
     for (p = curlist.begin(); p != curlist.end(); p++) {
       if(*p<0){
 	continue;
@@ -252,8 +242,6 @@ void step(void)
       pt->extrapolate(cm->t_dat, cm->scale, &pos);
       pos_inf.id = pt->getId();
       pos_inf.pos = pos;
-      length_cand = pt->max_particle_coord(pos);
-      max_length = max(max_length,length_cand);
       pt->getV(&(pos_inf.vel),cm->scale);                            
       poslistV.push_back(pos_inf);
 
@@ -294,7 +282,7 @@ void step(void)
 		<< " frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat 
 		<< " time: " << CAVEGetTime() << endl;
     */
-    Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale,max_length);
+    Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
     if(cm->beam_flag){
       cm->SelectParticle();
     }else if(cm->beam_clear_flag){
@@ -470,22 +458,17 @@ void Cross(double *orientV,double *diff_velV,GLdouble *ang_momV){
   ang_momV[2] = (orientV[0]*diff_velV[1] - orientV[1]*diff_velV[0])/2.0; 
 }
 
-void get_omega(PARTICLE_POS *pos,PARTICLE_VEL *vel,GLdouble omega[3]){
+void get_omega(PARTICLE_POS *pos,PARTICLE_VEL *vel,double dist,GLdouble omega[3]){
   double orientV[3],diff_velV[3];
-  double length=0.0;
   GLdouble ang_momV[3];
   for(int i=0;i<3;i++){
     orientV[i] = pos[0].pos[i] - pos[1].pos[i];
     diff_velV[i] = vel[0].vel[i] - vel[1].vel[i];
   }
 
-  for(int i=0;i<3;i++){
-    length += pow((orientV[i]),2);
-  }
-
   Cross(orientV,diff_velV,ang_momV);
   for(int i=0;i<3;i++){
-    omega[i] = ang_momV[i]/length;
+    omega[i] = ang_momV[i]/dist;
   }
 
 }
@@ -515,8 +498,10 @@ void draw_binary()
 {
   double angular,azimuth,length;
   GLdouble omega[3];
-  vector<BINARY2>binlist(Motion::GetInstance()->GetBinary_List());
-  vector<BINARY2>::iterator bp;
+  Motion *mo = Motion::GetInstance();
+  vector< pair<string,BINARY> >binlist(mo->GetBinaryMap().begin(),mo->GetBinaryMap().end());
+  vector< pair<string,BINARY> >::iterator bp;
+  BINARY bi_buff;
   glPushMatrix();
   {
     glEnable(GL_LIGHTING);
@@ -525,10 +510,11 @@ void draw_binary()
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     
     for(bp=binlist.begin();bp!=binlist.end();bp++){
-      glColor4d(1.0,1.0,1.0,(double)(bp->count)/30.0);
-      get_omega(bp->pos,bp->vel,omega);
+      bi_buff = (*bp).second;
+      glColor4d(1.0,1.0,1.0,(double)(bi_buff.count)/30.0);
+      get_omega(bi_buff.pos,bi_buff.vel,bi_buff.dist,omega);
       get_inf_V(omega,&angular,&azimuth,&length);
-      draw_arrow(bp->com,angular,azimuth,length);
+      draw_arrow(bi_buff.com,angular,azimuth,length);
     }
     glDisable(GL_ALPHA_TEST);
     glDisable(GL_BLEND);
@@ -543,21 +529,10 @@ void draw_binary()
     glBegin(GL_LINES);
 
     for(bp = binlist.begin();bp!=binlist.end();bp++){
-#ifdef DEBUG
-      CAVEDisplayBarrier();
-      {
-	printf("draw_binary prn %d size %d\n",CAVEUniqueIndex(),binlist.size());fflush(stdout);
-	printf("bp->pos[0] %f %f %f\n",bp->pos[0].pos[0],
-	       bp->pos[0].pos[1],bp->pos[0].pos[2]);fflush(stdout);
-	printf("bp->pos[1] %f %f %f\n\n",bp->pos[1].pos[0],bp->pos[1].pos[1],
-	       bp->pos[1].pos[2]);fflush(stdout);
-      }
-      CAVEDisplayBarrier();
-#endif
+      bi_buff = (*bp).second;
+      glVertex3d(bi_buff.pos[0].pos[0],bi_buff.pos[0].pos[1],bi_buff.pos[0].pos[2]);
 
-      glVertex3d(bp->pos[0].pos[0],bp->pos[0].pos[1],bp->pos[0].pos[2]);
-
-      glVertex3d(bp->pos[1].pos[0],bp->pos[1].pos[1],bp->pos[1].pos[2]);
+      glVertex3d(bi_buff.pos[1].pos[0],bi_buff.pos[1].pos[1],bi_buff.pos[1].pos[2]);
 #ifdef DEBUG
       CAVEDisplayBarrier();
       {
@@ -573,10 +548,6 @@ void draw_binary()
   glPopMatrix();
   CAVEDisplayBarrier();
 }
-
-
-
-
 
 void display(void)
 {

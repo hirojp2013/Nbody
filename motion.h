@@ -4,6 +4,11 @@
 #include<algorithm>
 #include "common.h"
 
+typedef struct{
+  int x;
+  int y;
+  int z;
+}POS_KEY;
 
 typedef struct{
   int id[2];
@@ -12,22 +17,12 @@ typedef struct{
   PARTICLE_VEL vel[2];
   int count;
   bool tag;
-}BINARY2;
-
-
-typedef struct{
-  int x;
-  int y;
-  int z;
-}POS_KEY;
+  double dist;
+}BINARY;
 
 enum I_OR_O{I_TARGET =0,OTHER_TARGET = 1,};
 
 #define BINARY_INIT {{id1,id2},{{0.0, 0.0, 0.0},{0.0, 0.0, 0.0}},{0.0,0.0,0.0},{{0.0,0.0,0.0},{0.0,0.0,0.0}},0}
-
-typedef vector< vector<PARTICLE_INF> >LINE_;
-typedef vector< LINE_ >SQUARE_;
-typedef vector< SQUARE_> BOX_;
 
 class Motion {
 
@@ -36,8 +31,10 @@ class Motion {
     static Motion motion;
     return &motion;
   }
+
   void init();
 
+<<<<<<< HEAD
   void Find_io_CellBinary(vector<PARTICLE_INF>& ilist,vector<PARTICLE_INF>& target_list,
 			  double scale,I_OR_O I_O);
   void bin_map_to_binary_list();
@@ -50,14 +47,23 @@ class Motion {
   vector<BINARY2> binary_list;
   vector<POS_KEY> key_list;
   BOX_ cell_data;
+=======
+  void FindBinary(GLdouble tcur,GLdouble scale);
+  map<string, BINARY>& GetBinaryMap() { return bin_map; }
+
+ private:
+  map<string,BINARY> bin_map;
+>>>>>>> master
   double DIST_THRESH;
+  double DIST_THRESH2;
   double COMDIFF_THRESH;
   double BIN_COUNT_THRESH;
   double BIN_REMOVE_COUNT_THRESH;
   double EPSIRON;
   double CELL_LENGTH;
-  Motion() { DIST_THRESH = .1; COMDIFF_THRESH = 0; BIN_COUNT_THRESH = 0; BIN_REMOVE_COUNT_THRESH = 0;EPSIRON = DIST_THRESH/4.0; CELL_LENGTH = DIST_THRESH;
-
+  Motion()
+    { DIST_THRESH = .1; COMDIFF_THRESH = 0; BIN_COUNT_THRESH = 0; BIN_REMOVE_COUNT_THRESH = 0;EPSIRON = DIST_THRESH/4.0; CELL_LENGTH = DIST_THRESH;
+    DIST_THRESH2 = DIST_THRESH*DIST_THRESH;
   }
   ~Motion() {}
   Motion(const Motion& obj);
@@ -65,9 +71,9 @@ class Motion {
   void bin_map_initialize();
   void box_initialize(int max_index);
   void FindBinary_initialize();
-  bool isInBox(int x,int y,int z,int max_index);
+  void Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data, GLdouble scale,I_OR_O I_O,string iname,string tname);
   void bin_map_erase();
-  void Grid_decomp(double half_length,double cell_length);
+  void Grid_decomp(multimap<string,PARTICLE_INF>& cell_data,double cell_length);
   double GetTotalVelocity(Particle *pt[], int num);
   void GetCOM(PARTICLE_POS *pos,PARTICLE_POS *com,int num);
   double GetCOMDiff(Particle *pt[], double *com_prev, int num);
