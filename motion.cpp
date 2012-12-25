@@ -28,21 +28,51 @@ void Motion::bin_map_erase(){
   }
 }
 
-void Motion::Grid_decomp(multimap<string,PARTICLE_INF>& cell_data,double cell_length){
+
+
+void Motion::Grid_decomp(double cell_length){
 
   Common *cm = Common::GetInstance();
   vector<PARTICLE_INF>poslistV(cm->data.getCurrentPosInf());
   int x,y,z;
-  char idstr[100];
-  string name;
+  int max_num;
+  CELL *cell_adress; 
   for(int i=0;i<poslistV.size();i++){
     x =(int)(floor)(poslistV[i].pos.pos[0]/cell_length);
     y =(int)(floor)(poslistV[i].pos.pos[1]/cell_length);
     z =(int)(floor)(poslistV[i].pos.pos[2]/cell_length);
-    sprintf(idstr,"%d,%d,%d",x,y,z);
-    name = idstr;
-    cell_data.insert(pair<string,PARTICLE_INF>(name,poslistV[i]));
+
+    if(x>=MAX_INDEX){
+      x = MAX_INDEX-1;
+    }
+    if(y>=MAX_INDEX){
+      y = MAX_INDEX-1;
+    }
+    if(z>=MAX_INDEX){
+      z = MAX_INDEX-1;
+    }
+    cell_adress = *(cell_data[x][y][z]);
+    max_num =cell_adress->par_num_per_cell;
+    cell_adress.par_inf_list[max_num] = poslistV[i];
+    cell_adress-> par_num_per_cell++;
+    pos_key_list[bi_num].x=x;
+    pos_key_list[bi_num].y=y;
+    pos_key_list[bi_num].z=z;
+    bi_num++;
   }
+}
+
+int get_hist_len(int min_id,int max_id){
+  for(int i=0;i<history[min_id].n_coutpt;i++){
+    if(history[min_id].coutpt_id[i] == max_id){
+      return hist_list[i];
+    }
+  }
+  return 0;
+}
+
+void Motion::delete_cell(POS_KEY ikey){
+cell_data
 }
 
 void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale,I_OR_O I_O,string iname,string tname){
@@ -99,29 +129,68 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
   }
 }
 
+
+void Motion::Find_I_CellBinary(GLdouble scale,POS_KEY ikey){
+  int id[2];
+  PARTICLE_POS pos[2];
+  PARTICLE_POS com;
+  PARTICLE_VEL vel[2];
+  double dist;
+  BINARY binary;
+  int count;
+  Common *cm = Common::GetInstance();
+  double scale2 = scale * scale;
+  double thresh_hold_scale = DIST_THRESH2 / scale2;
+  CELL icell = cell_data[ikey.x][ikey.y][ikey.z];
+  for(int i=0;i<icell.par_num_per_cell;i++){
+    for(int j=i+1;j<icell.par_num_per_cell;j++){
+      pos[0] = icell.par_inf_list[i].pos;
+      pos[1] = icell.par_inf_list[j].pos;
+      dist = cm->GetParticleDist(&pos[0],&pos[1]);
+      if(dist <= thresh_hold_scale){
+	id[0] = (*i_it).second.id;
+	id[1] = (*t_it).second.id;
+	BINARY binary;
+	binary.id[0] = id[0];
+	binary.id[1] = id[1];
+	binary.pos[0] = pos[0];
+	binary.pos[1] = pos[1];
+	GetCOM(pos,&(binary.com),2);
+	binary.vel[0] = (*i_it).second.vel;
+	binary.vel[1] = (*t_it).second.vel;
+	binary.tag = true;
+	binary.dist = dist;
+	binary.count = get_hist_len(min(id0,id1),max(id0,id1))+1;
+	binlist[bi_num] = binary;
+	bi_num++;
+      }
+    }
+  }
+}
+
+
+
+
 void Motion::FindBinary(GLdouble tcur,GLdouble scale){
   double cell_length = CELL_LENGTH / scale;
-  multimap<string,PARTICLE_INF> cell_data;
   FindBinary_initialize();
-  Grid_decomp(cell_data,cell_length);
-  multimap<string,PARTICLE_INF>::iterator it = cell_data.begin();
-  char idstr[100];
-  string name;
-  string iname;
-  it = cell_data.begin();
-  while(it!=cell_data.end()){
-    iname = (*it).first;
-    int ix,iy,iz;
-    sscanf(iname.c_str(),"%d,%d,%d",&ix,&iy,&iz);
+  Grid_decomp(cell_length);
+  /*
+ *** You must zeroset bi_num here.
+ *** You will use bi_num below this line.
+ */
+  bi_num=0;
+  for(int i=0;i<bi_num;i++){
+    POS_KEY ikey;
+    ikey.x = pos_key_vec[i].x;
+    ikey.y = pos_key_vec[i].y;
+    ikey.z = pos_key_vec[i].z;
     for(int i=ix-1;i<=ix+1;i++){
       for(int j=iy-1;j<=iy+1;j++){
 	for(int k=iz-1;k<=iz+1;k++){
 	  if(i==ix&&j==iy&&k==iz){
-	    Find_io_CellBinary(cell_data,scale,I_TARGET,iname,iname);
-	    int num = cell_data.count(iname);
-	    for(int l=0;l <num;l++){
-	      it++;
-	    }
+	    Find_I_CellBinary(scale,ikey);
+	    delete_cell(ikey);
 	  }else{
 	    sprintf(idstr,"%d,%d,%d",i,j,k);
 	    name = idstr;
