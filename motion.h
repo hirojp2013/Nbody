@@ -4,13 +4,6 @@
 #include<algorithm>
 #include "common.h"
 
-typedef struct{
-  int id[2];
-  PARTICLE_POS pos[2];
-  PARTICLE_POS com;
-  PARTICLE_VEL vel[2];
-  int count;
-}BINARY;
 
 typedef struct{
   int id[2];
@@ -46,15 +39,13 @@ class Motion {
   void init();
 
   void Find_io_CellBinary(vector<PARTICLE_INF>& ilist,vector<PARTICLE_INF>& target_list,
-			  GLdouble scale,I_OR_O I_O);
+			  double scale,I_OR_O I_O);
   void bin_map_to_binary_list();
-  void FindBinary(GLdouble tcur,GLdouble scale,double length);
-  void FindBinary(GLdouble tcur,GLdouble scale);
-  map<string, BINARY>& GetBinaryList() { return binlist; }
+  void FindBinary(double tcur,double scale,double length);
+  void FindBinary(double tcur,double scale);
   vector<BINARY2>& GetBinary_List(){return binary_list;}
 
  private:
-  map<string, BINARY> binlist;
   map<string,BINARY2> bin_map;
   vector<BINARY2> binary_list;
   vector<POS_KEY> key_list;

@@ -62,14 +62,14 @@ void Particle::setX(const double *pos) {
   }
 }
 
-void Particle::extrapolate(double tcur, GLdouble scale, PARTICLE_POS *pos) {
+void Particle::extrapolate(double tcur, double scale, PARTICLE_POS *pos) {
   double dt = tcur - t;
   for (int i = 0; i < 3; i++) {
     pos->pos[i] = ( (a[i] * dt * 0.5 + v[i]) * dt + x[i] ) / scale;
   }
 }
 
-GLdouble Particle::max_particle_coord(PARTICLE_POS &pos){
+double Particle::max_particle_coord(PARTICLE_POS &pos){
   double ans;
   ans = max(fabs(pos.pos[0]),fabs(pos.pos[1]));
   ans = max(ans,fabs(pos.pos[2]));
@@ -84,10 +84,9 @@ bool ParticleData::readData(const char *filename)
 {
   ifstream ifs(filename);
   if (!ifs) {
-    //		cout << "ParticleData::readData(): can't open " << filename << "." << endl;
+    cout << "ParticleData::readData(): can't open " << filename << "." << endl;
     return false; 
   }
-
   string buf;
   string key, val;
   Particle ptc;
@@ -134,9 +133,9 @@ bool ParticleData::readData(const char *filename)
       }
     }
     cnt++;
+
     //while roop terminated
   }
-
   if (!dval.empty()) {
     if (dval.size() != 3) {
       cout << "WARNING: incomplete data " << key << " (line " << (cnt - dval.size()) << ")" << endl;
@@ -178,6 +177,8 @@ int ParticleData::initList(void)
   sort(idlist.begin(), idlist.end());
   curlist.assign(*(idlist.end() - 1) + 1, -1);
   int nframe = 0;
+  printf("%s(%d)\n",__FILE__,__LINE__);
+  printf("datanum %d\n",dataNum);
   for (int i = 0; i < dataNum; i++) {
     if (data[i].t > 0.0) {
       break;

@@ -3,7 +3,7 @@
 
 Common::Common()
 {
-  display_num = CAVE_MAX_WALLS;
+
   t_sys = 0.0;           // time
   interval = 0.005;
   frame = 0;             // frame number
@@ -28,6 +28,7 @@ Common::Common()
   beam_flag = false;
   rot = 0.0;
   vmax =  4.0;
+
 };
 
 Common::~Common()
@@ -84,8 +85,6 @@ void Common::SelectParticle()
   double candPtDist = TARGET_DIST_THRESH/scale;
   float wandpos_tmp1[3],wandpos_tmp2[3];
   float wandvec_tmp1[3],wandvec_tmp2[3];
-  CAVEGetPosition(CAVE_WAND_NAV, wandpos_tmp1);
-  CAVEGetVector(CAVE_WAND_FRONT_NAV,wandvec_tmp1);
   PARTICLE_POS candPos;
   PARTICLE_POS crossPos;
   for(int i=0;i<3;i++){

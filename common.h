@@ -3,7 +3,7 @@
 
 #include "Particle.h"
 
-const GLdouble COLORS[][3] = {
+const double COLORS[][3] = {
   { 1.0, 0.0, 0.0 }, 
   { 0.0, 1.0, 0.0 }, 
   { 0.0, 0.0, 1.0 }, 
@@ -12,8 +12,8 @@ const GLdouble COLORS[][3] = {
   { 1.0, 1.0, 0.0 }
 };
 const int      COLOR_NUM = sizeof(COLORS) / sizeof(COLORS[0]);
-const GLdouble SIZE = 0.004;  // particle size
-const GLdouble SCALE_UNIT = 1.0005;
+const double SIZE = 0.004;  // particle size
+const double SCALE_UNIT = 1.0005;
 
 const double   GRID_MAX = 50.0;
 const double   GRID_MIN = -GRID_MAX;
@@ -27,7 +27,7 @@ typedef struct {
   double x;
   double y;
   double z;
-  GLfloat color[3];
+  float color[3];
 } TARGET_POS;
 
 const double BEAM_SCALE = 1.7;
@@ -52,7 +52,7 @@ class Common {
     }
 
   ParticleData data;
-
+  vector<double> test_test;
   int      display_num;
 	
   double   t_sys;                 // time
@@ -71,13 +71,13 @@ class Common {
   // frame increment per step
   bool     is_acc;                // accelerate
   bool     is_dec;                // decelerate
-  GLdouble scale;                 // scale of the system
-  GLdouble radius;                // particle radius
-  GLdouble theta;                 // angle of rotation around z-axis
-  GLdouble phi;                   // angle of rotation around x-axis
-  GLdouble dx;                    // target position x (gluLookAt)
-  GLdouble dy;                    // target position y (gluLookAt)
-  GLdouble dd;                    // unit of movement of the target position
+  double scale;                 // scale of the system
+  double radius;                // particle radius
+  double theta;                 // angle of rotation around z-axis
+  double phi;                   // angle of rotation around x-axis
+  double dx;                    // target position x (gluLookAt)
+  double dy;                    // target position y (gluLookAt)
+  double dd;                    // unit of movement of the target position
 
   queue< vector<TARGET_POS> > traj ;
   bool         beam_flag;

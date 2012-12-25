@@ -1,9 +1,6 @@
 #ifndef _PARTICLE_H_
 #define _PARTICLE_H_
 
-#include <cave_ogl.h>
-#include <GL/glut.h>
-#include <GL/gl.h>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -13,8 +10,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <algorithm>
-
 #include<queue>
+#include<cmath>
 
 /*
  * Particle data class
@@ -56,12 +53,12 @@ using namespace std;
 
 
 typedef struct{
-  GLdouble pos[3];
+  double pos[3];
 }PARTICLE_POS;
 
 
 typedef struct{
-    GLdouble vel[3];
+    double vel[3];
 }PARTICLE_VEL;
 
 typedef struct {
@@ -112,8 +109,8 @@ public:
 
 	void getA(double *pos) { for (int i = 0; i < 3; i++) pos[i] = a[i]; }
 	void getJ(double *pos) { for (int i = 0; i < 3; i++) pos[i] = j[i]; }
-	void extrapolate(double tcur, GLdouble scale, PARTICLE_POS *pos);
-	GLdouble max_particle_coord(PARTICLE_POS &pos);
+	void extrapolate(double tcur, double scale, PARTICLE_POS *pos);
+	double max_particle_coord(PARTICLE_POS &pos);
 };
 
 class ParticleData
