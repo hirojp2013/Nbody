@@ -86,14 +86,21 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
 	binary.vel[1] = (*t_it).second.vel;
 	binary.tag = true;
 	binary.dist = dist;
+
 	map<string,BINARY>::iterator it = bin_map.find(name);
 	if(it != bin_map.end()){
-	  binary.count = (*it).second.count + 1;
+	  if(cm->runstate == 1){
+	    binary.count = (*it).second.count + 1;
+	  }else{
+	    binary.count = (*it).second.count;
+	  }
+
 	  (*it).second = binary;
 	}else{
 	  binary.count = 1;
 	  bin_map.insert( pair<string, BINARY>( name, binary ) );
 	}
+	
       }
     }
   }
@@ -133,7 +140,7 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale){
     cell_data.erase(iname);
   }
   bin_map_erase();
-}
+  }
 
 void Motion::GetCOM(PARTICLE_POS *pos, PARTICLE_POS *com, int num)
 {
