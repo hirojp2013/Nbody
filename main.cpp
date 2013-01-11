@@ -10,6 +10,11 @@
 #define TEXWIDTH 64
 static const char texture[] = "ball.raw";
 
+
+//PFNGLPOINTPARAMETERFVPROC glPointParameterfv;
+
+const GLfloat distance[] = { 0.0, 0.0, 1.0 };
+
 static UI *ui = NULL;
 static Common *cm = NULL;
 static GLUquadricObj *sphereObj[CAVE_MAX_WALLS] = { NULL };
@@ -169,9 +174,15 @@ void init(void *filename)
   glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,TEXWIDTH,TEXHEIGHT,0,
 	       GL_RGBA,GL_UNSIGNED_BYTE,image);
   glAlphaFunc(GL_GREATER, 0.5);
+  printf("%s(%d)\n",__FILE__,__LINE__);
+  glPointParameterfv(GL_POINT_DISTANCE_ATTENUATION, ::distance);
+  CAVEDisplayBarrier();
+  printf("%s(%d)\n",__FILE__,__LINE__);
+
   /*
  *** texture end
    */
+
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glShadeModel(GL_SMOOTH);
   glLightfv(GL_LIGHT0, GL_POSITION, light_position);

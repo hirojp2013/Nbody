@@ -1,9 +1,15 @@
 #ifndef _PARTICLE_H_
 #define _PARTICLE_H_
 
+#define GL_GLEXT_PROTOTYPES
+
 #include <cave_ogl.h>
 #include <GL/glut.h>
 #include <GL/gl.h>
+
+
+
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
