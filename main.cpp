@@ -570,7 +570,7 @@ void draw_binary()
       glColor4d(1.0,1.0,1.0,(double)(bi_buff.count)/30.0);
       get_omega(bi_buff.pos,bi_buff.vel,bi_buff.dist,omega);
       get_inf_V(omega,&angular,&azimuth,&length);
-      draw_arrow(bi_buff.com,angular,azimuth,length);
+      //      draw_arrow(bi_buff.com,angular,azimuth,length);
     }
     glDisable(GL_ALPHA_TEST);
     glDisable(GL_BLEND);
@@ -634,7 +634,7 @@ void display(void)
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_POINT_SPRITE);
 	glEnable(GL_ALPHA_TEST);
-	glPointSize(30.);
+	glPointSize(60.);
 
 	sprintf(idbuf, "%d", p->id);
 	if (!cm->target_id.empty()
