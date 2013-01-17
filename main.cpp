@@ -168,16 +168,14 @@ void init(void *filename)
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
   glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
 
-  glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+  glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
   glTexEnvi(GL_POINT_SPRITE,GL_COORD_REPLACE,GL_TRUE);
 
   glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,TEXWIDTH,TEXHEIGHT,0,
 	       GL_RGBA,GL_UNSIGNED_BYTE,image);
   glAlphaFunc(GL_GREATER, 0.5);
-  printf("%s(%d)\n",__FILE__,__LINE__);
   glPointParameterfv(GL_POINT_DISTANCE_ATTENUATION, ::distance);
   CAVEDisplayBarrier();
-  printf("%s(%d)\n",__FILE__,__LINE__);
 
   /*
  *** texture end
@@ -628,8 +626,17 @@ void display(void)
       glPushMatrix();
       {
 
-	sprintf(idbuf, "%d", p->id);
+
 	glEnable(GL_LIGHTING);
+	    
+	glRotated(cm->theta, 0.0, 0.0, 1.0);
+	glRotated(cm->phi, 1.0, 0.0, 0.0);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_POINT_SPRITE);
+	glEnable(GL_ALPHA_TEST);
+	glPointSize(30.);
+
+	sprintf(idbuf, "%d", p->id);
 	if (!cm->target_id.empty()
 	    &&(p->id == cm->target_id.front()
 	       ||p->id==cm->target_id.back())) {
@@ -646,25 +653,17 @@ void display(void)
 	    glColor3d(1.0,1.0,0.0);break;
 	  }
 	}
-	    
-	glRotated(cm->theta, 0.0, 0.0, 1.0);
-	glRotated(cm->phi, 1.0, 0.0, 0.0);
-	glTranslated(p->pos.pos[0],
-		     p->pos.pos[1],
-		     p->pos.pos[2]);
-	//	gluSphere(sphereObj[CAVEUniqueIndex()], r, 10, 6);
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_POINT_SPRITE);
-	glEnable(GL_ALPHA_TEST);
-	glPointSize(30.);
+
 	glBegin(GL_POINTS);
 	{
-	  glVertex3d(0.,0.,0.);
+	  glVertex3d(p->pos.pos[0],p->pos.pos[1],p->pos.pos[2]);
 	}
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_POINT_SPRITE);
 	glDisable(GL_ALPHA_TEST);
+
+
       }
       glPopMatrix();
       glDisable(GL_LIGHTING);
