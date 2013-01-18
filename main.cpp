@@ -28,13 +28,6 @@ static GLUquadricObj *discObj[CAVE_MAX_WALLS] = {NULL};
 GLuint theBeam[CAVE_MAX_WALLS];
 GLuint theArrow[CAVE_MAX_WALLS];
 
-inline void error_check_gl(void)
-{
-  GLenum e;
-  if((e = glGetError())!=GL_NO_ERROR){
-    fprintf(stderr,"[tID=%02d] in %s:%d glError[%04x]\n",CAVEUniqueIndex(), __FILE__,__LINE__,e);
-  }
-}
 
 void the_beam(){
 
@@ -216,12 +209,6 @@ void step(void)
 	pobjs[CAVEUniqueIndex()].x[num][0] = pos.pos[0];
 	pobjs[CAVEUniqueIndex()].x[num][1] = pos.pos[1];
 	pobjs[CAVEUniqueIndex()].x[num][2] = pos.pos[2];
-	if(pos_inf.id == 1007){
-	  printf("x %f",pos.pos[0]);
-	  printf("x %f",pos.pos[1]);
-	  printf("x %f\n",pos.pos[2]);
-	}
-	fflush(stdout);
 	num++;
       }
       Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
@@ -562,30 +549,29 @@ void draw_binary()
     glDisable(GL_BLEND);
     glDisable(GL_LIGHTING);
     
-//     glRotated(cm->theta, 0.0, 0.0, 1.0);
-//     glRotated(cm->phi, 1.0, 0.0, 0.0);
-//     glColor3d( 1.0, 1.0, 1.0 );
-
+    glRotated(cm->theta, 0.0, 0.0, 1.0);
+    glRotated(cm->phi, 1.0, 0.0, 0.0);
+    glColor3d( 1.0, 1.0, 1.0 );
     
-//     glLineWidth(2.0);
-//     glBegin(GL_LINES);
+    glLineWidth(2.0);
+    glBegin(GL_LINES);
 
-//     for(bp = binlist.begin();bp!=binlist.end();bp++){
-//       bi_buff = (*bp).second;
-//       glVertex3d(bi_buff.pos[0].pos[0],bi_buff.pos[0].pos[1],bi_buff.pos[0].pos[2]);
+    for(bp = binlist.begin();bp!=binlist.end();bp++){
+      bi_buff = (*bp).second;
+      glVertex3d(bi_buff.pos[0].pos[0],bi_buff.pos[0].pos[1],bi_buff.pos[0].pos[2]);
 
-//       glVertex3d(bi_buff.pos[1].pos[0],bi_buff.pos[1].pos[1],bi_buff.pos[1].pos[2]);
-// #ifdef DEBUG
-//       CAVEDisplayBarrier();
-//       {
-// 	if(CAVEMasterDisplay()){
-// 	  printf("%s(%d)\n",__FILE__,__LINE__);fflush(stdout);
-// 	}
-//       }
-//       CAVEDisplayBarrier();
-// #endif
-//     }
-//     glEnd();
+      glVertex3d(bi_buff.pos[1].pos[0],bi_buff.pos[1].pos[1],bi_buff.pos[1].pos[2]);
+#ifdef DEBUG
+      CAVEDisplayBarrier();
+      {
+ 	if(CAVEMasterDisplay()){
+ 	  printf("%s(%d)\n",__FILE__,__LINE__);fflush(stdout);
+ 	}
+      }
+      CAVEDisplayBarrier();
+#endif
+    }
+    glEnd();
   }
   glPopMatrix();
   CAVEDisplayBarrier();
