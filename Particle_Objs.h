@@ -1,6 +1,7 @@
 #include "common.h"
+#include "pointsprite.h"
 
-class Particle_Obj{
+class Particle_Objs{
  public:
   int *element_type;
   double **x;
@@ -8,9 +9,12 @@ class Particle_Obj{
 
   Particle_Objs(){};
   ~Particle_Objs();
-  init();
+  void  init();
+  void draw();
+
  private:
   PointSprite *ps;
 
+  void color_set();
 
-}
+};
