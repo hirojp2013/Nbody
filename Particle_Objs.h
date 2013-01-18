@@ -6,6 +6,7 @@ class Particle_Objs{
   int *element_type;
   double **x;
   double **color;
+  int id_num;
 
   Particle_Objs(){};
   ~Particle_Objs();

@@ -18,7 +18,7 @@ Common::Common()
   is_acc = false;        // accelerate
   is_dec = false;        // decelerate
   scale = 1.0;           // scale of the system
-  radius =10.0;         // particle radius
+  radius = 0.003;         // particle radius
   theta =0.0;           // angle of rotation around z-axis
   phi = 0.0;             // angle of rotation around x-axis
   dx = 0.0;              // target position x (gluLookAt)

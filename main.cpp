@@ -101,7 +101,6 @@ void init(void *filename)
     cm->t_dat_max = cm->data.getData(cm->data.getDataNum() - 1)->getTime();
     cm->frame_max = (int)(cm->t_dat_max / cm->interval) + 1;
     cm->frame_dat = cm->data.initList() - 1;
-    printf("%s(%d)\n",__FILE__,__LINE__);
     cout << setprecision(15)
 	 << "time_max: " << cm->t_dat_max
 	 << " interval: " << cm->interval
@@ -110,8 +109,6 @@ void init(void *filename)
 	 << endl;
     cout << setprecision(15)
 	 << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
-    printf("%s(%d)\n",__FILE__,__LINE__);
-    fflush(stdout);
 	
 #if 0
     printf("INPUT --------------------------------------------\n");
@@ -211,6 +208,7 @@ void step(void)
 	Particle *pt = cm->data.getData(*p);
 	pt->extrapolate(cm->t_dat, cm->scale, &pos);
 	pos_inf.id = pt->getId();
+	
 	pos_inf.pos = pos;
 	pt->getV(&(pos_inf.vel),cm->scale);
 	poslistV.push_back(pos_inf);
@@ -218,7 +216,12 @@ void step(void)
 	pobjs[CAVEUniqueIndex()].x[num][0] = pos.pos[0];
 	pobjs[CAVEUniqueIndex()].x[num][1] = pos.pos[1];
 	pobjs[CAVEUniqueIndex()].x[num][2] = pos.pos[2];
-
+	if(pos_inf.id == 1007){
+	  printf("x %f",pos.pos[0]);
+	  printf("x %f",pos.pos[1]);
+	  printf("x %f\n",pos.pos[2]);
+	}
+	fflush(stdout);
 	num++;
       }
       Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
@@ -610,13 +613,15 @@ void display(void)
     vector<PARTICLE_INF>::iterator p; 
     for(p=poslistV.begin();p!=poslistV.end();p++){
       char idbuf[10];
-
+      sprintf(idbuf,"%d",p->id);
       glRasterPos3d(p->pos.pos[0] + r,
-		    p->pos.pos[1] + r,
-		    p->pos.pos[2] + r);
+      		    p->pos.pos[1] + r,
+      		    p->pos.pos[2] + r);
+	  
       if(!cm->target_id.empty()
 	 &&p->id == cm->target_id.front()){
 	if(cm->char_state==1){
+	  glColor3f(0.0,0.0,0.0);
 	  for (int i = 0; i < strlen(idbuf); i++) {
 	    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, idbuf[i]);
 	  }
@@ -647,6 +652,7 @@ void display(void)
 	       &&p->id==cm->target_id.back()){
 	    
 	if(cm->char_state == 1){
+	  glColor3f(0.0,0.0,0.0);
 	  for (int i = 0; i < strlen(idbuf); i++) {
 	    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, idbuf[i]);
 	  }
@@ -673,6 +679,7 @@ void display(void)
 	}
       }else{
 	if(cm->char_state){
+	  glColor3f(0.0,0.0,1.0);
 	  for (int i = 0; i < strlen(idbuf); i++) {
 	    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, idbuf[i]);
 	  }

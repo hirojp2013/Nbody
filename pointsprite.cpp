@@ -46,7 +46,8 @@ void PointSprite::drawPointSprite(GLdouble* vertices, GLdouble* color, GLsizei c
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
 
-  glPointSize(60);
+  glPointSize(SIZE);
+
   glVertexPointer(3, GL_DOUBLE, 0, vertices);
   glColorPointer (3, GL_DOUBLE, 0, color);
 
