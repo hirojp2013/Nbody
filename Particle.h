@@ -13,6 +13,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <boost/unordered_map.hpp>
 #include <string>
 #include <stdlib.h>
 #include <stdio.h>
