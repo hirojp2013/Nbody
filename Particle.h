@@ -1,8 +1,6 @@
 #ifndef _PARTICLE_H_
 #define _PARTICLE_H_
 
-#define GL_GLEXT_PROTOTYPES
-
 #include <cave_ogl.h>
 #include <GL/glut.h>
 #include <GL/gl.h>
@@ -132,6 +130,7 @@ private:
 	double vmax;
 	vector<int> curlist;
 	vector<PARTICLE_INF> poslistV;
+	int id_num;
 public:
 	ParticleData() { dataNum = 0; vmax = 0.0; poslistV.clear();}
 	~ParticleData() {}
@@ -144,7 +143,7 @@ public:
 	Particle *getData(int index);
 	int getDataNum() { return (int)data.size(); }
 	double getMaxV() { return vmax; }
-
+	int getIDNum(){return id_num;}
 };
 
 #endif

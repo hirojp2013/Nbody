@@ -169,7 +169,9 @@ int ParticleData::initList(void)
   for (int i = dataNum - 1; i >= 0; i--) {
     palist[data[i].id] = i;
   }
-  cout << "ID num: " << palist.size() << endl;
+  id_num = palist.size();
+  cout << "ID num: " << id_num << endl;
+
   map<int, int>::iterator p;
   vector<int> idlist;
   for (p = palist.begin(); p != palist.end(); p++) {

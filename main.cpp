@@ -2,6 +2,7 @@
 #include "ui.h"
 #include "motion.h"
 #include "Particle.h"
+#include "Particle_Objs.h"
 #include<math.h>
 #include<algorithm>
 #include<cassert>
@@ -11,12 +12,15 @@
 static const char texture[] = "ball.raw";
 
 
-//PFNGLPOINTPARAMETERFVPROC glPointParameterfv;
 
 const GLfloat distance[] = { 0.0, 0.0, 1.0 };
 
 static UI *ui = NULL;
 static Common *cm = NULL;
+
+Particle_Objs *pobjs;  
+double SCALE = 0.01;
+
 static GLUquadricObj *sphereObj[CAVE_MAX_WALLS] = { NULL };
 static GLUquadricObj *clyndObj[CAVE_MAX_WALLS] = {NULL};
 static GLUquadricObj *discObj[CAVE_MAX_WALLS] = {NULL};
@@ -142,44 +146,10 @@ void init(void *filename)
 #endif
   }
 
-
-  /*
- *** texture start
- */
-  std::ifstream file(texture, std::ios::in | std::ios::binary);
-  if(file) {
-    file.read((char *)image, sizeof image);
-    file.close();
-  }
-  else{
-    std::cerr << texture << "can not open" << std::endl;
-    exit(1);
-  }
-
-  CAVEDisplayBarrier();
-
-  glPixelStorei(GL_UNPACK_ALIGNMENT,4);
-
-  glTexParameteri(GL_TEXTURE_2D,GL_GENERATE_MIPMAP,GL_TRUE);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
-
-
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
-
-  glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-  glTexEnvi(GL_POINT_SPRITE,GL_COORD_REPLACE,GL_TRUE);
-
-  glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,TEXWIDTH,TEXHEIGHT,0,
-	       GL_RGBA,GL_UNSIGNED_BYTE,image);
-  glAlphaFunc(GL_GREATER, 0.5);
-  glPointParameterfv(GL_POINT_DISTANCE_ATTENUATION, ::distance);
-  CAVEDisplayBarrier();
-
-  /*
- *** texture end
-   */
+  //texture start
+  pobjs = new Particle_Objs[CAVE_MAX_WALLS];
+  pobjs[CAVEUniqueIndex()].init();
+  //texture end
 
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glShadeModel(GL_SMOOTH);
@@ -232,6 +202,8 @@ void step(void)
 	cm->interval -= incl;
 	cm->is_dec = false;
       }
+
+      int num = 0;
       for (p = curlist.begin(); p != curlist.end(); p++) {
 	if(*p<0){
 	  continue;
@@ -242,6 +214,12 @@ void step(void)
 	pos_inf.pos = pos;
 	pt->getV(&(pos_inf.vel),cm->scale);
 	poslistV.push_back(pos_inf);
+
+	pobjs[CAVEUniqueIndex()].x[num][0] = pos.pos[0];
+	pobjs[CAVEUniqueIndex()].x[num][1] = pos.pos[1];
+	pobjs[CAVEUniqueIndex()].x[num][2] = pos.pos[2];
+
+	num++;
       }
       Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
       if(cm->beam_flag){
@@ -289,6 +267,7 @@ void step(void)
       }
     }
 
+    int num = 0;
     for (p = curlist.begin(); p != curlist.end(); p++) {
       if(*p<0){
 	continue;
@@ -301,6 +280,10 @@ void step(void)
       pt->getV(&(pos_inf.vel),cm->scale);                            
       poslistV.push_back(pos_inf);
 
+      pobjs[CAVEUniqueIndex()].x[num][0] = pos.pos[0];
+      pobjs[CAVEUniqueIndex()].x[num][1] = pos.pos[1];
+      pobjs[CAVEUniqueIndex()].x[num][2] = pos.pos[2];
+      num++;
       if(!cm->target_id.empty()
 	 &&pt->getId()==cm->target_id.front()){
 	float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
@@ -570,7 +553,7 @@ void draw_binary()
       glColor4d(1.0,1.0,1.0,(double)(bi_buff.count)/30.0);
       get_omega(bi_buff.pos,bi_buff.vel,bi_buff.dist,omega);
       get_inf_V(omega,&angular,&azimuth,&length);
-      //      draw_arrow(bi_buff.com,angular,azimuth,length);
+      draw_arrow(bi_buff.com,angular,azimuth,length);
     }
     glDisable(GL_ALPHA_TEST);
     glDisable(GL_BLEND);
@@ -613,65 +596,24 @@ void display(void)
   {
     CAVENavTransform();
     draw_beam();
-
     glTranslated(ORIG[0], ORIG[1], ORIG[2]);
     glRotatef(cm->rot,0.0,1.0,0.0); 
     draw_grid();
+    glEnable(GL_LIGHTING);
+    glRotated(cm->theta, 0.0, 0.0, 1.0);
+    glRotated(cm->phi, 1.0, 0.0, 0.0);
+    pobjs[CAVEUniqueIndex()].draw();
+    glDisable(GL_LIGHTING);
 
     double r = cm->GetRadius();
     vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
     vector<PARTICLE_INF>::iterator p; 
     for(p=poslistV.begin();p!=poslistV.end();p++){
       char idbuf[10];
-      glPushMatrix();
-      {
 
-
-	glEnable(GL_LIGHTING);
-	    
-	glRotated(cm->theta, 0.0, 0.0, 1.0);
-	glRotated(cm->phi, 1.0, 0.0, 0.0);
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_POINT_SPRITE);
-	glEnable(GL_ALPHA_TEST);
-	glPointSize(60.);
-
-	sprintf(idbuf, "%d", p->id);
-	if (!cm->target_id.empty()
-	    &&(p->id == cm->target_id.front()
-	       ||p->id==cm->target_id.back())) {
-		
-	  glColor3d( 1.0, 1.0, 1.0 );
-	} else {
-	  switch( (p->id-1)% COLOR_NUM ){
-	  case 0:glColor3d(1.0,0.0,0.0);break;
-	  case 1:glColor3d(0.0,1.0,0.0);break;
-	  case 2:glColor3d(0.0,0.0,1.0);break;
-	  case 3:glColor3d(0.0,1.0,1.0);break;
-	  case 4:glColor3d(1.0,0.0,1.0);break;
-	  default:
-	    glColor3d(1.0,1.0,0.0);break;
-	  }
-	}
-
-	glBegin(GL_POINTS);
-	{
-	  glVertex3d(p->pos.pos[0],p->pos.pos[1],p->pos.pos[2]);
-	}
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_POINT_SPRITE);
-	glDisable(GL_ALPHA_TEST);
-
-
-      }
-      glPopMatrix();
-      glDisable(GL_LIGHTING);
       glRasterPos3d(p->pos.pos[0] + r,
 		    p->pos.pos[1] + r,
 		    p->pos.pos[2] + r);
-	
-
       if(!cm->target_id.empty()
 	 &&p->id == cm->target_id.front()){
 	if(cm->char_state==1){
@@ -758,6 +700,7 @@ int main(int argc, char *argv[])
   cm = Common::GetInstance();
   glutInit(&argc, argv);
   CAVEConfigure(&argc, argv, NULL);
+
   CAVEInitApplication((CAVECALLBACK)init, 1, filename.c_str());
   CAVEDisplay(display, 0);
   CAVEFrameFunction(step, 0);

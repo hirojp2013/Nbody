@@ -12,7 +12,7 @@ const GLdouble COLORS[][3] = {
   { 1.0, 1.0, 0.0 }
 };
 const int      COLOR_NUM = sizeof(COLORS) / sizeof(COLORS[0]);
-const GLdouble SIZE = 0.004;  // particle size
+const GLdouble SIZE = 50;  // particle size
 const GLdouble SCALE_UNIT = 1.0005;
 
 const double   GRID_MAX = 50.0;
