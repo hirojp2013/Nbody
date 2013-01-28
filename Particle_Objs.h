@@ -10,6 +10,8 @@ class Particle_Objs{
   Particle_Objs(){};
   ~Particle_Objs();
   void  init();
+  void set_x(double pos[][3]);
+  void set_color(double cl[][4]);
   void draw();
 
  private:
