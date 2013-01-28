@@ -65,9 +65,10 @@ typedef struct{
 }PARTICLE_VEL;
 
 typedef struct {
-    int id;
-    PARTICLE_POS pos;
-    PARTICLE_VEL vel;
+  int id;
+  PARTICLE_POS pos;
+  PARTICLE_VEL vel;
+  double kin;
 } PARTICLE_INF;
 
 
