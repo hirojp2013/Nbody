@@ -62,6 +62,14 @@ void Particle::setX(const double *pos) {
   }
 }
 
+void Particle::extrapolate(double tcur, GLdouble scale, double *pos) {
+  double dt = tcur - t;
+  for (int i = 0; i < 3; i++) {
+    pos[i] = ( (a[i] * dt * 0.5 + v[i]) * dt + x[i] ) / scale;
+  }
+}
+
+
 void Particle::extrapolate(double tcur, GLdouble scale, PARTICLE_POS *pos) {
   double dt = tcur - t;
   for (int i = 0; i < 3; i++) {

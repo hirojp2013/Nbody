@@ -116,6 +116,8 @@ public:
 
 	void getA(double *pos) { for (int i = 0; i < 3; i++) pos[i] = a[i]; }
 	void getJ(double *pos) { for (int i = 0; i < 3; i++) pos[i] = j[i]; }
+
+	void extrapolate(double tcur, GLdouble scale, double *pos);
 	void extrapolate(double tcur, GLdouble scale, PARTICLE_POS *pos);
 	GLdouble max_particle_coord(PARTICLE_POS &pos);
 };
