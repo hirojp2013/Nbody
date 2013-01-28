@@ -178,6 +178,9 @@ void step(void)
 	pos_inf.id = pt->getId();
 	pos_inf.pos = pos;
 	pt->getV(&(pos_inf.vel),cm->scale);
+	pos_inf.kin = 0.5*(pos_inf.vel.vel[0]*pos_inf.vel.vel[0]
+			   +pos_inf.vel.vel[1]*pos_inf.vel.vel[1]
+			   +pos_inf.vel.vel[2]*pos_inf.vel.vel[2]);
 	poslistV.push_back(pos_inf);
       }
       Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
@@ -236,6 +239,9 @@ void step(void)
       pos_inf.id = pt->getId();
       pos_inf.pos = pos;
       pt->getV(&(pos_inf.vel),cm->scale);                            
+      pos_inf.kin = 0.5*(pos_inf.vel.vel[0]*pos_inf.vel.vel[0]
+			 +pos_inf.vel.vel[1]*pos_inf.vel.vel[1]
+			 +pos_inf.vel.vel[2]*pos_inf.vel.vel[2]);
       poslistV.push_back(pos_inf);
 
       if(!cm->target_id.empty()
@@ -457,15 +463,21 @@ void display(void)
 		
 	  glColor3d( 1.0, 1.0, 1.0 );
 	} else {
-	  switch( (p->id-1)% COLOR_NUM ){
-	  case 0:glColor3d(1.0,0.0,0.0);break;
-	  case 1:glColor3d(0.0,1.0,0.0);break;
-	  case 2:glColor3d(0.0,0.0,1.0);break;
-	  case 3:glColor3d(0.0,1.0,1.0);break;
-	  case 4:glColor3d(1.0,0.0,1.0);break;
-	  default:
-	    glColor3d(1.0,1.0,0.0);break;
-	  }
+	  //	  switch( (p->id-1)% COLOR_NUM ){
+	  //	  case 0:glColor3d(1.0,0.0,0.0);break;
+	  //	  case 1:glColor3d(0.0,1.0,0.0);break;
+	  //	  case 2:glColor3d(0.0,0.0,1.0);break;
+	  //	  case 3:glColor3d(0.0,1.0,1.0);break;
+	  //	  case 4:glColor3d(1.0,0.0,1.0);break;
+	  //	  default:
+	  //	    glColor3d(1.0,1.0,0.0);break;
+	  //	}
+	  GLdouble color[3];
+	  bobj->color_set(p->kin,color);
+	  printf("%s(%d)\n",__FILE__,__LINE__) ;
+	  printf("kin %f\n",p->kin);
+	  printf("%f %f %f\n",color[0],color[1],color[2]);
+	  glColor3dv(color);
 	}
 	    
 	glRotated(cm->theta, 0.0, 0.0, 1.0);
@@ -547,7 +559,7 @@ void display(void)
 	}
       }
     }
-    bobj->draw();
+    //    bobj->draw();
   }
   glPopMatrix();
 #ifdef DEBUG
