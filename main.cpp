@@ -6,7 +6,6 @@
 #include<math.h>
 #include<algorithm>
 #include<cassert>
-#include"ionjet3.h"
 
 #define TEXHEIGHT 64
 #define TEXWIDTH 64
@@ -19,8 +18,7 @@ const GLfloat distance[] = { 0.0, 0.0, 1.0 };
 static UI *ui = NULL;
 static Common *cm = NULL;
 
-Particle_Objs *pobjs;  
-IonJet *io;
+static Particle_Objs *pobjs;  
 double SCALE = 0.01;
 
 static GLUquadricObj *sphereObj[CAVE_MAX_WALLS] = { NULL };
@@ -149,12 +147,9 @@ void init(void *filename)
   }
 
   //texture start
-  pobjs = new Particle_Objs[CAVE_MAX_WALLS];
-  pobjs[CAVEUniqueIndex()].init();
+  pobjs = new Particle_Objs;
+  pobjs->init();
   //texture end
-
-  io[CAVEUniqueIndex()].init();
-
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glShadeModel(GL_SMOOTH);
   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
@@ -190,6 +185,7 @@ void end(void)
 void step(void)
 {
 
+  double pos[PARTICLE_NUMBER_MAX][3];
   if (cm->runstate == 0) {
     if (CAVEMasterDisplay()) {
       vector<int> curlist = cm->data.getCurrentList();
@@ -217,10 +213,14 @@ void step(void)
 	Particle *pt = cm->data.getData(*p);
 	pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
 	pos_inf.id = pt->getId();
-	pos_inf.pos = pos[num];
-	num++;
+
+	for(int i=0;i<3;i++){
+	  pos_inf.pos.pos[i] = pos[num][i];
+	}
 	pt->getV(&(pos_inf.vel),cm->scale);
 	poslistV.push_back(pos_inf);
+	pobjs->set_x(pos);
+	num++;
       }
       Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
       if(cm->beam_flag){
@@ -230,63 +230,72 @@ void step(void)
       }
     }
     CAVEDisplayBarrier();
-  }else if (cm->inc > 0) {
-    if(CAVEMasterDisplay()){
-      if (cm->t_sys < cm->t_dat_max) {
-	cm->t_sys += cm->interval;
-      } else {
-	cm->t_sys = 0;
-	cm->frame_dat = -1;
-	cm->allClear();
-	Motion::GetInstance()->init();
-      }
-      
-      while (cm->frame_dat < cm->data.getDataNum() - 1) {
-	if (cm->data.getData(cm->frame_dat + 1)->getTime() > cm->t_sys) {
-	  break;
-	}
-	cm->frame_dat++;
-	cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
-      }
-    }
-  } else {
+  }else{
     if(CAVEMasterDisplay()){
       vector<int> curlist = cm->data.getCurrentList();
       vector<int>::iterator p;
       PARTICLE_INF pos_inf;
+      double incl = 0.001;
       vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
       poslistV.clear();
-
-      if (cm->t_sys > 0) {
-	cm->t_sys -= cm->interval;
-      } else {
-	cm->t_sys = ((int)(cm->t_dat_max / cm->interval) + 1) * cm->interval;
-	cm->frame_dat = cm->data.getDataNum();
-	cm->allClear();
-	Motion::GetInstance()->init();
-      }
-      while (cm->frame_dat > 0) {
-	if (cm->data.getData(cm->frame_dat - 1)->getTime() < cm->t_sys) {
-	  break;
+      if (cm->inc > 0) {
+	if (cm->t_sys < cm->t_dat_max) {
+	  cm->t_sys += cm->interval;
+	} else {
+	  cm->t_sys = 0;
+	  cm->frame_dat = -1;
+	  cm->allClear();
+	  Motion::GetInstance()->init();
 	}
-	cm->frame_dat--;
-	cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
+	
+	while (cm->frame_dat < cm->data.getDataNum() - 1) {
+	  if (cm->data.getData(cm->frame_dat + 1)->getTime() > cm->t_sys) {
+	    break;
+	  }
+	  cm->frame_dat++;
+	  cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
+	}
       }
+      //    	if(CAVEMasterDisplay()){
+      //	  vector<int> curlist = cm->data.getCurrentList();
+      //	  vector<int>::iterator p;
+      //	  PARTICLE_INF pos_inf;
+      //	  vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
+      //	  poslistV.clear();
+      else{
+	if (cm->t_sys > 0) {
+	  cm->t_sys -= cm->interval;
+	} else {
+	  cm->t_sys = ((int)(cm->t_dat_max / cm->interval) + 1) * cm->interval;
+	  cm->frame_dat = cm->data.getDataNum();
+	  cm->allClear();
+	  Motion::GetInstance()->init();
+	}
+	while (cm->frame_dat > 0) {
+	  if (cm->data.getData(cm->frame_dat - 1)->getTime() < cm->t_sys) {
+	    break;
+	  }
+	  cm->frame_dat--;
+	  cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
+	}
+      }
+
       int num = 0;
       for (p = curlist.begin(); p != curlist.end(); p++) {
 	if(*p<0){
 	  continue;
 	}
-	double length_cand;
 	Particle *pt = cm->data.getData(*p);
 	pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
 	pos_inf.id = pt->getId();
 	for(int i=0;i<3;i++){
 	  pos_inf.pos.pos[i] = pos[num][i];
 	}
-	num++;
-	pt->getV(&(pos_inf.vel),cm->scale);                            
+	pt->getV(&(pos_inf.vel),cm->scale);
 	poslistV.push_back(pos_inf);
+	pobjs->set_x(pos);
+	num++;
+
 	if(!cm->target_id.empty()
 	   &&pt->getId()==cm->target_id.front()){
 	  float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
@@ -328,10 +337,6 @@ void step(void)
       }
     }
     CAVEDisplayBarrier();
-  }
-
-  for(int i=0;i<cm->data.getIDNum();i++){
-    pobjs[CAVEUniqueIndex()].set(pos);
   }
 }
 
@@ -606,7 +611,7 @@ void display(void)
     glEnable(GL_LIGHTING);
     glRotated(cm->theta, 0.0, 0.0, 1.0);
     glRotated(cm->phi, 1.0, 0.0, 0.0);
-    pobjs[CAVEUniqueIndex()].draw();
+    pobjs->draw();
     glDisable(GL_LIGHTING);
 
     double r = cm->GetRadius();
@@ -705,7 +710,6 @@ int main(int argc, char *argv[])
   glutInit(&argc, argv);
   CAVEConfigure(&argc, argv, NULL);
 
-  io = new IonJet[CAVE_MAX_WALLS];
   CAVEInitApplication((CAVECALLBACK)init, 1, filename.c_str());
   CAVEDisplay(display, 0);
   CAVEFrameFunction(step, 0);
