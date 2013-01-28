@@ -4,8 +4,8 @@
 class Particle_Objs{
  public:
   int *element_type;
-  double **x;
-  double **color;
+  double x[PARTICLE_NUMBER_MAX][3];
+  double color[PARTICLE_NUMBER_MAX][3];
 
   Particle_Objs(){};
   ~Particle_Objs();
@@ -15,8 +15,8 @@ class Particle_Objs{
   void draw();
 
  private:
+  Common *cm;
   PointSprite *ps;
-
   void color_set();
 
 };
