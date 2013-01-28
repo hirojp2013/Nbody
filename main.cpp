@@ -194,7 +194,6 @@ void step(void)
     if (CAVEMasterDisplay()) {
       vector<int> curlist = cm->data.getCurrentList();
       vector<int>::iterator p;
-      PARTICLE_POS pos;
       PARTICLE_INF pos_inf;
       double incl = 0.001;
       vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
@@ -208,27 +207,21 @@ void step(void)
 	cm->interval -= incl;
 	cm->is_dec = false;
       }
-      int num = 0;
-<<<<<<< Updated upstream
+
+      int num=0;
+
       for (p = curlist.begin(); p != curlist.end(); p++) {
 	if(*p<0){
 	  continue;
 	}
 	Particle *pt = cm->data.getData(*p);
-	pt->extrapolate(cm->t_dat, cm->scale, &pos);
+	pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
 	pos_inf.id = pt->getId();
-	pos_inf.pos = pos;
+	pos_inf.pos = pos[num];
+	num++;
 	pt->getV(&(pos_inf.vel),cm->scale);
 	poslistV.push_back(pos_inf);
-
-	pobjs[CAVEUniqueIndex()].x[num][0] = pos.pos[0];
-	pobjs[CAVEUniqueIndex()].x[num][1] = pos.pos[1];
-	pobjs[CAVEUniqueIndex()].x[num][2] = pos.pos[2];
-
-	num++;
       }
-=======
->>>>>>> Stashed changes
       Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
       if(cm->beam_flag){
 	cm->SelectParticle();
@@ -297,7 +290,7 @@ void step(void)
 	if(!cm->target_id.empty()
 	   &&pt->getId()==cm->target_id.front()){
 	  float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-	  TARGET_POS tpos = { pos.pos[0], pos.pos[1], pos.pos[2], { color_val, color_val, color_val }  };
+	  TARGET_POS tpos = { pos_inf.pos.pos[0], pos_inf.pos.pos[1], pos_inf.pos.pos[2], { color_val, color_val, color_val }  };
 	  if (cm->traj.front().size() == TRAJ_MAX) {
 	    vector<TARGET_POS>::iterator st = cm->traj.front().begin();
 	    cm->traj.front().erase(st);
@@ -308,8 +301,8 @@ void step(void)
 		 &&pt->getId()==cm->target_id.back()){
 	  
 	  float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-	  TARGET_POS tpos = { pos.pos[0], pos.pos[1],
-			      pos.pos[2], { color_val, color_val, color_val }  };
+	  TARGET_POS tpos = { pos_inf.pos.pos[0], pos_inf.pos.pos[1],
+			      pos_inf.pos.pos[2], { color_val, color_val, color_val }  };
 	  if(!cm->traj.empty()){
 	    
 	    if (cm->traj.back().size() == TRAJ_MAX) {
@@ -335,21 +328,6 @@ void step(void)
       }
     }
     CAVEDisplayBarrier();
-  }
-
-  for (p = curlist.begin(); p != curlist.end(); p++) {
-    if(*p<0){
-      continue;
-    }
-    Particle *pt = cm->data.getData(*p);
-    pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
-    pos_inf.id = pt->getId();
-    for(int i=0;i<3;i++){
-      pos_inf.pos.pos[i] = pos[num][i];
-    }
-    pt->getV(&(pos_inf.vel),cm->scale);
-    poslistV.push_back(pos_inf);
-    num++;
   }
 
   for(int i=0;i<cm->data.getIDNum();i++){
