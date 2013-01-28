@@ -42,6 +42,8 @@ const double TRAJ_COLOR_BASE = 0.2;  // kiseki no noutan no kizyun
 const float SPEED = .009;
 const float ROT_SPEED = 0.1;
 
+const int PARTICLE_NUMBER_MAX = 10000;
+
 class Common {
 
  public:

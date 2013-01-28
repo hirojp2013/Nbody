@@ -18,7 +18,7 @@ const GLfloat distance[] = { 0.0, 0.0, 1.0 };
 static UI *ui = NULL;
 static Common *cm = NULL;
 
-Particle_Objs *pobjs;  
+static Particle_Objs *pobjs;  
 double SCALE = 0.01;
 
 static GLUquadricObj *sphereObj[CAVE_MAX_WALLS] = { NULL };
@@ -144,10 +144,9 @@ void init(void *filename)
   }
 
   //texture start
-  pobjs = new Particle_Objs[CAVE_MAX_WALLS];
-  pobjs[CAVEUniqueIndex()].init();
+  pobjs = new Particle_Objs;
+  pobjs->init();
   //texture end
-
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glShadeModel(GL_SMOOTH);
   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
@@ -181,15 +180,16 @@ void end(void)
 
 void step(void)
 {
-  if (CAVEMasterDisplay()) {
-    vector<int> curlist = cm->data.getCurrentList();
-    vector<int>::iterator p;
-    PARTICLE_POS pos;
-    PARTICLE_INF pos_inf;
-    double incl = 0.001;
-    vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
-    poslistV.clear();
-    if (cm->runstate == 0) {
+
+  double pos[PARTICLE_NUMBER_MAX][3];
+  if (cm->runstate == 0) {
+    if (CAVEMasterDisplay()) {
+      vector<int> curlist = cm->data.getCurrentList();
+      vector<int>::iterator p;
+      PARTICLE_INF pos_inf;
+      double incl = 0.001;
+      vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
+      poslistV.clear();
       if (cm->is_acc && cm->interval + incl < 1.0) {
 	cm->interval += incl;
 	cm->is_acc = false;
@@ -200,28 +200,21 @@ void step(void)
 	cm->is_dec = false;
       }
 
-      int num = 0;
+      int num=0;
+
       for (p = curlist.begin(); p != curlist.end(); p++) {
 	if(*p<0){
 	  continue;
 	}
 	Particle *pt = cm->data.getData(*p);
-	pt->extrapolate(cm->t_dat, cm->scale, &pos);
+	pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
 	pos_inf.id = pt->getId();
-	
-	pos_inf.pos = pos;
+	for(int i=0;i<3;i++){
+	  pos_inf.pos.pos[i] = pos[num][i];
+	}
 	pt->getV(&(pos_inf.vel),cm->scale);
 	poslistV.push_back(pos_inf);
-
-	pobjs[CAVEUniqueIndex()].x[num][0] = pos.pos[0];
-	pobjs[CAVEUniqueIndex()].x[num][1] = pos.pos[1];
-	pobjs[CAVEUniqueIndex()].x[num][2] = pos.pos[2];
-	if(pos_inf.id == 1007){
-	  printf("x %f",pos.pos[0]);
-	  printf("x %f",pos.pos[1]);
-	  printf("x %f\n",pos.pos[2]);
-	}
-	fflush(stdout);
+	pobjs->set_x(pos);
 	num++;
       }
       Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
@@ -230,108 +223,116 @@ void step(void)
       }else if(cm->beam_clear_flag){
 	cm->allClear();
       }
-      CAVEDisplayBarrier();
-      return;
     }
-    float headpos[3];
-    CAVEGetPosition(CAVE_HEAD, headpos);
-    if (cm->inc > 0) {
-      if (cm->t_sys < cm->t_dat_max) {
-	cm->t_sys += cm->interval;
-      } else {
-	cm->t_sys = 0;
-	cm->frame_dat = -1;
-	cm->allClear();
-	Motion::GetInstance()->init();
-      }
-
-      while (cm->frame_dat < cm->data.getDataNum() - 1) {
-	if (cm->data.getData(cm->frame_dat + 1)->getTime() > cm->t_sys) {
-	  break;
+    CAVEDisplayBarrier();
+  }else{
+    if(CAVEMasterDisplay()){
+      vector<int> curlist = cm->data.getCurrentList();
+      vector<int>::iterator p;
+      PARTICLE_INF pos_inf;
+      double incl = 0.001;
+      vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
+      poslistV.clear();
+      if (cm->inc > 0) {
+	if (cm->t_sys < cm->t_dat_max) {
+	  cm->t_sys += cm->interval;
+	} else {
+	  cm->t_sys = 0;
+	  cm->frame_dat = -1;
+	  cm->allClear();
+	  Motion::GetInstance()->init();
 	}
-	cm->frame_dat++;
-	cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
-      }
-    } else {
-      if (cm->t_sys > 0) {
-	cm->t_sys -= cm->interval;
-      } else {
-	cm->t_sys = ((int)(cm->t_dat_max / cm->interval) + 1) * cm->interval;
-	cm->frame_dat = cm->data.getDataNum();
-	cm->allClear();
-	Motion::GetInstance()->init();
-      }
-      while (cm->frame_dat > 0) {
-	if (cm->data.getData(cm->frame_dat - 1)->getTime() < cm->t_sys) {
-	  break;
-	}
-	cm->frame_dat--;
-	cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
-      }
-    }
-
-    int num = 0;
-    for (p = curlist.begin(); p != curlist.end(); p++) {
-      if(*p<0){
-	continue;
-      }
-      double length_cand;
-      Particle *pt = cm->data.getData(*p);
-      pt->extrapolate(cm->t_dat, cm->scale, &pos);
-      pos_inf.id = pt->getId();
-      pos_inf.pos = pos;
-      pt->getV(&(pos_inf.vel),cm->scale);                            
-      poslistV.push_back(pos_inf);
-
-      pobjs[CAVEUniqueIndex()].x[num][0] = pos.pos[0];
-      pobjs[CAVEUniqueIndex()].x[num][1] = pos.pos[1];
-      pobjs[CAVEUniqueIndex()].x[num][2] = pos.pos[2];
-      num++;
-      if(!cm->target_id.empty()
-	 &&pt->getId()==cm->target_id.front()){
-	float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-			
-			
-	TARGET_POS tpos = { pos.pos[0], pos.pos[1], pos.pos[2], { color_val, color_val, color_val }  };
-			
-
-	if (cm->traj.front().size() == TRAJ_MAX) {
-	  vector<TARGET_POS>::iterator st = cm->traj.front().begin();
-	  cm->traj.front().erase(st);
-	}
-	queue< vector<TARGET_POS> >&t_queue = cm->traj;
-	t_queue.front().push_back(tpos); 
-      }else if(!cm->target_id.empty()
-	       &&pt->getId()==cm->target_id.back()){
-
-	float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-	TARGET_POS tpos = { pos.pos[0], pos.pos[1],
-			    pos.pos[2], { color_val, color_val, color_val }  };
-	if(!cm->traj.empty()){
-
-	  if (cm->traj.back().size() == TRAJ_MAX) {
-	    vector<TARGET_POS>::iterator st = cm->traj.back().begin();
-	    cm->traj.back().erase(st);
+	
+	while (cm->frame_dat < cm->data.getDataNum() - 1) {
+	  if (cm->data.getData(cm->frame_dat + 1)->getTime() > cm->t_sys) {
+	    break;
 	  }
+	  cm->frame_dat++;
+	  cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
 	}
-	queue< vector<TARGET_POS> >&t_queue = cm->traj;
-	t_queue.back().push_back(tpos);
+      }
+      //    	if(CAVEMasterDisplay()){
+      //	  vector<int> curlist = cm->data.getCurrentList();
+      //	  vector<int>::iterator p;
+      //	  PARTICLE_INF pos_inf;
+      //	  vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
+      //	  poslistV.clear();
+      else{
+	if (cm->t_sys > 0) {
+	  cm->t_sys -= cm->interval;
+	} else {
+	  cm->t_sys = ((int)(cm->t_dat_max / cm->interval) + 1) * cm->interval;
+	  cm->frame_dat = cm->data.getDataNum();
+	  cm->allClear();
+	  Motion::GetInstance()->init();
+	}
+	while (cm->frame_dat > 0) {
+	  if (cm->data.getData(cm->frame_dat - 1)->getTime() < cm->t_sys) {
+	    break;
+	  }
+	  cm->frame_dat--;
+	  cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
+	}
+      }
+
+      int num = 0;
+      for (p = curlist.begin(); p != curlist.end(); p++) {
+	if(*p<0){
+	  continue;
+	}
+	Particle *pt = cm->data.getData(*p);
+	pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
+	pos_inf.id = pt->getId();
+	for(int i=0;i<3;i++){
+	  pos_inf.pos.pos[i] = pos[num][i];
+	}
+	pt->getV(&(pos_inf.vel),cm->scale);
+	poslistV.push_back(pos_inf);
+	pobjs->set_x(pos);
+	num++;
+
+	if(!cm->target_id.empty()
+	   &&pt->getId()==cm->target_id.front()){
+	  float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
+	  TARGET_POS tpos = { pos_inf.pos.pos[0], pos_inf.pos.pos[1], pos_inf.pos.pos[2], { color_val, color_val, color_val }  };
+	  if (cm->traj.front().size() == TRAJ_MAX) {
+	    vector<TARGET_POS>::iterator st = cm->traj.front().begin();
+	    cm->traj.front().erase(st);
+	  }
+	  queue< vector<TARGET_POS> >&t_queue = cm->traj;
+	  t_queue.front().push_back(tpos); 
+	}else if(!cm->target_id.empty()
+		 &&pt->getId()==cm->target_id.back()){
+	  
+	  float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
+	  TARGET_POS tpos = { pos_inf.pos.pos[0], pos_inf.pos.pos[1],
+			      pos_inf.pos.pos[2], { color_val, color_val, color_val }  };
+	  if(!cm->traj.empty()){
+	    
+	    if (cm->traj.back().size() == TRAJ_MAX) {
+	      vector<TARGET_POS>::iterator st = cm->traj.back().begin();
+	      cm->traj.back().erase(st);
+	    }
+	  }
+	  queue< vector<TARGET_POS> >&t_queue = cm->traj;
+	  t_queue.back().push_back(tpos);
+	}
+      }
+      
+      /*		cout << setprecision(15)
+			<< "interval: " << cm->interval << " t_sys: " << cm->t_sys
+			<< " frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat 
+			<< " time: " << CAVEGetTime() << endl;
+      */
+      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
+      if(cm->beam_flag){
+	cm->SelectParticle();
+      }else if(cm->beam_clear_flag){
+	cm->allClear();
       }
     }
-
-    /*		cout << setprecision(15)
-		<< "interval: " << cm->interval << " t_sys: " << cm->t_sys
-		<< " frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat 
-		<< " time: " << CAVEGetTime() << endl;
-    */
-    Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
-    if(cm->beam_flag){
-      cm->SelectParticle();
-    }else if(cm->beam_clear_flag){
-      cm->allClear();
-    }
+    CAVEDisplayBarrier();
   }
-  CAVEDisplayBarrier();
 }
 
 void draw_grid(void)
@@ -605,7 +606,7 @@ void display(void)
     glEnable(GL_LIGHTING);
     glRotated(cm->theta, 0.0, 0.0, 1.0);
     glRotated(cm->phi, 1.0, 0.0, 0.0);
-    pobjs[CAVEUniqueIndex()].draw();
+    pobjs->draw();
     glDisable(GL_LIGHTING);
 
     double r = cm->GetRadius();
@@ -688,6 +689,7 @@ void display(void)
     }
     draw_binary();
   }
+
   glPopMatrix();
 }
 
