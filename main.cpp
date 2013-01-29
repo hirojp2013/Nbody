@@ -153,12 +153,11 @@ void step(void)
 {
   if (CAVEMasterDisplay()) {
     vector<int> curlist = cm->data.getCurrentList();
-    vector<int>::iterator p;
     PARTICLE_POS pos;
     PARTICLE_INF pos_inf;
     double incl = 0.001;
-    vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
-    poslistV.clear();
+    vector<PARTICLE_INF>poslistV;
+
     if (cm->runstate == 0) {
       if (cm->is_acc && cm->interval + incl < 1.0) {
 	cm->interval += incl;
@@ -169,7 +168,7 @@ void step(void)
 	cm->interval -= incl;
 	cm->is_dec = false;
       }
-      for (p = curlist.begin(); p != curlist.end(); p++) {
+      /*      for (p = curlist.begin(); p != curlist.end(); p++) {
 	if(*p<0){
 	  continue;
 	}
@@ -178,11 +177,13 @@ void step(void)
 	pos_inf.id = pt->getId();
 	pos_inf.pos = pos;
 	pt->getV(&(pos_inf.vel),cm->scale);
-	pos_inf.kin = 0.5*(pos_inf.vel.vel[0]*pos_inf.vel.vel[0]
-			   +pos_inf.vel.vel[1]*pos_inf.vel.vel[1]
-			   +pos_inf.vel.vel[2]*pos_inf.vel.vel[2]);
+	pt->getKin(&(pos_inf.kin),cm->scale);
 	poslistV.push_back(pos_inf);
       }
+      */
+      poslistV = cm->data.getCurrentPosInf(cm->t_dat,
+					   cm->scale,
+					   curlist);
       Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
       if(cm->beam_flag){
 	cm->SelectParticle();
@@ -229,6 +230,7 @@ void step(void)
       }
     }
 
+    /*
     for (p = curlist.begin(); p != curlist.end(); p++) {
       if(*p<0){
 	continue;
@@ -239,17 +241,21 @@ void step(void)
       pos_inf.id = pt->getId();
       pos_inf.pos = pos;
       pt->getV(&(pos_inf.vel),cm->scale);                            
-      pos_inf.kin = 0.5*(pos_inf.vel.vel[0]*pos_inf.vel.vel[0]
-			 +pos_inf.vel.vel[1]*pos_inf.vel.vel[1]
-			 +pos_inf.vel.vel[2]*pos_inf.vel.vel[2]);
+      pt->getKin(&(pos_inf.kin),cm->scale);
       poslistV.push_back(pos_inf);
-
+    }
+    */
+    poslistV = cm->data.getCurrentPosInf(cm->t_dat,
+					 cm->scale,
+					 curlist);
+    vector<PARTICLE_INF>::iterator it = poslistV.begin();
+    for(;it!=poslistV.end();it++){
       if(!cm->target_id.empty()
-	 &&pt->getId()==cm->target_id.front()){
-	float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-			
-			
-	TARGET_POS tpos = { pos.pos[0], pos.pos[1], pos.pos[2], { color_val, color_val, color_val }  };
+	 &&it->id==cm->target_id.front()){
+	float color_val = (float)( (it->vlen2 < cm->vmax ? it->vlen2 : cm->vmax) - TRAJ_COLOR_BASE );
+	
+	
+	TARGET_POS tpos = { it->pos.pos[0], it->pos.pos[1], it->pos.pos[2], { color_val, color_val, color_val }  };
 			
 
 	if (cm->traj.front().size() == TRAJ_MAX) {
@@ -259,11 +265,11 @@ void step(void)
 	queue< vector<TARGET_POS> >&t_queue = cm->traj;
 	t_queue.front().push_back(tpos); 
       }else if(!cm->target_id.empty()
-	       &&pt->getId()==cm->target_id.back()){
+	       &&it->id==cm->target_id.back()){
 
-	float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-	TARGET_POS tpos = { pos.pos[0], pos.pos[1],
-			    pos.pos[2], { color_val, color_val, color_val }  };
+	float color_val = (float)( (it->vlen2 < cm->vmax ? it->vlen2 : cm->vmax) - TRAJ_COLOR_BASE );
+	TARGET_POS tpos = { it->pos.pos[0], it->pos.pos[1],
+			    it->pos.pos[2], { color_val, color_val, color_val }  };
 	if(!cm->traj.empty()){
 
 	  if (cm->traj.back().size() == TRAJ_MAX) {
@@ -474,9 +480,6 @@ void display(void)
 	  //	}
 	  GLdouble color[3];
 	  bobj->color_set(p->kin,color);
-	  printf("%s(%d)\n",__FILE__,__LINE__) ;
-	  printf("kin %f\n",p->kin);
-	  printf("%f %f %f\n",color[0],color[1],color[2]);
 	  glColor3dv(color);
 	}
 	    
