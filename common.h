@@ -35,12 +35,15 @@ const double CROSS_LENGTH = 0.1;
 const double BEAM_WIDTH = 0.02;
 const double HIT_SCALE = 1.2;
 const double TARGET_DIST_THRESH = 0.10;
+
 const double ARROW_LENGTH=0.010;
 const double ARROW_WIDTH=0.025;
 const int    TRAJ_MAX = 300;     //kiseki no youryou
 const double TRAJ_COLOR_BASE = 0.2;  // kiseki no noutan no kizyun
 const float SPEED = .009;
 const float ROT_SPEED = 0.1;
+
+enum{ARROW,NEARBY,AROUND,NOTHING,};
 
 class Common {
 
@@ -78,6 +81,8 @@ class Common {
   GLdouble dx;                    // target position x (gluLookAt)
   GLdouble dy;                    // target position y (gluLookAt)
   GLdouble dd;                    // unit of movement of the target position
+
+  int binary_state;
 
   queue< vector<TARGET_POS> > traj ;
   bool         beam_flag;

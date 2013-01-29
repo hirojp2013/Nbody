@@ -25,6 +25,8 @@ Common::Common()
   dy = 0.0;              // target position y (gluLookAt)
   dd = 0.01;             // unit of movement of the target position
 
+  binary_state = ARROW;
+
   beam_flag = false;
   rot = 0.0;
   vmax =  4.0;
