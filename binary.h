@@ -11,6 +11,6 @@ class binary{
  private:
   angular_vel *ang_vel; 
   color_legend_hue clh;
-  double MIN,MAX;
+  const static double MIN =0.,MAX = 1.;
 };
 #endif
