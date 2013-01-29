@@ -1,12 +1,5 @@
 #include"color_legend_hue.hpp"
 
-
-color_legend_hue::color_legend_hue(double min_,double max_){
-  min = min_;
-  max = max_;
-  recp_length = 1.0/(max-min);
-}
-
 color_legend_hue::color_legend_hue(const double min_,const double max_){
   min = min_;
   max = max_;
