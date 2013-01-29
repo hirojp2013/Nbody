@@ -68,9 +68,12 @@ typedef struct {
   int id;
   PARTICLE_POS pos;
   PARTICLE_VEL vel;
+  double vlen2;
   double kin;
+  double l;
 } PARTICLE_INF;
 
+const double NOT_MAKE_BINARY = DBL_MAX;
 
 class Particle
 {
@@ -113,8 +116,12 @@ public:
 
 	void getA(double *pos) { for (int i = 0; i < 3; i++) pos[i] = a[i]; }
 	void getJ(double *pos) { for (int i = 0; i < 3; i++) pos[i] = j[i]; }
+	void getVlen2(double *vlen,double scale);
 	void extrapolate(double tcur, GLdouble scale, PARTICLE_POS *pos);
 	GLdouble max_particle_coord(PARTICLE_POS &pos);
+ private:
+	void getKin(double *kin,double scale);
+
 };
 
 class ParticleData
@@ -135,7 +142,8 @@ public:
 	double setCurrentParticle(int frame);
 	double getCurrentParticleId(int frame);
 	vector<int> &getCurrentList(void) { return curlist; }
-	vector<PARTICLE_INF> &getCurrentPosInf(void) { return poslistV; }
+	vector<PARTICLE_INF> &getCurrentPosInf(){return poslistV;};
+	vector<PARTICLE_INF> &getCurrentPosInf(double cur_t,double scale,vector<int> &curlist);
 	Particle *getData(int index);
 	int getDataNum() { return (int)data.size(); }
 	double getMaxV() { return vmax; }
