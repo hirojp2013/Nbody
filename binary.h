@@ -9,6 +9,7 @@ class binary{
   void draw();
   void color_set(double kinetic,GLdouble color[3]);
  private:
+  Common *cm;
   angular_vel *ang_vel; 
   color_legend_hue clh;
   const static double MIN =0.,MAX = 1.;
