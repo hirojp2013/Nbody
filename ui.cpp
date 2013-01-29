@@ -176,6 +176,17 @@ void UI::Keyboard(void)
   } else if (CAVEgetbutton(CAVE_COMMAKEY)) {
     /* , */
     showstep(-1);
+  }else if(CAVEgetbutton(CAVE_MKEY)){
+    switch(cm->binary_state){
+    case ARROW:
+      cm->binary_state = NEARBY;break;
+    case NEARBY:
+      cm->binary_state = AROUND;break;
+    case AROUND:
+      cm->binary_state = NOTHING;break;
+    default:
+      cm->binary_state = ARROW;break;
+    }
   }
 }
 
