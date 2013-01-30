@@ -1,4 +1,7 @@
 #include "binary.h"
+#include "angular_vel.h"
+#include "common.h"
+
 const double MIN = 0;
 const double MAX = 1.;
 binary::binary(const double length):clh(MIN,MAX),RECIP_LENGTH(1./length){

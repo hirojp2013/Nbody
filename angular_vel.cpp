@@ -1,4 +1,7 @@
 #include"angular_vel.h"
+#include"arrow.h"
+#include "motion.h"
+#include "common.h"
 
 angular_vel::angular_vel(){
   aw = new arrow[CAVE_MAX_WALLS];

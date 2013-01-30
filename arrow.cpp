@@ -1,4 +1,7 @@
 #include"arrow.h"
+#include "Particle.h"
+#include "common.h"
+
 arrow::arrow(){
   sphereObj[CAVEUniqueIndex()] = gluNewQuadric();
   clyndObj[CAVEUniqueIndex()] = gluNewQuadric();

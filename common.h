@@ -1,7 +1,7 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
-
 #include "Particle.h"
+
 
 const GLdouble COLORS[][3] = {
   { 1.0, 0.0, 0.0 }, 

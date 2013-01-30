@@ -1,4 +1,6 @@
 #include "motion.h"
+#include "common.h"
+
 void Motion::init(){
   bin_map.clear();
 }

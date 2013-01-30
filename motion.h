@@ -2,7 +2,10 @@
 #define _MOTION_H_
 #include<ctime>
 #include<algorithm>
-#include "common.h"
+
+#include"Particle.h"
+
+class Common;
 
 typedef struct{
   int x;

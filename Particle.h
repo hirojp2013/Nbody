@@ -55,16 +55,16 @@ using namespace std;
 
 
 
-typedef struct{
+typedef struct pos_t{
   GLdouble pos[3];
 }PARTICLE_POS;
 
 
-typedef struct{
+typedef struct vel_t{
     GLdouble vel[3];
 }PARTICLE_VEL;
 
-typedef struct {
+typedef struct inf_t{
   int id;
   PARTICLE_POS pos;
   PARTICLE_VEL vel;

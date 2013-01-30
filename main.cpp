@@ -1,11 +1,12 @@
-#include "common.h"
-#include "ui.h"
-#include "motion.h"
-#include "Particle.h"
-#include "binary.h"
 #include<math.h>
 #include<algorithm>
 #include<cassert>
+
+#include "common.h"
+#include "binary.h"
+#include "motion.h"
+#include "ui.h"
+
 
 static UI *ui = NULL;
 static Common *cm = NULL;

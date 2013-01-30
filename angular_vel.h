@@ -1,9 +1,13 @@
 #ifndef ANGULAR_VEL_H
 #define ANGULAR_VEL_H
+#include <cave_ogl.h>
 #include "GL/glut.h" 
 #include "GL/gl.h"
-#include "motion.h"
-#include "arrow.h"
+
+class arrow;
+class Common;
+struct pos_t;
+struct vel_t;
 
 class angular_vel{
  public:
@@ -15,8 +19,8 @@ class angular_vel{
 		 double *angular,
 		 double *azimuth,
 		 double *length);
-  void get_omega(PARTICLE_POS *pos,
-		 PARTICLE_VEL *vel,
+  void get_omega(pos_t *pos,
+		 vel_t *vel,
 		 double dist,
 		 GLdouble omega[3]);
 
