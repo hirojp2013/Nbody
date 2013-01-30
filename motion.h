@@ -23,8 +23,9 @@ typedef struct{
 enum I_OR_O{I_TARGET =0,OTHER_TARGET = 1,};
 
 #define BINARY_INIT {{id1,id2},{{0.0, 0.0, 0.0},{0.0, 0.0, 0.0}},{0.0,0.0,0.0},{{0.0,0.0,0.0},{0.0,0.0,0.0}},0}
+#define PARTICLE_INF_INIT {0,{0.0,0.0,0.0},{0.0,0.0,0.0},0.0,0.0,NOT_MAKE_BINARY}
 
-class Motion {
+class Motion{ 
 
  public:
   static Motion *GetInstance() {
@@ -36,9 +37,10 @@ class Motion {
 
   void FindBinary(GLdouble tcur,GLdouble scale);
   map<string, BINARY>& GetBinaryMap() { return bin_map; }
-
+  multimap<string,PARTICLE_INF>& GetCellMap(){return cell_data;}
  private:
   map<string,BINARY> bin_map;
+  multimap<string,PARTICLE_INF> cell_data;
   double DIST_THRESH;
   double DIST_THRESH2;
   double COMDIFF_THRESH;
@@ -56,9 +58,9 @@ class Motion {
   void bin_map_initialize();
   void box_initialize(int max_index);
   void FindBinary_initialize();
-  void Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data, GLdouble scale,I_OR_O I_O,string iname,string tname);
+  void Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data, GLdouble scale,I_OR_O I_O,string iname,string tname,vector<PARTICLE_INF>& poslistV);
   void bin_map_erase();
-  void Grid_decomp(multimap<string,PARTICLE_INF>& cell_data,double cell_length);
+  void Grid_decomp(multimap< string,PARTICLE_INF >& cell_data,double cell_length);
   double GetTotalVelocity(Particle *pt[], int num);
   void GetCOM(PARTICLE_POS *pos,PARTICLE_POS *com,int num);
   double GetCOMDiff(Particle *pt[], double *com_prev, int num);

@@ -137,7 +137,7 @@ void init(void *filename)
   the_beam();
   glEndList();
   
-  bobj = new binary();
+  bobj = new binary(TARGET_DIST_THRESH/10.);
 }
 
 void end(void)
@@ -185,14 +185,20 @@ void step(void)
 					   cm->scale,
 					   curlist);
       Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
+      printf("%s(%d)\n",__FILE__,__LINE__);
       if(cm->beam_flag){
 	cm->SelectParticle();
       }else if(cm->beam_clear_flag){
 	cm->allClear();
       }
+      printf("%s(%d)\n",__FILE__,__LINE__);
       CAVEDisplayBarrier();
+      printf("%s(%d)\n",__FILE__,__LINE__);
       return;
+      printf("%s(%d)\n",__FILE__,__LINE__);
     }
+    printf("%s(%d)\n",__FILE__,__LINE__);
+    //cm->data.
     float headpos[3];
     CAVEGetPosition(CAVE_HEAD, headpos);
     if (cm->inc > 0) {
@@ -442,6 +448,7 @@ void draw_beam(void)
 
 void display(void)
 {
+  printf("%s(%d)\n",__FILE__,__LINE__);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_COLOR_MATERIAL);
   glPushMatrix();
@@ -454,9 +461,16 @@ void display(void)
     draw_grid();
 
     double r = cm->GetRadius();
+    Motion *mo = Motion::GetInstance();
+    printf("%s(%d)\n",__FILE__,__LINE__);
     vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
-    vector<PARTICLE_INF>::iterator p; 
+    printf("%s(%d)\n",__FILE__,__LINE__);
+    vector<PARTICLE_INF>::iterator p;
+    printf("%s(%d)\n",__FILE__,__LINE__);
+
     for(p=poslistV.begin();p!=poslistV.end();p++){
+      //      printf("%s(%d)\n",__FILE__,__LINE__);
+      //      printf("%d\n",poslistV.size());
       char idbuf[10];
       glPushMatrix();
       {
@@ -478,9 +492,14 @@ void display(void)
 	  //	  default:
 	  //	    glColor3d(1.0,1.0,0.0);break;
 	  //	}
-	  GLdouble color[3];
-	  bobj->color_set(p->kin,color);
-	  glColor3dv(color);
+	  GLdouble color[4];
+	  //	  printf("%s(%d)\n",__FILE__,__LINE__);
+	  //	  printf("%f %f %f\n",p->pos.pos[0],p->pos.pos[1],p->pos.pos[2]);
+
+	  printf("%s(%d)\n",__FILE__,__LINE__);
+	  bobj->color_set(*p,color);
+	  printf("%s(%d)\n",__FILE__,__LINE__);
+	  glColor4dv(color);
 	}
 	    
 	glRotated(cm->theta, 0.0, 0.0, 1.0);

@@ -13,8 +13,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <algorithm>
-
 #include<queue>
+#include<cfloat>
 
 /*
  * Particle data class
@@ -116,12 +116,14 @@ public:
 
 	void getA(double *pos) { for (int i = 0; i < 3; i++) pos[i] = a[i]; }
 	void getJ(double *pos) { for (int i = 0; i < 3; i++) pos[i] = j[i]; }
-	void getVlen2(double *vlen,double scale);
+	void getVlen2(double *vlen2,double scale);
+	
+	void getKin(double *kin,double v[3],double scale);
 	void extrapolate(double tcur, GLdouble scale, PARTICLE_POS *pos);
 	GLdouble max_particle_coord(PARTICLE_POS &pos);
- private:
-	void getKin(double *kin,double scale);
 
+ private:
+	void getVlen2(double *vlen2,double v[3],double scale);
 };
 
 class ParticleData
@@ -134,6 +136,7 @@ private:
 	double vmax;
 	vector<int> curlist;
 	vector<PARTICLE_INF> poslistV;
+	int id_num;
 public:
 	ParticleData() { dataNum = 0; vmax = 0.0; poslistV.clear();}
 	~ParticleData() {}
@@ -147,7 +150,7 @@ public:
 	Particle *getData(int index);
 	int getDataNum() { return (int)data.size(); }
 	double getMaxV() { return vmax; }
-
+	int getIDNum(){return id_num;}
 };
 
 #endif

@@ -72,6 +72,36 @@ void Particle::getVlen2(double *vlen2,double scale){
   *vlen2 = tmp;
 }
 
+void Particle::getVlen2(double *vlen2,double v[3],double scale){
+  double tmp=0.0;
+  double v_tmp;
+
+  for(int i=0;i<3;i++){
+    v_tmp = v[i]/scale;
+    tmp += v_tmp*v_tmp;
+  }
+  // printf("%s(%d)\n",__FILE__,__LINE__);
+  //  printf("%f\n",tmp);
+
+  *vlen2 = tmp;
+}
+
+
+void Particle::getKin(double *kin,double v[3],double scale){
+  Particle pt;
+  double vlen2;
+  //  printf("%s(%d)\n",__FILE__,__LINE__);
+  //  printf("%f %f %f\n",v[0],v[1],v[2]);
+
+  pt.getVlen2(&vlen2,v,scale);
+  *kin = 0.5*vlen2;
+  //  printf("%s(%d)\n",__FILE__,__LINE__);
+  //  printf("%f\n",*kin);
+
+}
+
+
+
 void Particle::extrapolate(double tcur, GLdouble scale, PARTICLE_POS *pos) {
   double dt = tcur - t;
   for (int i = 0; i < 3; i++) {
@@ -85,11 +115,6 @@ GLdouble Particle::max_particle_coord(PARTICLE_POS &pos){
   ans = max(ans,fabs(pos.pos[2]));
   return ans;
 }
-
-void Particle::getKin(double *kin,double scale){
-  *kin = 0.5*vlen;
-}
-
 
 /*
  * readData
@@ -184,7 +209,8 @@ int ParticleData::initList(void)
   for (int i = dataNum - 1; i >= 0; i--) {
     palist[data[i].id] = i;
   }
-  cout << "ID num: " << palist.size() << endl;
+  id_num = palist.size();
+  cout << "ID num: " << id_num << endl;
   map<int, int>::iterator p;
   vector<int> idlist;
   for (p = palist.begin(); p != palist.end(); p++) {
@@ -241,8 +267,8 @@ vector<PARTICLE_INF>& ParticleData::getCurrentPosInf(double cur_t,double scale,v
     pos_inf.id = pt->getId();
     pt->getV(&(pos_inf.vel),scale);
     pt->getVlen2(&(pos_inf.vlen2),scale);
-    pt->getKin(&(pos_inf.kin),scale);
-    pos_inf.l = NOT_MAKE_BINARY;
+    //    pt->getKin(&(pos_inf.kin),scale);
+    //    pos_inf.l = NOT_MAKE_BINARY;
     poslistV.push_back(pos_inf);
   }
   return poslistV;

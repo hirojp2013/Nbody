@@ -18,8 +18,8 @@ void color_legend_hue::color_map(double x,double a,GLdouble color[4]){
 void color_legend_hue::color_map(double x,GLdouble color[3]){
   float h = (min+x)*recp_length;
   hsv hsvobj;
-  printf("%s(%d)\n",__FILE__,__LINE__);
-  printf("%f\n",h);
-  printf("%f\n",recp_length);
+  //  printf("%s(%d)\n",__FILE__,__LINE__);
+  //  printf("%f\n",h);
+  //  printf("%f\n",recp_length);
   hsvobj.hsv2rgb(h,1.,1.,color);
 }
