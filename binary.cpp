@@ -15,8 +15,8 @@ void binary::color_set(PARTICLE_INF p_inf,
   switch(cm->binary_state){
   case NEARBY:
     clh.color_map(p_inf.kin,pot_alph_value_bounday(p_inf.l),color);
-    printf("%s(%d)\n",__FILE__,__LINE__);
-    printf("%f %f %f %f\n",color[0],color[1],color[2],color[3]);
+    //    printf("%s(%d)\n",__FILE__,__LINE__);
+    //    printf("%f %f %f %f\n",color[0],color[1],color[2],color[3]);
     break;
     //  case AROUND:break;
   default:

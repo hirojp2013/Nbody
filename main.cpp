@@ -84,7 +84,6 @@ void init(void *filename)
 	 << endl;
     cout << setprecision(15)
 	 << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
-    printf("%s(%d)\n",__FILE__,__LINE__);
     fflush(stdout);
 	
 #if 0
@@ -185,19 +184,19 @@ void step(void)
 					   cm->scale,
 					   curlist);
       Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
-      printf("%s(%d)\n",__FILE__,__LINE__);
+      //      printf("%s(%d)\n",__FILE__,__LINE__);
       if(cm->beam_flag){
 	cm->SelectParticle();
       }else if(cm->beam_clear_flag){
 	cm->allClear();
       }
-      printf("%s(%d)\n",__FILE__,__LINE__);
+      //      printf("%s(%d)\n",__FILE__,__LINE__);
       CAVEDisplayBarrier();
-      printf("%s(%d)\n",__FILE__,__LINE__);
+      //      printf("%s(%d)\n",__FILE__,__LINE__);
       return;
-      printf("%s(%d)\n",__FILE__,__LINE__);
+      //      printf("%s(%d)\n",__FILE__,__LINE__);
     }
-    printf("%s(%d)\n",__FILE__,__LINE__);
+    //    printf("%s(%d)\n",__FILE__,__LINE__);
     //cm->data.
     float headpos[3];
     CAVEGetPosition(CAVE_HEAD, headpos);
@@ -448,7 +447,7 @@ void draw_beam(void)
 
 void display(void)
 {
-  printf("%s(%d)\n",__FILE__,__LINE__);
+  //  printf("%s(%d)\n",__FILE__,__LINE__);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_COLOR_MATERIAL);
   glPushMatrix();
@@ -462,11 +461,11 @@ void display(void)
 
     double r = cm->GetRadius();
     Motion *mo = Motion::GetInstance();
-    printf("%s(%d)\n",__FILE__,__LINE__);
+    //    printf("%s(%d)\n",__FILE__,__LINE__);
     vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
-    printf("%s(%d)\n",__FILE__,__LINE__);
+    //    printf("%s(%d)\n",__FILE__,__LINE__);
     vector<PARTICLE_INF>::iterator p;
-    printf("%s(%d)\n",__FILE__,__LINE__);
+    //    printf("%s(%d)\n",__FILE__,__LINE__);
 
     for(p=poslistV.begin();p!=poslistV.end();p++){
       //      printf("%s(%d)\n",__FILE__,__LINE__);
@@ -496,9 +495,9 @@ void display(void)
 	  //	  printf("%s(%d)\n",__FILE__,__LINE__);
 	  //	  printf("%f %f %f\n",p->pos.pos[0],p->pos.pos[1],p->pos.pos[2]);
 
-	  printf("%s(%d)\n",__FILE__,__LINE__);
+	  //	  printf("%s(%d)\n",__FILE__,__LINE__);
 	  bobj->color_set(*p,color);
-	  printf("%s(%d)\n",__FILE__,__LINE__);
+	  //	  printf("%s(%d)\n",__FILE__,__LINE__);
 	  glColor4dv(color);
 	}
 	    
@@ -581,7 +580,7 @@ void display(void)
 	}
       }
     }
-    //    bobj->draw();
+    bobj->draw();
   }
   glPopMatrix();
 #ifdef DEBUG
