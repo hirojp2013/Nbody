@@ -70,6 +70,7 @@ typedef struct inf_t{
   PARTICLE_VEL vel;
   double vlen2;
   double kin;
+  double pot;
   double l;
   double eng_sum;
 } PARTICLE_INF;
