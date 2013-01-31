@@ -1,7 +1,7 @@
 #include "Particle_Objs.h"
 
 void Particle_Objs::init(){
-  ps = new PointSprite[CAVE_MAX_WALLS];
+  ps = new PointSprite;
   if(CAVEMasterDisplay()){
     printf("%s(%d)\n",__FILE__,__LINE__);
     fflush(stdout);
@@ -17,11 +17,11 @@ void Particle_Objs::init(){
   //  CAVEDisplayBarrier();
   //ps[CAVEUniqueIndex()].Load();
   //  CAVEDisplayBarrier();
-  //  if(CAVEMasterDisplay())
+  if(CAVEMasterDisplay())
     {
       color_set();
     }
-  //  CAVEDisplayBarrier();
+  CAVEDisplayBarrier();
   if(CAVEMasterDisplay()){
     printf("%s(%d)\n",__FILE__,__LINE__);
     fflush(stdout);
@@ -30,7 +30,7 @@ void Particle_Objs::init(){
 }
 
 void Particle_Objs::Load(){
-  ps[CAVEUniqueIndex()].Load();
+  ps->Load();
 }
 
 void Particle_Objs::set_x(double pos[][3]){
@@ -55,7 +55,7 @@ void Particle_Objs::set_color(double cl[][4]){
 void Particle_Objs::draw(){
   int id_num = cm->data.getIDNum();
   glPushMatrix();
-  ps[CAVEUniqueIndex()].drawPointSprite(x[0], color[0],id_num);
+  ps->drawPointSprite(x[0], color[0],id_num);
   glPopMatrix();
 }
 

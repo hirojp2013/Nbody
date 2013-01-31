@@ -159,9 +159,7 @@ void init(void *filename)
   }
   fflush(stdout);
   CAVEDisplayBarrier();
-  if(CAVEMasterDisplay()){
-    pobjs->init();
-  }
+  pobjs->init();
   CAVEDisplayBarrier();
 
   pobjs->Load();
@@ -712,7 +710,7 @@ void display(void)
 	}
       }
     }
-    draw_binary();
+    //    draw_binary();
   }
 
   glPopMatrix();
