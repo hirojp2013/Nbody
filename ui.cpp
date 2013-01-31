@@ -183,6 +183,8 @@ void UI::Keyboard(void)
     case NEARBY:
       cm->binary_state = AROUND;break;
     case AROUND:
+      cm->binary_state = ENG_SUM;break;
+    case ENG_SUM:
       cm->binary_state = NOTHING;break;
     default:
       cm->binary_state = ARROW;break;
