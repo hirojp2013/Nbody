@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include<queue>
-#include<cfloat>
+
 
 /*
  * Particle data class
@@ -71,9 +71,8 @@ typedef struct inf_t{
   double vlen2;
   double kin;
   double l;
+  double eng_sum;
 } PARTICLE_INF;
-
-const double NOT_MAKE_BINARY = DBL_MAX;
 
 class Particle
 {
