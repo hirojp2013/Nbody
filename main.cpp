@@ -149,29 +149,8 @@ void init(void *filename)
   CAVEDisplayBarrier();
   //texture start
 
-  if(CAVEMasterDisplay()){
-
-  }
-
-  if(CAVEMasterDisplay()){
-    printf("%s(%d)\n",__FILE__,__LINE__);
-    printf("Master %p\n",pobjs);
-
-  }else{
-    printf("%p\n",pobjs);
-    
-  }
-  fflush(stdout);
-  CAVEDisplayBarrier();
   pobjs->init();
 
-
-
-  if(CAVEMasterDisplay()){
-    printf("%s(%d)\n",__FILE__,__LINE__);
-    fflush(stdout);
-  }
-  CAVEDisplayBarrier();
   //texture end
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glShadeModel(GL_SMOOTH);

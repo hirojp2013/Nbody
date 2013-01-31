@@ -94,10 +94,6 @@ void PointSprite::drawPointSprite(GLdouble* vertices, GLdouble* color, GLsizei c
 
 
 void PointSprite::loadTexture(){
-  if(CAVEMasterDisplay()){
-    printf("%s(%d)\n",__FILE__,__LINE__);
-    fflush(stdout);
-  }
 	FILE            *fp;
 	png_structp     png_ptr;
 	png_infop       info_ptr;
@@ -105,16 +101,9 @@ void PointSprite::loadTexture(){
 	int             bit_depth, color_type, interlace_type;
 	unsigned char   **pngimage;
 	 
-	printf("%s(%d)\n",__FILE__,__LINE__);
-	fflush(stdout);
 	fp = fopen( "SP_W.png", "rb" );
 
-	printf("%s(%d)\n",__FILE__,__LINE__);
-	fflush(stdout);
-
 	png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL );
-	printf("%p\n",&png_ptr);
-	CAVEDisplayBarrier();
 	info_ptr = png_create_info_struct( png_ptr );
 
 	png_init_io( png_ptr, fp );
@@ -133,9 +122,7 @@ void PointSprite::loadTexture(){
 	GLubyte *texture;
 	texture = ( unsigned char* )malloc( sizeof( unsigned char ) * width * height * 4 );
 	unsigned char	*pbuff;
-	printf("%s(%d)\n",__FILE__,__LINE__);
-	CAVEDisplayBarrier();
-	fflush(stdout);
+
 	for ( int y = 0; y < height; y++ )
 	{
 		pbuff = pngimage[ ( height - 1 ) - y ];
@@ -148,9 +135,7 @@ void PointSprite::loadTexture(){
 		}
 	}
 
-	printf("%s(%d)\n",__FILE__,__LINE__);
-	fflush(stdout);
-	CAVEDisplayBarrier();
+
 	glGenTextures( 1, &texture_name );
 	glBindTexture( GL_TEXTURE_2D, texture_name );
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
@@ -175,8 +160,5 @@ void PointSprite::loadTexture(){
 	png_destroy_read_struct( &png_ptr, &info_ptr, ( png_infopp )NULL );
 
 	fclose(fp);
-  if(CAVEMasterDisplay()){
-    printf("%s(%d)\n",__FILE__,__LINE__);
-    fflush(stdout);
-  }
+
 }

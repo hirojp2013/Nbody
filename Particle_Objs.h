@@ -7,9 +7,7 @@ class Particle_Objs{
   double x[PARTICLE_NUMBER_MAX][3];
   double color[PARTICLE_NUMBER_MAX][3];
 
-  Particle_Objs(){
-    cm = Common::GetInstance();
-  };
+  Particle_Objs();
   ~Particle_Objs();
   void  init();
   void set_x(double pos[][3]);
