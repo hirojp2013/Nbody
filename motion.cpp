@@ -74,7 +74,6 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
       poslistV[index_i].id = (*i_it).second.id;
       poslistV[index_i].pos =(*i_it).second.pos;
       poslistV[index_i].vel =(*i_it).second.vel;
-
       pt.getKin(&kin,(*i_it).second.vel.vel,cm->scale);
       poslistV[index_i].kin = kin;
 
@@ -103,10 +102,21 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
  	binary.dist = dist;
  	if(sqrt(dist) < poslistV[index_i].l){
 	  poslistV[index_i].l = sqrt(dist);
+	  if(ENG_SUM){
+	    pt.getKin(&kin,(*t_it).second.vel.vel,cm->scale);
+	    poslistV[index_i].eng_sum = poslistV[index_i].kin+kin
+	      -1.0/poslistV[index_i].l;
+	  }
  	}
+	
 	index_t = (*t_it).second.id-1;
  	if(sqrt(dist) < poslistV[index_t].l){
  	  poslistV[index_t].l = sqrt(dist);
+	  if(ENG_SUM){
+	    pt.getKin(&kin,(*t_it).second.vel.vel,cm->scale);
+	    poslistV[index_t].eng_sum = poslistV[index_i].kin+
+	      kin -1.0/poslistV[index_t].l;
+	  }
  	}
  	map<string,BINARY>::iterator it = bin_map.find(name);
  	if(it != bin_map.end()){
@@ -124,16 +134,13 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
 void Motion::FindBinary(GLdouble tcur,GLdouble scale){
   double cell_length = CELL_LENGTH / scale;
   FindBinary_initialize();
-  //  printf("%s(%d)\n",__FILE__,__LINE__);
-  //  printf("%d\n",cell_data.size());
-
   Grid_decomp(cell_data,cell_length);
   //  printf("%s(%d)\n",__FILE__,__LINE__);
   //  printf("%d\n",cell_data.size());
   Common *cm = Common::GetInstance();
   vector<PARTICLE_INF>& poslistV = cm->GetInstance()->data.getCurrentPosInf();
-  poslistV.clear();
   {
+    poslistV.clear();
     PARTICLE_INF par_inf = PARTICLE_INF_INIT;
     poslistV.resize(cm->data.getIDNum(),par_inf);
   }

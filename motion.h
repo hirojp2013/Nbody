@@ -26,7 +26,7 @@ typedef struct{
 enum I_OR_O{I_TARGET =0,OTHER_TARGET = 1,};
 
 #define BINARY_INIT {{id1,id2},{{0.0, 0.0, 0.0},{0.0, 0.0, 0.0}},{0.0,0.0,0.0},{{0.0,0.0,0.0},{0.0,0.0,0.0}},0}
-#define PARTICLE_INF_INIT {0,{0.0,0.0,0.0},{0.0,0.0,0.0},0.0,0.0,NOT_MAKE_BINARY}
+#define PARTICLE_INF_INIT {0,{0.0,0.0,0.0},{0.0,0.0,0.0},0.0,0.0,NOT_MAKE_BINARY,0.0}
 
 class Motion{ 
 
