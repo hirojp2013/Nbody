@@ -126,7 +126,7 @@ void init(void *filename)
   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
   glEnable(GL_LIGHT0);
   glEnable(GL_NORMALIZE);
-
+  glBlendFunc(GL_SRC_ALPHA,GL_DST_ALPHA);
   //multithead tID
   sphereObj[CAVEUniqueIndex()] = gluNewQuadric();
   clyndObj[CAVEUniqueIndex()] = gluNewQuadric();
@@ -509,12 +509,16 @@ void display(void)
 		     p->pos.pos[2]);
 	gluSphere(sphereObj[CAVEUniqueIndex()], r, 10, 6);
       }
+
+      glDisable(GL_BLEND);
       glPopMatrix();
       glDisable(GL_LIGHTING);
       glRasterPos3d(p->pos.pos[0] + r,
 		    p->pos.pos[1] + r,
 		    p->pos.pos[2] + r);
 	
+      //trajectory
+
 
       if(!cm->target_id.empty()
 	 &&p->id == cm->target_id.front()){

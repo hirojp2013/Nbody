@@ -5,7 +5,6 @@
 
 class Common;
 class angular_vel;
-//struct PARTICLE_INF;
 struct inf_t;
 
 class binary{
