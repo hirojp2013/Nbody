@@ -85,6 +85,7 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
     for(;t_it!=cell_data.upper_bound(tname);t_it++){
       pos[1] = (*t_it).second.pos;
       dist = cm->GetParticleDist(&pos[0],&pos[1]);
+
       if(dist <= thresh_hold_scale){
  	id[0] = (*i_it).second.id;
 	id[1] = (*t_it).second.id;
@@ -100,24 +101,33 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
  	binary.vel[1] = (*t_it).second.vel;
  	binary.tag = true;
  	binary.dist = dist;
- 	if(sqrt(dist) < poslistV[index_i].l){
-	  poslistV[index_i].l = sqrt(dist);
-	  if(ENG_SUM){
-	    pt.getKin(&kin,(*t_it).second.vel.vel,cm->scale);
-	    poslistV[index_i].eng_sum = poslistV[index_i].kin+kin
-	      -1.0/poslistV[index_i].l;
+	if(AROUND){
+	  index_t = (*t_it).second.id-1;
+	  poslistV[index_i].pot = poslistV[index_i].pot + ( 1.0/sqrt(dist) );
+	  poslistV[index_t].pot = poslistV[index_t].pot + ( 1.0/sqrt(dist));
+	}else if(NEARBY || ENG_SUM){
+	  if(sqrt(dist) < poslistV[index_i].l){
+	    if(NEARBY){
+	      poslistV[index_i].l = sqrt(dist);
+	    }
+	    else{
+	      pt.getKin(&kin,(*t_it).second.vel.vel,cm->scale);
+	      poslistV[index_i].eng_sum = poslistV[index_i].kin+kin
+		-1.0/poslistV[index_i].l;
+	    }
 	  }
- 	}
-	
-	index_t = (*t_it).second.id-1;
- 	if(sqrt(dist) < poslistV[index_t].l){
- 	  poslistV[index_t].l = sqrt(dist);
-	  if(ENG_SUM){
-	    pt.getKin(&kin,(*t_it).second.vel.vel,cm->scale);
-	    poslistV[index_t].eng_sum = poslistV[index_i].kin+
-	      kin -1.0/poslistV[index_t].l;
+	  
+	  index_t = (*t_it).second.id-1;
+	  if(sqrt(dist) < poslistV[index_t].l){
+	    if(NEARBY){
+	      poslistV[index_t].l = sqrt(dist);
+	    }else{
+	      pt.getKin(&kin,(*t_it).second.vel.vel,cm->scale);
+	      poslistV[index_t].eng_sum = poslistV[index_i].kin+
+		kin -1.0/poslistV[index_t].l;
+	    }
 	  }
- 	}
+	}
  	map<string,BINARY>::iterator it = bin_map.find(name);
  	if(it != bin_map.end()){
  	  binary.count = (*it).second.count + 1;
