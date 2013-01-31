@@ -7,7 +7,6 @@ class PointSprite{
  public:
   PointSprite();
   ~PointSprite();
-  void Load();
   void drawPointSprite(GLdouble* vertices, GLdouble* color, GLsizei count);
   void drawPointSprite(GLdouble* vertices, GLdouble* color, GLsizei count, GLdouble* size);
   

@@ -15,20 +15,14 @@
 const GLfloat PointSprite::distance[] = {0.0, 0.0, 1.0};
 
 PointSprite::PointSprite(){
-}
-void PointSprite::Load(){
   loadTexture();
 }
-
-
 
 PointSprite::~PointSprite(){
 
   glDeleteTextures(1, &texture_name);
 
 }
-
-
 
 
 void PointSprite::drawPointSprite(GLdouble* vertices, GLdouble* color, GLsizei count){
