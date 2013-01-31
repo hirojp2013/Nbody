@@ -28,13 +28,6 @@ static GLUquadricObj *discObj[CAVE_MAX_WALLS] = {NULL};
 GLuint theBeam[CAVE_MAX_WALLS];
 GLuint theArrow[CAVE_MAX_WALLS];
 
-inline void error_check_gl(void)
-{
-  GLenum e;
-  if((e = glGetError())!=GL_NO_ERROR){
-    fprintf(stderr,"[tID=%02d] in %s:%d glError[%04x]\n",CAVEUniqueIndex(), __FILE__,__LINE__,e);
-  }
-}
 
 void the_beam(){
 
@@ -571,7 +564,6 @@ void draw_binary()
     glRotated(cm->theta, 0.0, 0.0, 1.0);
     glRotated(cm->phi, 1.0, 0.0, 0.0);
     glColor3d( 1.0, 1.0, 1.0 );
-
     
     glLineWidth(2.0);
     glBegin(GL_LINES);
@@ -584,9 +576,9 @@ void draw_binary()
 #ifdef DEBUG
       CAVEDisplayBarrier();
       {
-	if(CAVEMasterDisplay()){
-	  printf("%s(%d)\n",__FILE__,__LINE__);fflush(stdout);
-	}
+ 	if(CAVEMasterDisplay()){
+ 	  printf("%s(%d)\n",__FILE__,__LINE__);fflush(stdout);
+ 	}
       }
       CAVEDisplayBarrier();
 #endif
