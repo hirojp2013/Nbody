@@ -17,7 +17,11 @@ class binary{
   angular_vel *ang_vel; 
   color_legend_hue clh;
   const static double MIN =0.,MAX = 1.;
-  const double RECIP_LENGTH; 
-  double pot_alph_value_bounday(double length);
+  const double LENGTH; 
+  double eng_sum_alpha_boundary(double length);
+  double eng_sum_color_boundary(double eng_sum);
+
+  double pot_alpha_value_boundary(double length);
+
 };
 #endif
