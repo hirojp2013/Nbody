@@ -15,7 +15,6 @@ class Particle_Objs{
   void set_x(double pos[][3]);
   void set_color(double cl[][4]);
   void draw();
-  void Load();
  private:
   Common *cm;
   PointSprite *ps;
