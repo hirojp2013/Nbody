@@ -109,6 +109,10 @@ void init(void *filename)
 	 << endl;
     cout << setprecision(15)
 	 << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
+
+
+    pobjs = new Particle_Objs;
+
 	
 #if 0
     printf("INPUT --------------------------------------------\n");
@@ -142,13 +146,13 @@ void init(void *filename)
     printf("INPUT end ----------------------------------------\n");
 #endif
   }
-
+  CAVEDisplayBarrier();
   //texture start
 
   if(CAVEMasterDisplay()){
-    pobjs = new Particle_Objs;
+
   }
-  CAVEDisplayBarrier();
+
   if(CAVEMasterDisplay()){
     printf("%s(%d)\n",__FILE__,__LINE__);
     printf("Master %p\n",pobjs);
@@ -159,12 +163,9 @@ void init(void *filename)
   }
   fflush(stdout);
   CAVEDisplayBarrier();
-  if(CAVEMasterDisplay()){
-    pobjs->init();
-  }
-  CAVEDisplayBarrier();
+  pobjs->init();
 
-  pobjs->Load();
+
 
   if(CAVEMasterDisplay()){
     printf("%s(%d)\n",__FILE__,__LINE__);
