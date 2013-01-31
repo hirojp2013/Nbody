@@ -1,5 +1,6 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
+#include<cfloat>
 #include "Particle.h"
 
 
@@ -35,7 +36,8 @@ const double CROSS_LENGTH = 0.1;
 const double BEAM_WIDTH = 0.02;
 const double HIT_SCALE = 1.2;
 const double TARGET_DIST_THRESH = 0.10;
-
+const double EPSIRON = DBL_MIN;
+const double NOT_MAKE_BINARY = TARGET_DIST_THRESH + EPSIRON;
 const double ARROW_LENGTH=0.010;
 const double ARROW_WIDTH=0.025;
 const int    TRAJ_MAX = 300;     //kiseki no youryou
@@ -43,7 +45,7 @@ const double TRAJ_COLOR_BASE = 0.2;  // kiseki no noutan no kizyun
 const float SPEED = .009;
 const float ROT_SPEED = 0.1;
 
-enum{ARROW,NEARBY,AROUND,NOTHING,};
+enum{ARROW,NEARBY,AROUND,ENG_SUM,NOTHING,};
 
 class Common {
 
