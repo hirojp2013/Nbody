@@ -144,8 +144,33 @@ void init(void *filename)
   }
 
   //texture start
-  pobjs = new Particle_Objs;
-  pobjs->init();
+
+  if(CAVEMasterDisplay()){
+    pobjs = new Particle_Objs;
+  }
+  CAVEDisplayBarrier();
+  if(CAVEMasterDisplay()){
+    printf("%s(%d)\n",__FILE__,__LINE__);
+    printf("Master %p\n",pobjs);
+
+  }else{
+    printf("%p\n",pobjs);
+    
+  }
+  fflush(stdout);
+  CAVEDisplayBarrier();
+  if(CAVEMasterDisplay()){
+    pobjs->init();
+  }
+  CAVEDisplayBarrier();
+
+  pobjs->Load();
+
+  if(CAVEMasterDisplay()){
+    printf("%s(%d)\n",__FILE__,__LINE__);
+    fflush(stdout);
+  }
+  CAVEDisplayBarrier();
   //texture end
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glShadeModel(GL_SMOOTH);
