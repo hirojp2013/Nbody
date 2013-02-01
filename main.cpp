@@ -600,11 +600,11 @@ void display(void)
     glTranslated(ORIG[0], ORIG[1], ORIG[2]);
     glRotatef(cm->rot,0.0,1.0,0.0); 
     draw_grid();
-    glEnable(GL_LIGHTING);
+    //    glEnable(GL_LIGHTING);
     glRotated(cm->theta, 0.0, 0.0, 1.0);
     glRotated(cm->phi, 1.0, 0.0, 0.0);
     pobjs->draw();
-    glDisable(GL_LIGHTING);
+    //    glDisable(GL_LIGHTING);
 
     double r = cm->GetRadius();
     vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
