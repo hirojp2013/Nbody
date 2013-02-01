@@ -585,7 +585,7 @@ void display(void)
 	}
       }
     }
-    bobj->draw();
+    bobj->draw_arrow();
   }
   glPopMatrix();
 #ifdef DEBUG

@@ -135,7 +135,7 @@ void UI::Keyboard(void)
       cm->theta -= 3;
       cout << "theta: " << theta_prev << " -> " << cm->theta << endl;
     }
-    // 	} else if (CAVEgetbutton(CAVE_UKEY)) {
+    // 	} else if (CAVEgetbutton(CAVE_MKEY)) {
     // 		if (!CAVEgetbutton(CAVE_CTRLKEY)) {
     // 			/* U */
     //  			cm->dx += cm->dd;
@@ -176,19 +176,16 @@ void UI::Keyboard(void)
   } else if (CAVEgetbutton(CAVE_COMMAKEY)) {
     /* , */
     showstep(-1);
-  }else if(CAVEgetbutton(CAVE_MKEY)){
-    switch(cm->binary_state){
-    case ARROW:
-      cm->binary_state = NEARBY;break;
-    case NEARBY:
-      cm->binary_state = AROUND;break;
-    case AROUND:
-      cm->binary_state = ENG_SUM;break;
-    case ENG_SUM:
-      cm->binary_state = NOTHING;break;
-    default:
-      cm->binary_state = ARROW;break;
-    }
+  }else if(CAVEgetbutton(CAVE_PKEY)){
+    cm->binary_state = ARROW;
+  }else if(CAVEgetbutton(CAVE_OKEY)){
+    cm->binary_state = NEARBY;
+  }else if(CAVEgetbutton(CAVE_IKEY)){
+    cm->binary_state = AROUND;
+  }else if(CAVEgetbutton(CAVE_UKEY)){
+    cm->binary_state = ENG_SUM;
+  }else if(CAVEgetbutton(CAVE_YKEY)){
+    cm->binary_state = NOTHING;
   }
 }
 

@@ -101,13 +101,14 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
  	binary.vel[1] = (*t_it).second.vel;
  	binary.tag = true;
  	binary.dist = dist;
-	if(AROUND){
+	if(cm->binary_state == AROUND){
 	  index_t = (*t_it).second.id-1;
 	  poslistV[index_i].pot = poslistV[index_i].pot + ( 1.0/sqrt(dist) );
 	  poslistV[index_t].pot = poslistV[index_t].pot + ( 1.0/sqrt(dist));
-	}else if(NEARBY || ENG_SUM){
+	}else if(cm->binary_state == NEARBY 
+		 || cm->binary_state == ENG_SUM){
 	  if(sqrt(dist) < poslistV[index_i].l){
-	    if(NEARBY){
+	    if(cm->binary_state == NEARBY){
 	      poslistV[index_i].l = sqrt(dist);
 	    }
 	    else{

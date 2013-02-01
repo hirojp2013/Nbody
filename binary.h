@@ -10,7 +10,7 @@ struct inf_t;
 class binary{
  public:
   binary(const double length);
-  void draw();
+  void draw_arrow();
   void color_set(struct inf_t p_inf,GLdouble color[4]);
  private:
   Common *cm;

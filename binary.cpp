@@ -9,29 +9,35 @@ binary::binary(const double length):clh(MIN,MAX),LENGTH(length){
   cm = Common::GetInstance();
 }
 
-void binary::draw(){
-  ang_vel->draw_arrow();
+void binary::draw_arrow(){
+  if(cm->binary_state == ARROW){
+    printf("state ARROW\n");
+    ang_vel->draw_arrow();
+  }
 }
 
 void binary::color_set(PARTICLE_INF p_inf,
 		       GLdouble color[4]){
+
   switch(cm->binary_state){
   case NEARBY:
+    printf("state NEARBY\n");
     glEnable(GL_BLEND);
     clh.color_map(p_inf.kin,nearby_alpha_boundary(p_inf.l),color);
     //    printf("%s(%d)\n",__FILE__,__LINE__);
     //    printf("%f %f %f %f\n",color[0],color[1],color[2],color[3]);
     break;
-    //  case AROUND:break;
   case AROUND:
+    printf("state AROUND\n");
     //    printf("%s(%d)\n",__FILE__,__LINE__);
     //    printf("%d\n",p_inf.id);
     glEnable(GL_BLEND);
     clh.color_map(p_inf.kin,around_alpha_boundary(p_inf),color);
-    printf("%s(%d)\n",__FILE__,__LINE__);
-    printf("%f %f %f %f\n",color[0],color[1],color[2],color[3]);
+    //    printf("%s(%d)\n",__FILE__,__LINE__);
+    //    printf("%f %f %f %f\n",color[0],color[1],color[2],color[3]);
     break;
   case ENG_SUM:
+    printf("state ENG_SUM\n");
     glEnable(GL_BLEND);
     clh.color_map(eng_sum_color_boundary(p_inf.eng_sum),
 		  eng_sum_alpha_boundary(p_inf.l),
