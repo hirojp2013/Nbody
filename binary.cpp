@@ -18,12 +18,11 @@ void binary::draw_arrow(){
 
 void binary::color_set(PARTICLE_INF p_inf,
 		       GLdouble color[4]){
-
   switch(cm->binary_state){
   case NEARBY:
     printf("state NEARBY\n");
     glEnable(GL_BLEND);
-    clh.color_map(p_inf.kin,nearby_alpha_boundary(p_inf.l),color);
+    clh.color_map(p_inf.kin,nearby_alpha_boundary(p_inf),color);
     //    printf("%s(%d)\n",__FILE__,__LINE__);
     //    printf("%f %f %f %f\n",color[0],color[1],color[2],color[3]);
     break;
@@ -39,8 +38,8 @@ void binary::color_set(PARTICLE_INF p_inf,
   case ENG_SUM:
     printf("state ENG_SUM\n");
     glEnable(GL_BLEND);
-    clh.color_map(eng_sum_color_boundary(p_inf.eng_sum),
-		  eng_sum_alpha_boundary(p_inf.l),
+    clh.color_map(eng_sum_color_boundary(p_inf),
+		  eng_sum_alpha_boundary(p_inf),
 		  color);
     break;
   default:
@@ -53,8 +52,6 @@ void binary::color_set(PARTICLE_INF p_inf,
 }
 
 double binary::around_alpha_boundary(PARTICLE_INF par_inf){
-  //  printf("%s(%d)\n",__FILE__,__LINE__);
-  //  printf("%f\n",length);
   if(par_inf.pot == 0.0){
     //    printf("%s(%d)\n",__FILE__,__LINE__);
 
@@ -62,46 +59,45 @@ double binary::around_alpha_boundary(PARTICLE_INF par_inf){
   }
   //  printf("%s(%d)\n",__FILE__,__LINE__);
   //  printf("%f\n",RECIP_LENGTH);
-  printf("%s(%d)\n",__FILE__,__LINE__);
-  printf("%f\n",par_inf.pot);
+  printf("id %d\n",par_inf.id);
+  printf("kin %f\n",par_inf.kin);
+  printf("pot %f\n",par_inf.pot);
+
   par_inf.pot = par_inf.pot*LENGTH*5;
-  printf("%f\n",par_inf.pot);
   return ( isinf(par_inf.pot) ? 1.0: par_inf.pot); 
 
 }
 
-double binary::eng_sum_alpha_boundary(double length){
-  if(length == NOT_MAKE_BINARY){
+double binary::eng_sum_alpha_boundary(PARTICLE_INF par_inf){
+  if(par_inf.l == NOT_MAKE_BINARY){
     return 0.0;
   }
-  printf("%s(%d)\n",__FILE__,__LINE__);
-  printf("%f\n",length);
+  printf("id %d\n",par_inf.id);
+  //  printf("%s(%d)\n",__FILE__,__LINE__);
+  printf("length %f\n",par_inf.l);
   return 1.0;
 }
 
-double binary::eng_sum_color_boundary(double eng_sum){
-  if(eng_sum > 0){
+double binary::eng_sum_color_boundary(PARTICLE_INF par_inf){
+  if(par_inf.eng_sum > 0){
     return 0.0;
   }
   //  printf("%s(%d)\n",__FILE__,__LINE__);
-  //  printf("%f\n",eng_sum);
-  return fabs(eng_sum*LENGTH);
+  printf("id %d\n",par_inf.id);
+  printf("eng_sum %f\n",par_inf.eng_sum);
+  return fabs(par_inf.eng_sum*LENGTH);
 }
 
-double binary::nearby_alpha_boundary(double length){
-  //  printf("%s(%d)\n",__FILE__,__LINE__);
-  //  printf("%f\n",length);
-  if(length == NOT_MAKE_BINARY){
+double binary::nearby_alpha_boundary(PARTICLE_INF par_inf){
+  if(par_inf.l == NOT_MAKE_BINARY){
     //    printf("%s(%d)\n",__FILE__,__LINE__);
 
     return 0.0;
   }
-  //  printf("%s(%d)\n",__FILE__,__LINE__);
-  //  printf("%f\n",RECIP_LENGTH);
-
-  double pot = (1.0/length)*LENGTH;
-  printf("%s(%d)\n",__FILE__,__LINE__);
-  printf("%f\n",pot);
+  double pot = (1.0/par_inf.l)*LENGTH;
+  printf("id %d\n",par_inf.id);
+  printf("kin %f\n",par_inf.kin);
+  printf("length %f\n",par_inf.l);
 
   return ( isinf(pot) ? 1.0: pot); 
 }
