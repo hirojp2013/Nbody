@@ -108,10 +108,9 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
 	}else if(cm->binary_state == NEARBY 
 		 || cm->binary_state == ENG_SUM){
 	  if(sqrt(dist) < poslistV[index_i].l){
-	    if(cm->binary_state == NEARBY){
+	    poslistV[index_i].l = sqrt(dist);
+	    if(cm->binary_state == ENG_SUM){
 	      poslistV[index_i].l = sqrt(dist);
-	    }
-	    else{
 	      pt.getKin(&kin,(*t_it).second.vel.vel,cm->scale);
 	      poslistV[index_i].eng_sum = poslistV[index_i].kin+kin
 		-1.0/poslistV[index_i].l;
@@ -120,9 +119,8 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
 	  
 	  index_t = (*t_it).second.id-1;
 	  if(sqrt(dist) < poslistV[index_t].l){
-	    if(cm->binary_state== NEARBY){
-	      poslistV[index_t].l = sqrt(dist);
-	    }else{
+	    poslistV[index_t].l = sqrt(dist);
+	    if(cm->binary_state == ENG_SUM){
 	      pt.getKin(&kin,(*t_it).second.vel.vel,cm->scale);
 	      poslistV[index_t].eng_sum = poslistV[index_i].kin+
 		kin -1.0/poslistV[index_t].l;
