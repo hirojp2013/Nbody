@@ -123,7 +123,7 @@ void UI::Keyboard(void)
       cm->phi -=3;
       cout << "phi: " << phi_prev << " -> " << cm->phi << endl;
     }
-  } else if (CAVEgetbutton(CAVE_YKEY)) {
+  } else if (CAVEgetbutton(CAVE_WKEY)) {
     if (CAVEgetbutton(CAVE_CTRLKEY)) {
       /* y */
       cm->theta += 0.03;
