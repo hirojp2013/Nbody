@@ -120,7 +120,7 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
 	  
 	  index_t = (*t_it).second.id-1;
 	  if(sqrt(dist) < poslistV[index_t].l){
-	    if(NEARBY){
+	    if(cm->binary_state== NEARBY){
 	      poslistV[index_t].l = sqrt(dist);
 	    }else{
 	      pt.getKin(&kin,(*t_it).second.vel.vel,cm->scale);
