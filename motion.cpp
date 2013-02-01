@@ -140,7 +140,7 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
 	    if(cm->binary_state == ENG_SUM){
 	      pt.getKin(&kin,(*t_it).second.vel.vel,cm->scale);
 	      poslistV[index_t].eng_sum = poslistV[index_i].kin+
-		kin -1.0/poslistV[index_t].l;
+		kin -1.0/sqrt(dist);
 	    }
 	  }
 	}
