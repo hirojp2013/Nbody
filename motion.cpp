@@ -61,6 +61,8 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
   Common *cm = Common::GetInstance();
   double scale2 = scale * scale;
   double thresh_hold_scale = DIST_THRESH2 / scale2;
+  //  printf("%s(%d)\n",__FILE__,__LINE__);
+  //  printf("%f\n",thresh_hold_scale);
   multimap<string,PARTICLE_INF>::iterator i_it = cell_data.lower_bound(iname);
   multimap<string,PARTICLE_INF>::iterator t_it;
 
@@ -83,6 +85,9 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
       t_it = cell_data.lower_bound(tname);
     }
     for(;t_it!=cell_data.upper_bound(tname);t_it++){
+      printf("%s(%d)\n",__FILE__,__LINE__);
+      printf("i_ %d\n",(*i_it).second.id);
+      printf("target %d\n",(*t_it).second.id);
       pos[1] = (*t_it).second.pos;
       dist = cm->GetParticleDist(&pos[0],&pos[1]);
 
@@ -102,9 +107,21 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
  	binary.tag = true;
  	binary.dist = dist;
 	if(cm->binary_state == AROUND){
+	  //	  printf("%s(%d)\n",__FILE__,__LINE__);
+	  //	  printf("i %d\n",index_i);
+	  if((*i_it).second.id == 4){
+	    printf("%s(%d)\n",__FILE__,__LINE__);
+	    printf("target %d\n",(*t_it).second.id);
+	    //	    printf("pot %f\n",poslistV[index_i].pot);
+	    printf("dist %f\n",sqrt(dist));
+	  }
+	  
 	  index_t = (*t_it).second.id-1;
 	  poslistV[index_i].pot = poslistV[index_i].pot + ( 1.0/sqrt(dist) );
 	  poslistV[index_t].pot = poslistV[index_t].pot + ( 1.0/sqrt(dist));
+	  if((*i_it).second.id == 4){
+	    printf("pot %f\n",poslistV[index_i].pot);
+	  }
 	}else if(cm->binary_state == NEARBY 
 		 || cm->binary_state == ENG_SUM){
 	  if(sqrt(dist) < poslistV[index_i].l){
