@@ -70,12 +70,13 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
   for(;i_it!=cell_data.upper_bound(iname);i_it++){
     index_i = (*i_it).second.id-1;
     pos[0] = (*i_it).second.pos;
-    pt.getKin(&kin,(*i_it).second.vel.vel,cm->scale);
-    poslistV[index_i].kin = kin;
+
     if(I_O==I_TARGET){
       poslistV[index_i].id = (*i_it).second.id;
       poslistV[index_i].pos =(*i_it).second.pos;
       poslistV[index_i].vel =(*i_it).second.vel;
+      pt.getKin(&kin,(*i_it).second.vel.vel,cm->scale);
+      poslistV[index_i].kin = kin;
       t_it = i_it;
       t_it++; 
     }else{
@@ -136,7 +137,9 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
 	      poslistV[index_i].l = sqrt(dist);
 	      pt.getKin(&kin,(*t_it).second.vel.vel,cm->scale);
 	      poslistV[index_i].eng_sum = poslistV[index_i].kin+kin
-		-1.0/poslistV[index_i].l;
+		-((*i_it).second.vel.vel[0] * (*t_it).second.vel.vel[0]+
+		  (*i_it).second.vel.vel[1] * (*t_it).second.vel.vel[1]+
+		  (*i_it).second.vel.vel[2] * (*t_it).second.vel.vel[2])-1.0/poslistV[index_i].l;
 	    }
 	  }
 	  
@@ -146,7 +149,10 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
 	    if(cm->binary_state == ENG_SUM){
 	      pt.getKin(&kin,(*t_it).second.vel.vel,cm->scale);
 	      poslistV[index_t].eng_sum = poslistV[index_i].kin+
-		kin -1.0/poslistV[index_t].l;
+		kin -((*i_it).second.vel.vel[0] * (*t_it).second.vel.vel[0]+
+		  (*i_it).second.vel.vel[1] * (*t_it).second.vel.vel[1]+
+		  (*i_it).second.vel.vel[2] * (*t_it).second.vel.vel[2])
+		-1.0/poslistV[index_t].l;
 	    }
 	  }
 	}
@@ -187,15 +193,16 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale){
     iname = (*it).first;
     int ix,iy,iz;
     sscanf(iname.c_str(),"%d,%d,%d",&ix,&iy,&iz);
+    Find_io_CellBinary(cell_data,scale,I_TARGET,iname,iname,poslistV);
+    int num = cell_data.count(iname);
+    for(int l=0;l <num;l++){
+      it++;
+    }
     for(int i=ix-1;i<=ix+1;i++){
       for(int j=iy-1;j<=iy+1;j++){
 	for(int k=iz-1;k<=iz+1;k++){
 	  if(i==ix&&j==iy&&k==iz){
-	    Find_io_CellBinary(cell_data,scale,I_TARGET,iname,iname,poslistV);
-	    int num = cell_data.count(iname);
-	    for(int l=0;l <num;l++){
-	      it++;
-	    }
+	    continue;
 	  }else{
 	    sprintf(idstr,"%d,%d,%d",i,j,k);
 	    name = idstr;
