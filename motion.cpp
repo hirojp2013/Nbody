@@ -70,13 +70,12 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
   for(;i_it!=cell_data.upper_bound(iname);i_it++){
     index_i = (*i_it).second.id-1;
     pos[0] = (*i_it).second.pos;
+    pt.getKin(&kin,(*i_it).second.vel.vel,cm->scale);
+    poslistV[index_i].kin = kin;
     if(I_O==I_TARGET){
       poslistV[index_i].id = (*i_it).second.id;
       poslistV[index_i].pos =(*i_it).second.pos;
       poslistV[index_i].vel =(*i_it).second.vel;
-      pt.getKin(&kin,(*i_it).second.vel.vel,cm->scale);
-      poslistV[index_i].kin = kin;
-
       t_it = i_it;
       t_it++; 
     }else{
