@@ -52,7 +52,7 @@ void binary::color_set(PARTICLE_INF p_inf,
 }
 
 double binary::around_alpha_boundary(PARTICLE_INF par_inf){
-  if(par_inf.pot == 0.0){
+  if(par_inf.l == NOT_MAKE_BINARY){
     //    printf("%s(%d)\n",__FILE__,__LINE__);
 
     return 0.0;
