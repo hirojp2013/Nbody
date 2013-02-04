@@ -19,13 +19,6 @@ GLuint theArrow[CAVE_MAX_WALLS];
 
 binary *bobj;
 
-inline void error_check_gl(void)
-{
-  GLenum e;
-  if((e = glGetError())!=GL_NO_ERROR){
-    fprintf(stderr,"[tID=%02d] in %s:%d glError[%04x]\n",CAVEUniqueIndex(), __FILE__,__LINE__,e);
-  }
-}
 
 void the_beam(){
 
@@ -76,7 +69,7 @@ void init(void *filename)
     cm->t_dat_max = cm->data.getData(cm->data.getDataNum() - 1)->getTime();
     cm->frame_max = (int)(cm->t_dat_max / cm->interval) + 1;
     cm->frame_dat = cm->data.initList() - 1;
-    printf("%s(%d)\n",__FILE__,__LINE__);
+
     cout << setprecision(15)
 	 << "time_max: " << cm->t_dat_max
 	 << " interval: " << cm->interval
@@ -168,36 +161,18 @@ void step(void)
 	cm->interval -= incl;
 	cm->is_dec = false;
       }
-      /*      for (p = curlist.begin(); p != curlist.end(); p++) {
-	if(*p<0){
-	  continue;
-	}
-	Particle *pt = cm->data.getData(*p);
-	pt->extrapolate(cm->t_dat, cm->scale, &pos);
-	pos_inf.id = pt->getId();
-	pos_inf.pos = pos;
-	pt->getV(&(pos_inf.vel),cm->scale);
-	pt->getKin(&(pos_inf.kin),cm->scale);
-	poslistV.push_back(pos_inf);
-      }
-      */
       poslistV = cm->data.getCurrentPosInf(cm->t_dat,
 					   cm->scale,
 					   curlist);
       Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
-      //      printf("%s(%d)\n",__FILE__,__LINE__);
       if(cm->beam_flag){
 	cm->SelectParticle();
       }else if(cm->beam_clear_flag){
 	cm->allClear();
       }
-      //      printf("%s(%d)\n",__FILE__,__LINE__);
       CAVEDisplayBarrier();
-      //      printf("%s(%d)\n",__FILE__,__LINE__);
       return;
-      //      printf("%s(%d)\n",__FILE__,__LINE__);
     }
-    //    printf("%s(%d)\n",__FILE__,__LINE__);
     //cm->data.
     float headpos[3];
     CAVEGetPosition(CAVE_HEAD, headpos);
@@ -235,22 +210,6 @@ void step(void)
 	cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
       }
     }
-
-    /*
-    for (p = curlist.begin(); p != curlist.end(); p++) {
-      if(*p<0){
-	continue;
-      }
-      double length_cand;
-      Particle *pt = cm->data.getData(*p);
-      pt->extrapolate(cm->t_dat, cm->scale, &pos);
-      pos_inf.id = pt->getId();
-      pos_inf.pos = pos;
-      pt->getV(&(pos_inf.vel),cm->scale);                            
-      pt->getKin(&(pos_inf.kin),cm->scale);
-      poslistV.push_back(pos_inf);
-    }
-    */
     poslistV = cm->data.getCurrentPosInf(cm->t_dat,
 					 cm->scale,
 					 curlist);
@@ -462,15 +421,10 @@ void display(void)
 
     double r = cm->GetRadius();
     Motion *mo = Motion::GetInstance();
-    //    printf("%s(%d)\n",__FILE__,__LINE__);
     vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
-    //    printf("%s(%d)\n",__FILE__,__LINE__);
     vector<PARTICLE_INF>::iterator p;
-    //    printf("%s(%d)\n",__FILE__,__LINE__);
 
     for(p=poslistV.begin();p!=poslistV.end();p++){
-      //      printf("%s(%d)\n",__FILE__,__LINE__);
-      //      printf("%d\n",poslistV.size());
       char idbuf[10];
       glPushMatrix();
       {
@@ -493,12 +447,7 @@ void display(void)
 	  //	    glColor3d(1.0,1.0,0.0);break;
 	  //	}
 	  GLdouble color[4];
-	  //	  printf("%s(%d)\n",__FILE__,__LINE__);
-	  //	  printf("%f %f %f\n",p->pos.pos[0],p->pos.pos[1],p->pos.pos[2]);
-
-	  //	  printf("%s(%d)\n",__FILE__,__LINE__);
 	  bobj->color_set(*p,color);
-	  //	  printf("%s(%d)\n",__FILE__,__LINE__);
 	  glColor4dv(color);
 	}
 	    
@@ -575,7 +524,6 @@ void display(void)
 	    glEnd();
 		    
 	  }
-		
 	}
       }else{
 	if(cm->char_state){
@@ -588,9 +536,6 @@ void display(void)
     bobj->draw_arrow();
   }
   glPopMatrix();
-#ifdef DEBUG
-  error_check_gl();
-#endif
 }
 
 int main(int argc, char *argv[])
