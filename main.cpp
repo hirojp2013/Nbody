@@ -534,6 +534,7 @@ void display(void)
       }
     }
     bobj->draw_arrow();
+    bobj->draw_line();
   }
   glPopMatrix();
 }

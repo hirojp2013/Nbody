@@ -45,7 +45,7 @@ const double TRAJ_COLOR_BASE = 0.2;  // kiseki no noutan no kizyun
 const float SPEED = .009;
 const float ROT_SPEED = 0.1;
 
-enum{ARROW,NEARBY,AROUND,ENG_SUM,NOTHING,};
+enum{ARROW,NEARBY,AROUND,ENG_SUM,LINE,NOTHING,};
 
 class Common {
 

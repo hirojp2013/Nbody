@@ -1,12 +1,39 @@
 #include "binary.h"
 #include "angular_vel.h"
 #include "common.h"
+#include "motion.h"
 
 const double MIN = 0;
 const double MAX = 1.;
 binary::binary(const double length):clh(MIN,MAX),LENGTH(length){
   ang_vel = new angular_vel;
   cm = Common::GetInstance();
+}
+
+void binary::draw_line(){
+  GLdouble omega[3];
+  Motion *mo = Motion::GetInstance();
+  vector< pair<string,BINARY> >binlist(mo->GetBinaryMap().begin(),
+				       mo->GetBinaryMap().end());
+  vector< pair<string,BINARY> >::iterator bp;
+  BINARY bi_buff;
+  if(cm->binary_state == LINE){
+    glPushMatrix();
+    glRotated(cm->theta, 0.0, 0.0, 1.0);
+    glRotated(cm->phi, 1.0, 0.0, 0.0);
+    glColor3d( 1.0, 1.0, 1.0 );
+    
+    glLineWidth(2.0);
+    glBegin(GL_LINES);
+    for(bp = binlist.begin();bp!=binlist.end();bp++){
+      bi_buff = (*bp).second;
+      glVertex3d(bi_buff.pos[0].pos[0],bi_buff.pos[0].pos[1],bi_buff.pos[0].pos[2]);
+
+      glVertex3d(bi_buff.pos[1].pos[0],bi_buff.pos[1].pos[1],bi_buff.pos[1].pos[2]);
+    }
+    glEnd();
+    glPopMatrix();
+  }
 }
 
 void binary::draw_arrow(){

@@ -155,7 +155,7 @@ void UI::Keyboard(void)
     // 			cm->dy -= cm->dd;
     // 			cout << "dy: " << dy_prev << " -> " << cm->dy << endl;
     // 		}
-    //	} else if (CAVEgetbutton(CAVE_TKEY)) {
+    //	} else if (CAVEgetbutton(CAVE_EKEY)) {
     //		if (!CAVEgetbutton(CAVE_CTRLKEY)) {
     //			/* T */
     //			cm->dd *= 1.3;
@@ -185,6 +185,8 @@ void UI::Keyboard(void)
   }else if(CAVEgetbutton(CAVE_UKEY)){
     cm->binary_state = ENG_SUM;
   }else if(CAVEgetbutton(CAVE_YKEY)){
+    cm->binary_state = LINE;
+  }else if(CAVEgetbutton(CAVE_TKEY)){
     cm->binary_state = NOTHING;
   }
 }

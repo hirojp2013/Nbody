@@ -11,6 +11,7 @@ class binary{
  public:
   binary(const double length);
   void draw_arrow();
+  void draw_line();
   void color_set(struct inf_t p_inf,GLdouble color[4]);
  private:
   Common *cm;

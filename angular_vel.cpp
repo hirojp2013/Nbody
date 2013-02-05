@@ -35,20 +35,6 @@ void angular_vel::draw_arrow()
     glDisable(GL_ALPHA_TEST);
     glDisable(GL_BLEND);
     glDisable(GL_LIGHTING);
-    
-    glRotated(cm->theta, 0.0, 0.0, 1.0);
-    glRotated(cm->phi, 1.0, 0.0, 0.0);
-    glColor3d( 1.0, 1.0, 1.0 );
-
-    glLineWidth(2.0);
-    glBegin(GL_LINES);
-    for(bp = binlist.begin();bp!=binlist.end();bp++){
-      bi_buff = (*bp).second;
-      glVertex3d(bi_buff.pos[0].pos[0],bi_buff.pos[0].pos[1],bi_buff.pos[0].pos[2]);
-
-      glVertex3d(bi_buff.pos[1].pos[0],bi_buff.pos[1].pos[1],bi_buff.pos[1].pos[2]);
-    }
-    glEnd();
   }
   glPopMatrix();
   CAVEDisplayBarrier();
