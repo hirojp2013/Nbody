@@ -217,7 +217,9 @@ void step(void)
     for(;it!=poslistV.end();it++){
       if(!cm->target_id.empty()
 	 &&it->id==cm->target_id.front()){
+	//	printf("vel2 %f\n",(it->vlen2));
 	float color_val = (float)( (it->vlen2 < cm->vmax ? it->vlen2 : cm->vmax) - TRAJ_COLOR_BASE );
+	//	printf("color_val %f\n",color_val);
 	
 	
 	TARGET_POS tpos = { it->pos.pos[0], it->pos.pos[1], it->pos.pos[2], { color_val, color_val, color_val }  };
@@ -231,8 +233,10 @@ void step(void)
 	t_queue.front().push_back(tpos); 
       }else if(!cm->target_id.empty()
 	       &&it->id==cm->target_id.back()){
+	//	printf("vel2 %f\n",(it->vlen2));
 
 	float color_val = (float)( (it->vlen2 < cm->vmax ? it->vlen2 : cm->vmax) - TRAJ_COLOR_BASE );
+	//	printf("color_val %f\n",color_val);
 	TARGET_POS tpos = { it->pos.pos[0], it->pos.pos[1],
 			    it->pos.pos[2], { color_val, color_val, color_val }  };
 	if(!cm->traj.empty()){
@@ -476,7 +480,7 @@ void display(void)
 	    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, idbuf[i]);
 	  }
 	}
-	if (cm->runstate == 1) {
+	//	if (cm->runstate == 1) {
 		
 	  // trajectory
 	  //				cout << "traj: " << pt->getVLen() << " " << cm->vmax << " " << color_val << endl;
@@ -497,7 +501,7 @@ void display(void)
 	    glEnd();
 	  }
 		
-	}
+	  //	}
       }else if(!cm->target_id.empty()
 	       &&p->id==cm->target_id.back()){
 	    
@@ -507,7 +511,7 @@ void display(void)
 	  }
 	}
 
-	if(cm->runstate == 1){
+	//	if(cm->runstate == 1){
 	  glLineWidth(1.0);
 	  for (int i = cm->traj.back().size() - 1; i > 0; i--) {
 	    vector<TARGET_POS> target_list = cm->traj.back();
@@ -524,7 +528,7 @@ void display(void)
 	    glEnd();
 		    
 	  }
-	}
+	  //	}
       }else{
 	if(cm->char_state){
 	  for (int i = 0; i < strlen(idbuf); i++) {

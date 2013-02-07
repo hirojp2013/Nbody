@@ -29,7 +29,7 @@ Common::Common()
 
   beam_flag = false;
   rot = 0.0;
-  vmax =  4.0;
+  vmax =  1.0;
 };
 
 Common::~Common()

@@ -66,7 +66,7 @@ void Particle::getVlen2(double *vlen2,double scale){
   double tmp=0.0;
   double v_tmp;
   for(int i=0;i<3;i++){
-    v_tmp = v[i]/tmp;
+    v_tmp = v[i]/scale;
     tmp += v_tmp*v_tmp;
   }
   *vlen2 = tmp;

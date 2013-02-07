@@ -40,8 +40,8 @@ const double EPSIRON = DBL_MIN;
 const double NOT_MAKE_BINARY = TARGET_DIST_THRESH + EPSIRON;
 const double ARROW_LENGTH=0.010;
 const double ARROW_WIDTH=0.025;
-const int    TRAJ_MAX = 300;     //kiseki no youryou
-const double TRAJ_COLOR_BASE = 0.2;  // kiseki no noutan no kizyun
+const int    TRAJ_MAX = 200;     //kiseki no youryou
+const double TRAJ_COLOR_BASE = 0.;  // kiseki no noutan no kizyun
 const float SPEED = .009;
 const float ROT_SPEED = 0.1;
 

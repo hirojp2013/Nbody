@@ -134,13 +134,21 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
 	  }
 	}
  	map<string,BINARY>::iterator it = bin_map.find(name);
- 	if(it != bin_map.end()){
- 	  binary.count = (*it).second.count + 1;
- 	  (*it).second = binary;
- 	}else{
- 	  binary.count = 1;
- 	  bin_map.insert( pair<string, BINARY>( name, binary ) );
- 	}
+	if(it != bin_map.end()){
+	  if(cm->runstate == 1){
+	    binary.count = (*it).second.count + 1;
+	  }else{
+	    binary.count = (*it).second.count;
+	  }
+	  (*it).second = binary;
+	}else{
+	  if(cm->runstate == 0){		
+	    binary.count = 1;
+	  }else{
+	    binary.count = 0;
+	  }
+	  bin_map.insert( pair<string, BINARY>( name, binary ) );
+	}
       }
     }
   } 
