@@ -663,14 +663,14 @@ void display(void)
     //    glEnable(GL_LIGHTING);
     glRotated(cm->theta, 0.0, 0.0, 1.0);
     glRotated(cm->phi, 1.0, 0.0, 0.0);
-    pobjs->draw();
+    //    pobjs->draw();
     //    glDisable(GL_LIGHTING);
 
     double r = cm->GetRadius();
     Motion *mo = Motion::GetInstance();
     vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
     vector<PARTICLE_INF>::iterator p;
-    /*
+    
     for(p=poslistV.begin();p!=poslistV.end();p++){
       char idbuf[10];
       //<<<<<<< HEAD
@@ -704,7 +704,9 @@ void display(void)
 	glTranslated(p->pos.pos[0],
 		     p->pos.pos[1],
 		     p->pos.pos[2]);
-	gluSphere(sphereObj[CAVEUniqueIndex()], r, 10, 6);
+	//	glColor4d(0.,0.,1.,1.);
+	//	gluSphere(sphereObj[CAVEUniqueIndex()], r, 10, 6);
+	gluSphere(sphereObj[CAVEUniqueIndex()], 0.05, 10, 6);
       }
 
       glDisable(GL_BLEND);
@@ -791,7 +793,7 @@ void display(void)
 	}
       }
     }
-    */
+    
     bobj->draw_arrow();
     bobj->draw_line();
   }
