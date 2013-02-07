@@ -13,7 +13,7 @@ const GLdouble COLORS[][3] = {
   { 1.0, 1.0, 0.0 }
 };
 const int      COLOR_NUM = sizeof(COLORS) / sizeof(COLORS[0]);
-const GLdouble SIZE = 0.004;  // particle size
+const GLdouble SIZE = 20;  // particle size
 const GLdouble SCALE_UNIT = 1.0005;
 
 const double   GRID_MAX = 50.0;
@@ -45,7 +45,11 @@ const double TRAJ_COLOR_BASE = 0.;  // kiseki no noutan no kizyun
 const float SPEED = .009;
 const float ROT_SPEED = 0.1;
 
+
 enum{ARROW,NEARBY,AROUND,ENG_SUM,LINE,NOTHING,};
+
+const int PARTICLE_NUMBER_MAX = 10000;
+
 
 class Common {
 
@@ -94,7 +98,7 @@ class Common {
 
   //int target_id;
   queue<int>  target_id;
-  double GetRadius() { return SIZE / scale * radius; }
+  double GetRadius() { return radius/scale; }
   double GetParticleDist(PARTICLE_POS *p1,PARTICLE_POS *p2);
 
   void clearTraj();

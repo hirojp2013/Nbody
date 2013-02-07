@@ -17,6 +17,7 @@ void angular_vel::draw_arrow()
 				       mo->GetBinaryMap().end());
   vector< pair<string,BINARY> >::iterator bp;
   BINARY bi_buff;
+  printf("%d\n",binlist.size());
   glPushMatrix();
   {
     glEnable(GL_LIGHTING);
@@ -30,6 +31,7 @@ void angular_vel::draw_arrow()
       get_omega(bi_buff.pos,bi_buff.vel,bi_buff.dist,omega);
       get_inf_V(omega,&angular,&azimuth,&length);
       //  call_arrow(bi_buff.com,angular,azimuth,length);
+      printf("length %f,bi_buff %d\n",length,bi_buff.count);
       aw[CAVEUniqueIndex()].draw(bi_buff.com,angular,azimuth,length);
     }
     glDisable(GL_ALPHA_TEST);

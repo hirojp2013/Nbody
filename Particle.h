@@ -4,11 +4,16 @@
 #include <cave_ogl.h>
 #include <GL/glut.h>
 #include <GL/gl.h>
+
+
+
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <vector>
 #include <map>
+#include <boost/unordered_map.hpp>
 #include <string>
 #include <stdlib.h>
 #include <stdio.h>
@@ -116,9 +121,13 @@ public:
 
 	void getA(double *pos) { for (int i = 0; i < 3; i++) pos[i] = a[i]; }
 	void getJ(double *pos) { for (int i = 0; i < 3; i++) pos[i] = j[i]; }
+
 	void getVlen2(double *vlen2,double scale);
 	
 	void getKin(double *kin,double v[3],double scale);
+
+	void extrapolate(double tcur, GLdouble scale, double *pos);
+
 	void extrapolate(double tcur, GLdouble scale, PARTICLE_POS *pos);
 	GLdouble max_particle_coord(PARTICLE_POS &pos);
 
