@@ -31,8 +31,7 @@ void Motion::bin_map_erase(){
   }
 }
 
-//void Motion::Grid_decomp(boost::unordered_multimap<string,PARTICLE_INF>& cell_data,
-//			 double cell_length){
+
 void Motion::Grid_decomp(multimap<string,PARTICLE_INF>& cell_data,
 			 double cell_length){
 
@@ -53,15 +52,8 @@ void Motion::Grid_decomp(multimap<string,PARTICLE_INF>& cell_data,
 
 }
 
-//<<<<<<< HEAD
+
 void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale,I_OR_O I_O,string iname,string tname,vector<PARTICLE_INF>& poslistV){
-  //=======
-  //void Motion::Find_io_CellBinary(boost::unordered_multimap<string,PARTICLE_INF>&cell_data,
-  //GLdouble scale,I_OR_O I_O,string iname,string tname){
-  //>>>>>>> test3_b
-  //void Motion::Find_io_CellBinary(boost::unordered_multimap<string,PARTICLE_INF>&cell_data,
-  //				GLdouble scale,I_OR_O I_O,string iname,string tname,
-  //				vector<PARTICLE_INF>& poslistV){
 
   int id[2];
   char idstr[32];
@@ -75,7 +67,6 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
   Common *cm = Common::GetInstance();
   double scale2 = scale * scale;
   double thresh_hold_scale = DIST_THRESH2 / scale2;
-  //<<<<<<< HEAD
   multimap<string,PARTICLE_INF>::iterator i_it = cell_data.lower_bound(iname);
   multimap<string,PARTICLE_INF>::iterator t_it;
 
@@ -86,24 +77,6 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
     index_i = (*i_it).second.id-1;
     pos[0] = (*i_it).second.pos;
 
-    //=======
-    //  pair< boost::unordered_multimap<string,PARTICLE_INF>::iterator,
-    //    boost::unordered_multimap<string,PARTICLE_INF>::iterator > pair_it_i;
-    //  pair_it_i = cell_data.equal_range(iname);
-
-    //  boost::unordered_multimap<string,PARTICLE_INF>::iterator i_it;
-
-    //  pair< boost::unordered_multimap<string,PARTICLE_INF>::iterator,
-    //    boost::unordered_multimap<string,PARTICLE_INF>::iterator > pair_it_t;
-    //  pair_it_t = cell_data.equal_range(tname);
-    //  boost::unordered_multimap<string,PARTICLE_INF>::iterator t_it;
-    //  boost::unordered_multimap<string,PARTICLE_INF>::iterator it;
-
-
-    //  for(i_it = pair_it_i.first;
-    //      i_it!=pair_it_i.second;
-    //      i_it++){
-    //>>>>>>> test3_b
     index_i = (*i_it).second.id-1;
     pos[0] = (*i_it).second.pos;
 
@@ -116,15 +89,9 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
       t_it = i_it;
       t_it++; 
     }else{
-      //      t_it = pair_it_t.first;
       t_it = cell_data.lower_bound(tname);
     }
-    //<<<<<<< HEAD
     for(;t_it!=cell_data.upper_bound(tname);t_it++){
-      //=======
-      // for(;t_it!=pair_it_t.second;t_it++){
-      //pos[0] = (*i_it).second.pos;
-      //>>>>>>> test3_b
       pos[1] = (*t_it).second.pos;
       dist = cm->GetParticleDist(&pos[0],&pos[1]);
       if(cm->binary_state == AROUND){
@@ -136,7 +103,6 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
       if(dist <= thresh_hold_scale){
  	id[0] = (*i_it).second.id;
 	id[1] = (*t_it).second.id;
-	//<<<<<<< HEAD
  	sprintf(idstr,"%d,%d",id[0],id[1]);
  	name = idstr;
  	BINARY binary;
@@ -177,22 +143,6 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
 	  }
 	}
  	map<string,BINARY>::iterator it = bin_map.find(name);
-	//=======
-	//	sprintf(idstr,"%d,%d",id[0],id[1]);
-	//	name = idstr;
-	//	BINARY binary;
-	//	binary.id[0] = id[0];
-	//	binary.id[1] = id[1];
-	//	binary.pos[0] = pos[0];
-	//	binary.pos[1] = pos[1];
-	//	GetCOM(pos,&(binary.com),2);
-	//	binary.vel[0] = (*i_it).second.vel;
-	//	binary.vel[1] = (*t_it).second.vel;
-	//	binary.tag = true;
-	//	binary.dist = dist;
-
-	//	map<string,BINARY>::iterator it = bin_map.find(name);
-	//>>>>>>> test3_b
 	if(it != bin_map.end()){
 	  binary.count = (*it).second.count + 1;
 	  (*it).second = binary;
@@ -207,25 +157,14 @@ void Motion::Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data,GLdouble
   } 
 }
 
-  void Motion::FindBinary(GLdouble tcur,GLdouble scale){
+void Motion::FindBinary(GLdouble tcur,GLdouble scale){
   double cell_length = CELL_LENGTH / scale;
-  //<<<<<<< HEAD
   FindBinary_initialize();
   Grid_decomp(cell_data,cell_length);
   Common *cm = Common::GetInstance();
   vector<PARTICLE_INF>& poslistV = cm->GetInstance()->data.getCurrentPosInf();
-  {
-    poslistV.clear();
-    PARTICLE_INF par_inf = PARTICLE_INF_INIT;
-    poslistV.resize(cm->data.getIDNum(),par_inf);
-  }
   multimap<string,PARTICLE_INF>::iterator it = cell_data.begin();
-  //=======
-  //  boost::unordered_multimap<string,PARTICLE_INF> cell_data;
-  //  FindBinary_initialize();
-  //  Grid_decomp(cell_data,cell_length);
-  //  boost::unordered_multimap<string,PARTICLE_INF>::iterator it = cell_data.begin();
-  //>>>>>>> test3_b
+  
   char idstr[100];
   string name;
   string iname;

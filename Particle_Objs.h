@@ -5,7 +5,7 @@ class Particle_Objs{
  public:
   int *element_type;
   double x[PARTICLE_NUMBER_MAX][3];
-  double color[PARTICLE_NUMBER_MAX][3];
+  double color[PARTICLE_NUMBER_MAX][4];
 
   Particle_Objs();
   ~Particle_Objs();

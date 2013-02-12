@@ -12,7 +12,8 @@ class binary{
   binary(const double length);
   void draw_arrow();
   void draw_line();
-  void color_set(struct inf_t p_inf,GLdouble color[4]);
+  //  void color_set(struct inf_t p_inf,GLdouble color[4]);
+  void color_set(GLdouble color[][4]);
  private:
   Common *cm;
   angular_vel *ang_vel; 

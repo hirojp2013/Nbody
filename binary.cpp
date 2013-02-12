@@ -43,28 +43,45 @@ void binary::draw_arrow(){
   }
 }
 
-void binary::color_set(PARTICLE_INF p_inf,
-		       GLdouble color[4]){
+void binary::color_set(double color[][4]){
+  vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
+  int num=0;
   switch(cm->binary_state){
   case NEARBY:
     glEnable(GL_BLEND);
-    clh.color_map(p_inf.kin,nearby_alpha_boundary(p_inf),color);
+
+    for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
+      clh.color_map(p_inf->kin,nearby_alpha_boundary(*p_inf),color[num]);
+      num++;
+    }
+
     break;
   case AROUND:
     glEnable(GL_BLEND);
-    clh.color_map(p_inf.kin,around_alpha_boundary(p_inf),color);
+    for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
+      clh.color_map(p_inf->kin,around_alpha_boundary(*p_inf),color[num]);
+      num++;
+    }
     break;
   case ENG_SUM:
     glEnable(GL_BLEND);
-    clh.color_map(eng_sum_color_boundary(p_inf),
-		  eng_sum_alpha_boundary(p_inf),
-		  color);
+    for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
+      clh.color_map(eng_sum_color_boundary(*p_inf),
+		    eng_sum_alpha_boundary(*p_inf),
+		    color[num]);
+      num++;
+    }
     break;
   default:
-    color[0] = 0.0;
-    color[1] = 0.0;
-    color[2] = 1.0;
-    color[3] = 1.0;
+    //    for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
+
+    for(int i=0;i<PARTICLE_NUMBER_MAX;i++){
+      color[i][0] = 0.0;
+      color[i][1] = 0.0;
+      color[i][2] = 1.0;
+      color[i][3] = 1.0;
+    }
+    
     break;
   }
 }
