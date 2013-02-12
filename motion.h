@@ -61,17 +61,13 @@ class Motion{
   void bin_map_initialize();
   void box_initialize(int max_index);
   void FindBinary_initialize();
-  //<<<<<<< HEAD
-  void Find_io_CellBinary(multimap<string,PARTICLE_INF>&cell_data, GLdouble scale,I_OR_O I_O,string iname,string tname,vector<PARTICLE_INF>& poslistV);
+
+  void Search_icell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale,string iname,string tname,vector<PARTICLE_INF>& poslistV);
+  void Search_tcell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale,string iname,string tname,vector<PARTICLE_INF>& poslistV);
+  void Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF> tpar,GLdouble scale,vector<PARTICLE_INF>& poslistV);
+
   void bin_map_erase();
   void Grid_decomp(multimap< string,PARTICLE_INF >& cell_data,double cell_length);
-  //=======
-  //  void Find_io_CellBinary(boost::unordered_multimap<string,PARTICLE_INF>&cell_data,
-  //			  GLdouble scale,I_OR_O I_O,string iname,string tname);
-  //  void bin_map_erase();
-  //  void Grid_decomp(boost::unordered_multimap<string,PARTICLE_INF>& cell_data,
-  //		   double cell_length);
-  //>>>>>>> test3_b
   double GetTotalVelocity(Particle *pt[], int num);
   void GetCOM(double pos[][3],double *com,int num);
   double GetCOMDiff(Particle *pt[], double *com_prev, int num);
