@@ -207,10 +207,9 @@ void step(void)
     	pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
     	pos_inf.id = pt->getId();
     	for(int i=0;i<3;i++){
-    	  pos_inf.pos.pos[i] = pos[num][i];
+    	  pos_inf.pos[i] = pos[num][i];
     	}
-    	pt->getV(&(pos_inf.vel),cm->scale);
-	//	poslistV.push_back(pos_inf);
+    	pt->getV(pos_inf.vel,cm->scale);
 	poslistV[pos_inf.id-1] = pos_inf;
 
     	num++;
@@ -281,9 +280,9 @@ void step(void)
 	pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
 	pos_inf.id = pt->getId();
 	for(int i=0;i<3;i++){
-	  pos_inf.pos.pos[i] = pos[num][i];
+	  pos_inf.pos[i] = pos[num][i];
 	}
-	pt->getV(&(pos_inf.vel),cm->scale);
+	pt->getV(pos_inf.vel,cm->scale);
 	//	poslistV.push_back(pos_inf);
 	poslistV[pos_inf.id-1] = pos_inf;
 	num++;
@@ -291,7 +290,7 @@ void step(void)
 	if(!cm->target_id.empty()
 	   &&pt->getId()==cm->target_id.front()){
 	  float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-	  TARGET_POS tpos = { pos_inf.pos.pos[0], pos_inf.pos.pos[1], pos_inf.pos.pos[2], { color_val, color_val, color_val }  };
+	  TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1], pos_inf.pos[2], { color_val, color_val, color_val }  };
 	  if (cm->traj.front().size() == TRAJ_MAX) {
 	    vector<TARGET_POS>::iterator st = cm->traj.front().begin();
 	    cm->traj.front().erase(st);
@@ -302,8 +301,8 @@ void step(void)
 		 &&pt->getId()==cm->target_id.back()){
 	  
 	  float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-	  TARGET_POS tpos = { pos_inf.pos.pos[0], pos_inf.pos.pos[1],
-			      pos_inf.pos.pos[2], { color_val, color_val, color_val }  };
+	  TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1],
+			      pos_inf.pos[2], { color_val, color_val, color_val }  };
 	  if(!cm->traj.empty()){
 	    
 	    if (cm->traj.back().size() == TRAJ_MAX) {
@@ -488,12 +487,12 @@ void Cross(double *orientV,double *diff_velV,GLdouble *ang_momV){
   ang_momV[2] = (orientV[0]*diff_velV[1] - orientV[1]*diff_velV[0])/2.0; 
 }
 
-void get_omega(PARTICLE_POS *pos,PARTICLE_VEL *vel,double dist,GLdouble omega[3]){
+void get_omega(double pos[][3],double vel[][3],double dist,GLdouble omega[3]){
   double orientV[3],diff_velV[3];
   GLdouble ang_momV[3];
   for(int i=0;i<3;i++){
-    orientV[i] = pos[0].pos[i] - pos[1].pos[i];
-    diff_velV[i] = vel[0].vel[i] - vel[1].vel[i];
+    orientV[i] = pos[0][i] - pos[1][i];
+    diff_velV[i] = vel[0][i] - vel[1][i];
   }
 
   Cross(orientV,diff_velV,ang_momV);
@@ -503,6 +502,8 @@ void get_omega(PARTICLE_POS *pos,PARTICLE_VEL *vel,double dist,GLdouble omega[3]
 
 }
 
+
+/*
 void draw_arrow(double x,double y,double z,double angular,double azimuth,double length);
 
 void draw_arrow(PARTICLE_POS pos,double angular,double azimuth,double length){
@@ -522,61 +523,67 @@ void draw_arrow(double x,double y,double z,double angular,double azimuth,double 
   glPopMatrix();
 }
 
+*/
 
 
-void draw_binary()
-{
-  double angular,azimuth,length;
-  GLdouble omega[3];
-  Motion *mo = Motion::GetInstance();
-  vector< pair<string,BINARY> >binlist(mo->GetBinaryMap().begin(),mo->GetBinaryMap().end());
-  vector< pair<string,BINARY> >::iterator bp;
-  BINARY bi_buff;
-  glPushMatrix();
-  {
-    glEnable(GL_LIGHTING);
-    glEnable(GL_BLEND);
-    glEnable(GL_ALPHA_TEST);
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+// /*
+// void draw_binary()
+// {
+//   double angular,azimuth,length;
+//   GLdouble omega[3];
+//   Motion *mo = Motion::GetInstance();
+//   vector< pair<string,BINARY> >binlist(mo->GetBinaryMap().begin(),mo->GetBinaryMap().end());
+//   vector< pair<string,BINARY> >::iterator bp;
+//   BINARY bi_buff;
+//   glPushMatrix();
+//   {
+//     glEnable(GL_LIGHTING);
+//     glEnable(GL_BLEND);
+//     glEnable(GL_ALPHA_TEST);
+//     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     
-    /*    for(bp=binlist.begin();bp!=binlist.end();bp++){
-      bi_buff = (*bp).second;
-      glColor4d(1.0,1.0,1.0,(double)(bi_buff.count)/30.0);
-      get_omega(bi_buff.pos,bi_buff.vel,bi_buff.dist,omega);
-      get_inf_V(omega,&angular,&azimuth,&length);
-      draw_arrow(bi_buff.com,angular,azimuth,length);
-      }*/
-    glDisable(GL_ALPHA_TEST);
-    glDisable(GL_BLEND);
-    glDisable(GL_LIGHTING);
+//     /*    for(bp=binlist.begin();bp!=binlist.end();bp++){
+//       bi_buff = (*bp).second;
+//       glColor4d(1.0,1.0,1.0,(double)(bi_buff.count)/30.0);
+//       get_omega(bi_buff.pos,bi_buff.vel,bi_buff.dist,omega);
+//       get_inf_V(omega,&angular,&azimuth,&length);
+//       draw_arrow(bi_buff.com,angular,azimuth,length);
+//       }*/
+//     glDisable(GL_ALPHA_TEST);
+//     glDisable(GL_BLEND);
+//     glDisable(GL_LIGHTING);
     
-    glRotated(cm->theta, 0.0, 0.0, 1.0);
-    glRotated(cm->phi, 1.0, 0.0, 0.0);
-    glColor3d( 1.0, 1.0, 1.0 );
+//     glRotated(cm->theta, 0.0, 0.0, 1.0);
+//     glRotated(cm->phi, 1.0, 0.0, 0.0);
+//     glColor3d( 1.0, 1.0, 1.0 );
     
-    glLineWidth(2.0);
-    glBegin(GL_LINES);
+//     glLineWidth(2.0);
+//     glBegin(GL_LINES);
 
-    for(bp = binlist.begin();bp!=binlist.end();bp++){
-      bi_buff = (*bp).second;
-      glVertex3d(bi_buff.pos[0].pos[0],bi_buff.pos[0].pos[1],bi_buff.pos[0].pos[2]);
+//     for(bp = binlist.begin();bp!=binlist.end();bp++){
+//       bi_buff = (*bp).second;
+//       glVertex3d(bi_buff.pos[0].pos[0],bi_buff.pos[0].pos[1],bi_buff.pos[0].pos[2]);
 
-      glVertex3d(bi_buff.pos[1].pos[0],bi_buff.pos[1].pos[1],bi_buff.pos[1].pos[2]);
-#ifdef DEBUG
-      CAVEDisplayBarrier();
-      {
- 	if(CAVEMasterDisplay()){
- 	  printf("%s(%d)\n",__FILE__,__LINE__);fflush(stdout);
- 	}
-      }
-      CAVEDisplayBarrier();
-#endif
-    }
-    glEnd();
-  }
-  glPopMatrix();
-  CAVEDisplayBarrier();
-}
+//       glVertex3d(bi_buff.pos[1].pos[0],bi_buff.pos[1].pos[1],bi_buff.pos[1].pos[2]);
+// #ifdef DEBUG
+//       CAVEDisplayBarrier();
+//       {
+//  	if(CAVEMasterDisplay()){
+//  	  printf("%s(%d)\n",__FILE__,__LINE__);fflush(stdout);
+//  	}
+//       }
+//       CAVEDisplayBarrier();
+// #endif
+//     }
+//     glEnd();
+//   }
+//   glPopMatrix();
+//   CAVEDisplayBarrier();
+// }
+// */
+
+
+
 
 //>>>>>>> test3_b
 void display(void)
@@ -622,17 +629,17 @@ void display(void)
 	    
 	glRotated(cm->theta, 0.0, 0.0, 1.0);
 	glRotated(cm->phi, 1.0, 0.0, 0.0);
-	glTranslated(p->pos.pos[0],
-		     p->pos.pos[1],
-		     p->pos.pos[2]);
+	glTranslated(p->pos[0],
+		     p->pos[1],
+		     p->pos[2]);
       }
 
       glDisable(GL_BLEND);
       glPopMatrix();
       glDisable(GL_LIGHTING);
-      glRasterPos3d(p->pos.pos[0] + r,
-		    p->pos.pos[1] + r,
-		    p->pos.pos[2] + r);
+      glRasterPos3d(p->pos[0] + r,
+		    p->pos[1] + r,
+		    p->pos[2] + r);
 	
       //trajectory
 

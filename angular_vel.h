@@ -6,8 +6,6 @@
 
 class arrow;
 class Common;
-struct pos_t;
-struct vel_t;
 
 class angular_vel{
  public:
@@ -19,8 +17,8 @@ class angular_vel{
 		 double *angular,
 		 double *azimuth,
 		 double *length);
-  void get_omega(pos_t *pos,
-		 vel_t *vel,
+  void get_omega(double pos[][3],
+		 double vel[][3],
 		 double dist,
 		 GLdouble omega[3]);
 

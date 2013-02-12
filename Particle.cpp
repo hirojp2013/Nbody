@@ -87,7 +87,7 @@ void Particle::getVlen2(double *vlen2,double v[3],double scale){
 }
 
 
-void Particle::getKin(double *kin,double v[3],double scale){
+void Particle::getKin(double *kin,double *v,double scale){
   Particle pt;
   double vlen2;
   //  printf("%s(%d)\n",__FILE__,__LINE__);
@@ -106,21 +106,6 @@ void Particle::extrapolate(double tcur, GLdouble scale, double *pos) {
   for (int i = 0; i < 3; i++) {
     pos[i] = ( (a[i] * dt * 0.5 + v[i]) * dt + x[i] ) / scale;
   }
-}
-
-
-void Particle::extrapolate(double tcur, GLdouble scale, PARTICLE_POS *pos) {
-  double dt = tcur - t;
-  for (int i = 0; i < 3; i++) {
-    pos->pos[i] = ( (a[i] * dt * 0.5 + v[i]) * dt + x[i] ) / scale;
-  }
-}
-
-GLdouble Particle::max_particle_coord(PARTICLE_POS &pos){
-  double ans;
-  ans = max(fabs(pos.pos[0]),fabs(pos.pos[1]));
-  ans = max(ans,fabs(pos.pos[2]));
-  return ans;
 }
 
 /*
@@ -270,9 +255,9 @@ vector<PARTICLE_INF>& ParticleData::getCurrentPosInf(double cur_t,double scale,v
       continue;
     }
     Particle *pt = this->getData(*p);
-    pt->extrapolate(cur_t, scale, &(pos_inf.pos));
+    pt->extrapolate(cur_t, scale, pos_inf.pos);
     pos_inf.id = pt->getId();
-    pt->getV(&(pos_inf.vel),scale);
+    pt->getV(pos_inf.vel,scale);
     pt->getVlen2(&(pos_inf.vlen2),scale);
     //    pt->getKin(&(pos_inf.kin),scale);
     //    pos_inf.l = NOT_MAKE_BINARY;

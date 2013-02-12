@@ -15,9 +15,9 @@ typedef struct{
 
 typedef struct{
   int id[2];
-  PARTICLE_POS pos[2];
-  PARTICLE_POS com;
-  PARTICLE_VEL vel[2];
+  double pos[2][3];
+  double com[3];
+  double vel[2][3];
   int count;
   bool tag;
   double dist;
@@ -73,7 +73,7 @@ class Motion{
   //		   double cell_length);
   //>>>>>>> test3_b
   double GetTotalVelocity(Particle *pt[], int num);
-  void GetCOM(PARTICLE_POS *pos,PARTICLE_POS *com,int num);
+  void GetCOM(double pos[][3],double *com,int num);
   double GetCOMDiff(Particle *pt[], double *com_prev, int num);
 };
 

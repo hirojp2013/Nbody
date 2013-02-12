@@ -57,22 +57,10 @@ x:
  */
 
 using namespace std;
-
-
-
-typedef struct pos_t{
-  GLdouble pos[3];
-}PARTICLE_POS;
-
-
-typedef struct vel_t{
-    GLdouble vel[3];
-}PARTICLE_VEL;
-
 typedef struct inf_t{
   int id;
-  PARTICLE_POS pos;
-  PARTICLE_VEL vel;
+  double pos[3];
+  double vel[3];
   double vlen2;
   double kin;
   double pot;
@@ -107,15 +95,9 @@ public:
 	double getTime() { return t; }
 	double getVLen() { return vlen; }
 	void getX(double *pos) { for (int i = 0; i < 3; i++) pos[i] = x[i]; }
-	void getV(PARTICLE_VEL *vel,double scale=1.0) { 
-	    for (int i = 0; i < 3; i++){
-		vel->vel[i] = v[i]/scale; 
-	    }
-	}
-
 	void getV(double *vel,double scale=1.0) { 
 	    for (int i = 0; i < 3; i++){
-		vel[i] = v[i]/scale; 
+	      vel[i] = v[i]/scale; 
 	    }
 	}
 
@@ -128,8 +110,6 @@ public:
 
 	void extrapolate(double tcur, GLdouble scale, double *pos);
 
-	void extrapolate(double tcur, GLdouble scale, PARTICLE_POS *pos);
-	GLdouble max_particle_coord(PARTICLE_POS &pos);
 
  private:
 	void getVlen2(double *vlen2,double v[3],double scale);

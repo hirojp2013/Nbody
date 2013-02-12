@@ -99,7 +99,7 @@ class Common {
   //int target_id;
   queue<int>  target_id;
   double GetRadius() { return radius/scale; }
-  double GetParticleDist(PARTICLE_POS *p1,PARTICLE_POS *p2);
+  double GetParticleDist(double *p1,double *p2);
 
   void clearTraj();
   void clearId();

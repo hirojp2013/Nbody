@@ -7,7 +7,6 @@
 
 
 class Common;
-struct pos_t;
 
 class arrow{
  public:
@@ -19,7 +18,7 @@ class arrow{
 		  double angular,
 		  double azimuth,
 		  double length);
-  void draw(struct pos_t pos,
+  void draw(double *pos,
 		  double angular,
 		  double azimuth,
 		  double length);

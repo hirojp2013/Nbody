@@ -63,12 +63,12 @@ void angular_vel::get_inf_V(double Vec[],double *angular,double *azimuth,double 
 }
 
 
-void angular_vel::get_omega(PARTICLE_POS *pos,PARTICLE_VEL *vel,double dist,GLdouble omega[3]){
+void angular_vel::get_omega(double pos[][3],double vel[][3],double dist,GLdouble omega[3]){
   double orientV[3],diff_velV[3];
   GLdouble ang_momV[3];
   for(int i=0;i<3;i++){
-    orientV[i] = pos[0].pos[i] - pos[1].pos[i];
-    diff_velV[i] = vel[0].vel[i] - vel[1].vel[i];
+    orientV[i] = pos[0][i] - pos[1][i];
+    diff_velV[i] = vel[0][i] - vel[1][i];
   }
 
   Cross(orientV,diff_velV,ang_momV);

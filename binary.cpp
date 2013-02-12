@@ -27,9 +27,9 @@ void binary::draw_line(){
     glBegin(GL_LINES);
     for(bp = binlist.begin();bp!=binlist.end();bp++){
       bi_buff = (*bp).second;
-      glVertex3d(bi_buff.pos[0].pos[0],bi_buff.pos[0].pos[1],bi_buff.pos[0].pos[2]);
+      glVertex3d(bi_buff.pos[0][0],bi_buff.pos[0][1],bi_buff.pos[0][2]);
 
-      glVertex3d(bi_buff.pos[1].pos[0],bi_buff.pos[1].pos[1],bi_buff.pos[1].pos[2]);
+      glVertex3d(bi_buff.pos[1][0],bi_buff.pos[1][1],bi_buff.pos[1][2]);
     }
     glEnd();
     glPopMatrix();

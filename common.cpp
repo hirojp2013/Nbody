@@ -36,13 +36,13 @@ Common::~Common()
 {
 }
 
-double Common::GetParticleDist(PARTICLE_POS *p1, PARTICLE_POS *p2)
+double Common::GetParticleDist(double *p1, double *p2)
 {
 
 
   double dist = 0.0;
   for (int i = 0; i < 3; i++) {
-    dist += (p1->pos[i] - p2->pos[i]) * (p1->pos[i] - p2->pos[i]);
+    dist += (p1[i] - p2[i]) * (p1[i] - p2[i]);
   }
 
   return dist;
@@ -88,10 +88,10 @@ void Common::SelectParticle()
   float wandvec_tmp1[3],wandvec_tmp2[3];
   CAVEGetPosition(CAVE_WAND_NAV, wandpos_tmp1);
   CAVEGetVector(CAVE_WAND_FRONT_NAV,wandvec_tmp1);
-  PARTICLE_POS candPos;
-  PARTICLE_POS crossPos;
+  double candPos[3];
+  double crossPos[3];
   for(int i=0;i<3;i++){
-    candPos.pos[i] = -100;
+    candPos[i] = -100;
   }
   for (int i = 0; i < 3; i++) {
     wandpos_tmp1[i] -= (float) ORIG[i];
@@ -99,23 +99,23 @@ void Common::SelectParticle()
   coordtrans(wandpos_tmp1,wandpos_tmp2,rot);
   coordtrans(wandvec_tmp1,wandvec_tmp2,rot);
   for (p = curlist.begin(); p != curlist.end(); p++) {
-    PARTICLE_POS pos;
+    double pos[3];
     double dist;
 
     if (*p < 0) {
       continue;
     }
     Particle *pt = data.getData(*p);
-    pt->extrapolate(t_dat,scale,&pos);
+    pt->extrapolate(t_dat,scale,pos);
 
     for (int i = 0; i < 3; i++) {
-      crossPos.pos[i] = wandpos_tmp2[i]+(BEAM_SCALE*wandvec_tmp2[i]);
+      crossPos[i] = wandpos_tmp2[i]+(BEAM_SCALE*wandvec_tmp2[i]);
     }
-    dist = GetParticleDist(&pos,&crossPos);
-    if(dist < TARGET_DIST_THRESH/scale&&dist < candPtDist){
+    dist = GetParticleDist(pos,crossPos);
+    if(dist < candPtDist){
       candPt = *pt; 
       for(int i=0;i<3;i++){
-	candPos.pos[i] = pos.pos[i];
+	candPos[i] = pos[i];
       }
     }
   }

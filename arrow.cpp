@@ -16,8 +16,8 @@ arrow::arrow(){
 
 }
 
-void arrow::draw(PARTICLE_POS pos,double angular,double azimuth,double length){
-  draw((double)(pos.pos[0]),(double)(pos.pos[1]),(double)(pos.pos[2]),angular,azimuth,length);
+void arrow::draw(double *pos,double angular,double azimuth,double length){
+  draw((double)(pos[0]),(double)(pos[1]),(double)(pos[2]),angular,azimuth,length);
 }
 
 void arrow::draw(double x,double y,double z,double angular,double azimuth,double length){
