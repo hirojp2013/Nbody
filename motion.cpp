@@ -175,6 +175,8 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale){
     int ix,iy,iz;
     sscanf(iname.c_str(),"%d,%d,%d",&ix,&iy,&iz);
     Find_io_CellBinary(cell_data,scale,I_TARGET,iname,iname,poslistV);
+    printf("%s(%d)\n",__FILE__,__LINE__);
+    printf("%d\n",bin_map.size());
     int num = cell_data.count(iname);
     for(int l=0;l <num;l++){
       it++;
@@ -196,7 +198,8 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale){
   }
 
   bin_map_erase();
-
+  printf("%s(%d)\n",__FILE__,__LINE__);
+  printf("%d\n",bin_map.size());
 }
 
 void Motion::GetCOM(PARTICLE_POS *pos, PARTICLE_POS *com, int num)
