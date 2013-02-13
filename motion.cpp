@@ -42,6 +42,8 @@ void Motion::Grid_decomp(multimap<string,PARTICLE_INF>& cell_data,double cell_le
     x =(int)(floor)(poslistV[i].pos.pos[0]/cell_length);
     y =(int)(floor)(poslistV[i].pos.pos[1]/cell_length);
     z =(int)(floor)(poslistV[i].pos.pos[2]/cell_length);
+    printf("%s\n",__FILE__,__LINE__);
+    printf("id %d x %d y %d z %d\n",poslistV[i].id,x,y,z);
     sprintf(idstr,"%d,%d,%d",x,y,z);
     name = idstr;
     cell_data.insert(pair<string,PARTICLE_INF>(name,poslistV[i]));
