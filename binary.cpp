@@ -109,9 +109,19 @@ double binary::eng_sum_color_boundary(PARTICLE_INF par_inf){
 }
 
 double binary::nearby_alpha_boundary(PARTICLE_INF par_inf){
+  if(par_inf.id == 20||par_inf.id == 31){
+  printf("%s(%d)\n",__FILE__,__LINE__);
+  }
   if(par_inf.l == NOT_MAKE_BINARY){
+  if(par_inf.id == 20||par_inf.id == 31){
+  printf("%s(%d)\n",__FILE__,__LINE__);
+  }
     return 0.0;
   }
   double pot = (1.0/par_inf.l)*LENGTH;
-  return ( isinf(pot) ? 1.0: pot); 
+
+  printf("%d\n",par_inf.id);
+  printf("%f\n",pot);
+
+  return ( isinf(pot) ? 1.0: pot*1.5); 
 }
