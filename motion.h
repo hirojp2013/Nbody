@@ -42,6 +42,7 @@ class Motion{
   map<string, BINARY>& GetBinaryMap() { return bin_map; }
   multimap<string,PARTICLE_INF>& GetCellMap(){return cell_data;}
  private:
+  Common *cm;
   map<string,BINARY> bin_map;
   multimap<string,PARTICLE_INF> cell_data;
   double DIST_THRESH;
@@ -51,10 +52,7 @@ class Motion{
   double BIN_REMOVE_COUNT_THRESH;
   double EPSIRON;
   double CELL_LENGTH;
-  Motion()
-    { DIST_THRESH = .1; COMDIFF_THRESH = 0; BIN_COUNT_THRESH = 0; BIN_REMOVE_COUNT_THRESH = 0;EPSIRON = DIST_THRESH/4.0; CELL_LENGTH = DIST_THRESH;
-    DIST_THRESH2 = DIST_THRESH*DIST_THRESH;
-  }
+  Motion();
   ~Motion() {}
   Motion(const Motion& obj);
   Motion& operator=(const Motion& obj);
@@ -62,9 +60,9 @@ class Motion{
   void box_initialize(int max_index);
   void FindBinary_initialize();
 
-  void Search_icell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale,string iname,string tname,vector<PARTICLE_INF>& poslistV);
-  void Search_tcell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale,string iname,string tname,vector<PARTICLE_INF>& poslistV);
-  void Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF> tpar,GLdouble scale,vector<PARTICLE_INF>& poslistV);
+  void Search_icell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale,string iname,string tname);
+  void Search_tcell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale,string iname,string tname);
+  void Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF> tpar,GLdouble scale);
 
   void bin_map_erase();
   void Grid_decomp(multimap< string,PARTICLE_INF >& cell_data,double cell_length);

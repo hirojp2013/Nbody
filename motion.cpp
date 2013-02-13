@@ -1,6 +1,12 @@
 #include "motion.h"
 #include "common.h"
 
+Motion::Motion(){ DIST_THRESH = .1; COMDIFF_THRESH = 0; BIN_COUNT_THRESH = 0; BIN_REMOVE_COUNT_THRESH = 0;EPSIRON = DIST_THRESH/4.0; CELL_LENGTH = DIST_THRESH;
+ DIST_THRESH2 = DIST_THRESH*DIST_THRESH;
+ cm = Common::GetInstance();
+}
+
+
 void Motion::init(){
   bin_map.clear();
 }
@@ -35,7 +41,6 @@ void Motion::bin_map_erase(){
 void Motion::Grid_decomp(multimap<string,PARTICLE_INF>& cell_data,
 			 double cell_length){
 
-  Common *cm = Common::GetInstance();
   vector<PARTICLE_INF>poslistV(cm->data.getCurrentPosInf());
   int x,y,z;
   char idstr[100];
@@ -53,7 +58,7 @@ void Motion::Grid_decomp(multimap<string,PARTICLE_INF>& cell_data,
 }
 
 
-void Motion::Search_icell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale,string iname,string tname,vector<PARTICLE_INF>& poslistV){
+void Motion::Search_icell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale,string iname,string tname){
 
   int id[2];
   char idstr[32];
@@ -64,11 +69,12 @@ void Motion::Search_icell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale
   double dist;
   BINARY binary;
   int count;
-  Common *cm = Common::GetInstance();
   double scale2 = scale * scale;
   double thresh_hold_scale = DIST_THRESH2 / scale2;
   multimap<string,PARTICLE_INF>::iterator i_it = cell_data.lower_bound(iname);
   multimap<string,PARTICLE_INF>::iterator t_it;
+
+  vector<PARTICLE_INF> &poslistV=cm->GetInstance()->data.getCurrentPosInf();
 
   int index_i,index_t;
   double kin;
@@ -96,15 +102,14 @@ void Motion::Search_icell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale
     t_it++; 
 
     for(;t_it!=cell_data.upper_bound(tname);t_it++){
-      
-      Make_binary((*i_it),(*t_it),scale,poslistV);
+      Make_binary((*i_it),(*t_it),scale);
     }
   } 
 }
 
 
 
-void Motion::Search_tcell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale,string iname,string tname,vector<PARTICLE_INF>& poslistV){
+void Motion::Search_tcell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale,string iname,string tname){
 
   int id[2];
   char idstr[32];
@@ -115,11 +120,11 @@ void Motion::Search_tcell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale
   double dist;
   BINARY binary;
   int count;
-  Common *cm = Common::GetInstance();
   double scale2 = scale * scale;
   double thresh_hold_scale = DIST_THRESH2 / scale2;
   multimap<string,PARTICLE_INF>::iterator i_it = cell_data.lower_bound(iname);
   multimap<string,PARTICLE_INF>::iterator t_it;
+
 
   int index_i,index_t;
   double kin;
@@ -134,12 +139,12 @@ void Motion::Search_tcell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale
     t_it = cell_data.lower_bound(tname);
 
     for(;t_it!=cell_data.upper_bound(tname);t_it++){
-      Make_binary((*i_it),(*t_it),scale,poslistV);
+      Make_binary((*i_it),(*t_it),scale);
     }
   } 
 }
 
-void Motion::Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF> tpar,GLdouble scale,vector<PARTICLE_INF>& poslistV){
+void Motion::Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF> tpar,GLdouble scale){
   int id[2];
   char idstr[32];
   string name;
@@ -153,6 +158,7 @@ void Motion::Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF
   double kin;
   Particle pt;
 
+  vector<PARTICLE_INF> &poslistV=cm->GetInstance()->data.getCurrentPosInf();
 
   Common *cm = Common::GetInstance();
   double scale2 = scale * scale;
@@ -252,8 +258,7 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale){
   double cell_length = CELL_LENGTH / scale;
   FindBinary_initialize();
   Grid_decomp(cell_data,cell_length);
-  Common *cm = Common::GetInstance();
-  vector<PARTICLE_INF>& poslistV = cm->GetInstance()->data.getCurrentPosInf();
+
   multimap<string,PARTICLE_INF>::iterator it = cell_data.begin();
   
   char idstr[100];
@@ -264,7 +269,7 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale){
     iname = (*it).first;
     int ix,iy,iz;
     sscanf(iname.c_str(),"%d,%d,%d",&ix,&iy,&iz);
-    Search_icell(cell_data,scale,iname,iname,poslistV);
+    Search_icell(cell_data,scale,iname,iname);
     int num = cell_data.count(iname);
     for(int l=0;l <num;l++){
       it++;
@@ -277,7 +282,7 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale){
 	  }else{
 	    sprintf(idstr,"%d,%d,%d",i,j,k);
 	    name = idstr;
-	    Search_tcell(cell_data,scale,iname,name,poslistV);
+	    Search_tcell(cell_data,scale,iname,name);
 	  }
 	}
       }
