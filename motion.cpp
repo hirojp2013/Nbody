@@ -96,83 +96,8 @@ void Motion::Search_icell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale
     t_it++; 
 
     for(;t_it!=cell_data.upper_bound(tname);t_it++){
-      pos[1][0] = (*t_it).second.pos[0];
-      pos[1][1] = (*t_it).second.pos[1];
-      pos[1][2] = (*t_it).second.pos[2];
-
-      dist = cm->GetParticleDist(pos[0],pos[1]);
-      if(cm->binary_state == AROUND){
-	index_t = (*t_it).second.id-1;
-	poslistV[index_i].pot = poslistV[index_i].pot + ( 1.0/sqrt(dist) );
-	poslistV[index_t].pot = poslistV[index_t].pot + ( 1.0/sqrt(dist));
-      }
-
-      if(dist <= thresh_hold_scale){
- 	id[0] = (*i_it).second.id;
-	id[1] = (*t_it).second.id;
- 	sprintf(idstr,"%d,%d",id[0],id[1]);
- 	name = idstr;
- 	BINARY binary;
- 	binary.id[0] = id[0];
- 	binary.id[1] = id[1];
-
- 	binary.pos[0][0] = pos[0][0];
- 	binary.pos[0][1] = pos[0][1];
- 	binary.pos[0][2] = pos[0][2];
-
- 	binary.pos[1][0] = pos[1][0];
- 	binary.pos[1][1] = pos[1][1];
- 	binary.pos[1][2] = pos[1][2];
-
- 	GetCOM(pos,binary.com,2);
- 	binary.vel[0][0] = (*i_it).second.vel[0];
- 	binary.vel[0][1] = (*i_it).second.vel[1];
- 	binary.vel[0][2] = (*i_it).second.vel[2];
-
- 	binary.vel[1][0] = (*t_it).second.vel[0];
- 	binary.vel[1][1] = (*t_it).second.vel[1];
- 	binary.vel[1][2] = (*t_it).second.vel[2];
-
- 	binary.tag = true;
- 	binary.dist = dist;
-	if(cm->binary_state == NEARBY 
-	   || cm->binary_state == ENG_SUM || cm->binary_state == AROUND){
-	  if(sqrt(dist) < poslistV[index_i].l){
-	    poslistV[index_i].l = sqrt(dist);
-	    if(cm->binary_state == ENG_SUM){
-	      poslistV[index_i].l = sqrt(dist);
-	      pt.getKin(&kin,(*t_it).second.vel,cm->scale);
-	      poslistV[index_i].eng_sum = poslistV[index_i].kin+kin
-		-((*i_it).second.vel[0] * (*t_it).second.vel[0]+
-		  (*i_it).second.vel[1] * (*t_it).second.vel[1]+
-		  (*i_it).second.vel[2] * (*t_it).second.vel[2])-1.0/poslistV[index_i].l;
-	    }
-	  }
-	  
-	  index_t = (*t_it).second.id-1;
-	  if(sqrt(dist) < poslistV[index_t].l){
-	    poslistV[index_t].l = sqrt(dist);
-	    if(cm->binary_state == ENG_SUM){
-	      pt.getKin(&kin,(*t_it).second.vel,cm->scale);
-	      poslistV[index_t].eng_sum = poslistV[index_i].kin+
-		kin -((*i_it).second.vel[0] * (*t_it).second.vel[0]+
-		      (*i_it).second.vel[1] * (*t_it).second.vel[1]+
-		      (*i_it).second.vel[2] * (*t_it).second.vel[2])
-		-1.0/poslistV[index_t].l;
-	    }
-	  }
-	}
- 	map<string,BINARY>::iterator it = bin_map.find(name);
-	if(it != bin_map.end()){
-	  binary.count = (*it).second.count + 1;
-	  (*it).second = binary;
-	  
-	}else{
-	  binary.count = 1;
-	  bin_map.insert( pair<string, BINARY>( name, binary ) );
-	}
-	
-      }
+      
+      Make_binary((*i_it),(*t_it),scale,poslistV);
     }
   } 
 }
@@ -209,83 +134,7 @@ void Motion::Search_tcell(multimap<string,PARTICLE_INF>&cell_data,GLdouble scale
     t_it = cell_data.lower_bound(tname);
 
     for(;t_it!=cell_data.upper_bound(tname);t_it++){
-      pos[1][0] = (*t_it).second.pos[0];
-      pos[1][1] = (*t_it).second.pos[1];
-      pos[1][2] = (*t_it).second.pos[2];
-
-      dist = cm->GetParticleDist(pos[0],pos[1]);
-      if(cm->binary_state == AROUND){
-	index_t = (*t_it).second.id-1;
-	poslistV[index_i].pot = poslistV[index_i].pot + ( 1.0/sqrt(dist) );
-	poslistV[index_t].pot = poslistV[index_t].pot + ( 1.0/sqrt(dist));
-      }
-
-      if(dist <= thresh_hold_scale){
- 	id[0] = (*i_it).second.id;
-	id[1] = (*t_it).second.id;
- 	sprintf(idstr,"%d,%d",id[0],id[1]);
- 	name = idstr;
- 	BINARY binary;
- 	binary.id[0] = id[0];
- 	binary.id[1] = id[1];
-
- 	binary.pos[0][0] = pos[0][0];
- 	binary.pos[0][1] = pos[0][1];
- 	binary.pos[0][2] = pos[0][2];
-
- 	binary.pos[1][0] = pos[1][0];
- 	binary.pos[1][1] = pos[1][1];
- 	binary.pos[1][2] = pos[1][2];
-
- 	GetCOM(pos,binary.com,2);
- 	binary.vel[0][0] = (*i_it).second.vel[0];
- 	binary.vel[0][1] = (*i_it).second.vel[1];
- 	binary.vel[0][2] = (*i_it).second.vel[2];
-
- 	binary.vel[1][0] = (*t_it).second.vel[0];
- 	binary.vel[1][1] = (*t_it).second.vel[1];
- 	binary.vel[1][2] = (*t_it).second.vel[2];
-
- 	binary.tag = true;
- 	binary.dist = dist;
-	if(cm->binary_state == NEARBY 
-	   || cm->binary_state == ENG_SUM || cm->binary_state == AROUND){
-	  if(sqrt(dist) < poslistV[index_i].l){
-	    poslistV[index_i].l = sqrt(dist);
-	    if(cm->binary_state == ENG_SUM){
-	      poslistV[index_i].l = sqrt(dist);
-	      pt.getKin(&kin,(*t_it).second.vel,cm->scale);
-	      poslistV[index_i].eng_sum = poslistV[index_i].kin+kin
-		-((*i_it).second.vel[0] * (*t_it).second.vel[0]+
-		  (*i_it).second.vel[1] * (*t_it).second.vel[1]+
-		  (*i_it).second.vel[2] * (*t_it).second.vel[2])-1.0/poslistV[index_i].l;
-	    }
-	  }
-	  
-	  index_t = (*t_it).second.id-1;
-	  if(sqrt(dist) < poslistV[index_t].l){
-	    poslistV[index_t].l = sqrt(dist);
-	    if(cm->binary_state == ENG_SUM){
-	      pt.getKin(&kin,(*t_it).second.vel,cm->scale);
-	      poslistV[index_t].eng_sum = poslistV[index_i].kin+
-		kin -((*i_it).second.vel[0] * (*t_it).second.vel[0]+
-		      (*i_it).second.vel[1] * (*t_it).second.vel[1]+
-		      (*i_it).second.vel[2] * (*t_it).second.vel[2])
-		-1.0/poslistV[index_t].l;
-	    }
-	  }
-	}
- 	map<string,BINARY>::iterator it = bin_map.find(name);
-	if(it != bin_map.end()){
-	  binary.count = (*it).second.count + 1;
-	  (*it).second = binary;
-	  
-	}else{
-	  binary.count = 1;
-	  bin_map.insert( pair<string, BINARY>( name, binary ) );
-	}
-	
-      }
+      Make_binary((*i_it),(*t_it),scale,poslistV);
     }
   } 
 }
@@ -308,6 +157,13 @@ void Motion::Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF
   Common *cm = Common::GetInstance();
   double scale2 = scale * scale;
   double thresh_hold_scale = DIST_THRESH2 / scale2;
+
+
+
+  pos[0][0] = ipar.second.pos[0];
+  pos[0][1] = ipar.second.pos[1];
+  pos[0][2] = ipar.second.pos[2];
+
 
   pos[1][0] = tpar.second.pos[0];
   pos[1][1] = tpar.second.pos[1];
