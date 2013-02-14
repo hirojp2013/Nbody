@@ -27,7 +27,7 @@ void angular_vel::draw_arrow()
     
     for(bp=binlist.begin();bp!=binlist.end();bp++){
       bi_buff = (*bp).second;
-      glColor4d(1.0,1.0,1.0,(double)(bi_buff.count)/30.0);
+      glColor4d(1.0,1.0,1.0,(double)(bi_buff.count)/50.0);
       get_omega(bi_buff.pos,bi_buff.vel,bi_buff.dist,omega);
       get_inf_V(omega,&angular,&azimuth,&length);
       //  call_arrow(bi_buff.com,angular,azimuth,length);

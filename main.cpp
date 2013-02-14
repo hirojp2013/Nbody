@@ -183,7 +183,7 @@ void step(void)
     if (CAVEMasterDisplay()) {
       vector<int> curlist = cm->data.getCurrentList();
       vector<int>::iterator p;
-      double incl = 0.001;
+      double incl = 0.0001;
       vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
       poslistV.clear();
       PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
@@ -193,7 +193,7 @@ void step(void)
 	cm->is_acc = false;
       }
       
-      if (cm->is_dec && cm->interval - incl > 0.001) {
+      if (cm->is_dec && cm->interval - incl > 0.0001) {
 	cm->interval -= incl;
 	cm->is_dec = false;
       }
@@ -513,7 +513,7 @@ void display(void)
     draw_beam();
     glTranslated(ORIG[0], ORIG[1], ORIG[2]);
     glRotatef(cm->rot,0.0,1.0,0.0); 
-    draw_grid();
+    //    draw_grid();
     //    glEnable(GL_LIGHTING);
     glRotated(cm->theta, 0.0, 0.0, 1.0);
     glRotated(cm->phi, 1.0, 0.0, 0.0);

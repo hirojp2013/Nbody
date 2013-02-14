@@ -90,7 +90,8 @@ double binary::around_alpha_boundary(PARTICLE_INF par_inf){
   if(par_inf.l == NOT_MAKE_BINARY){
     return 0.0;
   }
-  par_inf.pot = par_inf.pot*LENGTH*5;
+  par_inf.pot = par_inf.pot*LENGTH*2.;
+  printf("par_inf.pot %f\n",par_inf.pot);
   return ( isinf(par_inf.pot) ? 1.0: par_inf.pot); 
 }
 

@@ -124,17 +124,17 @@ void UI::Keyboard(void)
       cout << "phi: " << phi_prev << " -> " << cm->phi << endl;
     }
   } else if (CAVEgetbutton(CAVE_WKEY)) {
-    if (CAVEgetbutton(CAVE_CTRLKEY)) {
-      /* y */
-      cm->theta += 0.03;
-      cm->theta += 3;
-      cout << "theta: " << theta_prev << " -> " << cm->theta << endl;
-    } else {
-      /*z_y */
-      cm->theta -= 0.03;
-      cm->theta -= 3;
-      cout << "theta: " << theta_prev << " -> " << cm->theta << endl;
-    }
+//     if (CAVEgetbutton(CAVE_CTRLKEY)) {
+//       /* y */
+//       cm->theta += 0.03;
+//       cm->theta += 3;
+//       cout << "theta: " << theta_prev << " -> " << cm->theta << endl;
+//     } else {
+//       /*z_y */
+//       cm->theta -= 0.03;
+//       cm->theta -= 3;
+//       cout << "theta: " << theta_prev << " -> " << cm->theta << endl;
+//     }
     // 	} else if (CAVEgetbutton(CAVE_MKEY)) {
     // 		if (!CAVEgetbutton(CAVE_CTRLKEY)) {
     // 			/* U */
