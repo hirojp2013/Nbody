@@ -184,9 +184,20 @@ void Motion::Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF
     poslistV[index_t].pot = poslistV[index_t].pot + ( 1.0/sqrt(dist));
   }
 
+  if((index_i == 74 && index_t == 84) || (index_i == 84 && index_t == 74)){
+    printf("%s(%d)\n",__FILE__,__LINE__);
+    printf("%f\n",dist);
+  }
+
+
   if(dist <= thresh_hold_scale){
-    id[0] = ipar.second.id;
-    id[1] = tpar.second.id;
+
+    if((index_i == 74 && index_t == 84) || (index_i == 84 && index_t == 74)){
+      printf("%s(%d)\n",__FILE__,__LINE__);
+    }
+
+    id[0] = min(ipar.second.id,tpar.second.id);
+    id[1] = max(ipar.second.id,tpar.second.id);
     sprintf(idstr,"%d,%d",id[0],id[1]);
     name = idstr;
     BINARY binary;
@@ -257,6 +268,31 @@ void Motion::Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF
 void Motion::FindBinary(GLdouble tcur,GLdouble scale){
   double cell_length = CELL_LENGTH / scale;
   FindBinary_initialize();
+
+  {
+    map<string,BINARY>::iterator it;
+    int i_test = 75,t_test= 85;
+    string namei,namet;
+    char test_chari[100];
+    char test_chart[100];
+    sprintf(test_chari,"%d,%d",i_test,t_test);
+    sprintf(test_chart,"%d,%d",t_test,i_test);
+    namei = test_chari;
+    namet = test_chart;
+    if(bin_map.count(namei)){
+      printf("%s(%d)\n",__FILE__,__LINE__);
+      it = bin_map.find(namei);
+      printf("count %d\n",(*it).second.count);
+
+    }else if(bin_map.count(namet)){
+      printf("%s(%d)\n",__FILE__,__LINE__);
+      it = bin_map.find(namet);
+      printf("count %d\n",(*it).second.count);
+    }
+
+  }
+
+
   Grid_decomp(cell_data,cell_length);
 
   multimap<string,PARTICLE_INF>::iterator it = cell_data.begin();
