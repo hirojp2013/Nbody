@@ -214,7 +214,7 @@ void step(void)
 
     	num++;
       }
-      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
+      //      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
 
       bobj->color_set(color);
       pobjs->set_x(pos);
