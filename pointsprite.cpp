@@ -4,67 +4,82 @@
 /* #define GL_GLEXT_PROTOTYPES                                 */
 /* #inclde <GL/glut.h>                                         */
 
-#include "pointsprite.h"
-#include <png.h>
+#include "pointsprite.hpp"
+#include "myPng.hpp"
 #include <cstdlib>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
 #include <iostream>
 
 const GLfloat PointSprite::distance[] = {0.0, 0.0, 1.0};
 
 PointSprite::PointSprite(){
-  loadTexture();
+  glGenTextures( 1, &texture_name );
+  myPng pngObj;
+  if(!pngObj.loadpng("SP_W.png")){
+    std::cout << "The file does not exit." << std::endl;
+    exit(1);
+  }
+  glGenTextures( 1, &texture_name );
+  glBindTexture( GL_TEXTURE_2D, texture_name );
+  glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+  gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGBA, pngObj.getWidth(), pngObj.getHeight(),
+		     GL_RGBA, GL_UNSIGNED_BYTE, pngObj.getTexture() );//Segmentation Fault
+
+  glTexParameterf( GL_TEXTURE_2D,
+		   GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
+  glTexParameterf( GL_TEXTURE_2D,
+		   GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+  printf("%s(%d)\n",__FILE__,__LINE__);
+  buildVBO();
+  printf("%s(%d)\n",__FILE__,__LINE__);
 }
 
 PointSprite::~PointSprite(){
-
   glDeleteTextures(1, &texture_name);
+  glDeleteTextures(1, &vertexBuf_name);
+}
 
+void PointSprite::buildVBO(){
+  stride = sizeof( MY_VERTEX );
+  glGenBuffers(1, &vertexBuf_name);
 }
 
 
-void PointSprite::drawPointSprite(GLdouble* vertices, GLdouble* color, GLsizei count){
-
+void PointSprite::drawPointSprite(MY_VERTEX* vertices,  GLsizei count){
+  set_vbo(vertices,count,GL_STREAM_DRAW);
+  printf("%s(%d)\n",__FILE__,__LINE__);
   glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
-  glAlphaFunc(GL_GREATER, 0.5);
-
+  glAlphaFunc(GL_GREATER, 0.1);
   glPointParameterfv(GL_POINT_DISTANCE_ATTENUATION, distance);
-
   glBindTexture(GL_TEXTURE_2D, texture_name);
-
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_POINT_SPRITE);
   glEnable(GL_ALPHA_TEST);
-
+  glPointSize(1000);
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
-
-  glPointSize(SIZE);
-
-  glVertexPointer(3, GL_DOUBLE, 0, vertices);
-  glColorPointer (4, GL_DOUBLE, 0, color);
-
-  glDrawArrays(GL_POINTS, 0, count);
-
-  glDisableClientState(GL_COLOR_ARRAY);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexBuf_name);
+  printf("%s(%d)\n",__FILE__,__LINE__);
+  glVertexPointer(3, GL_DOUBLE, stride, 0);
+  printf("%s(%d)\n",__FILE__,__LINE__);
+  glColorPointer (4,GL_DOUBLE,stride,BUFFER_OFFSET(sizeof(double)*3));
+  printf("%s(%d)\n",__FILE__,__LINE__);
+  fflush(stdout);
+  glDrawArrays(GL_POINTS,0,100);
+  printf("%s(%d)\n",__FILE__,__LINE__);
+  fflush(stdout);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
   glDisableClientState(GL_VERTEX_ARRAY);
-
-
-  glDisable(GL_ALPHA_TEST);
-  glDisable(GL_POINT_SPRITE);
-  glDisable(GL_TEXTURE_2D);
-
-
+  glDisableClientState(GL_COLOR_ARRAY);
+  
 }
 
-void PointSprite::drawPointSprite(GLdouble* vertices, GLdouble* color, GLsizei count, GLdouble* size){
+void PointSprite::drawPointSprite(MY_VERTEX* vertices, GLsizei count, GLdouble* size){
+  set_vbo(vertices,count,GL_STREAM_DRAW);
+
   glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
-  glAlphaFunc(GL_GREATER, 0.5);
-
+  glAlphaFunc(GL_GREATER, 0.1);
   glPointParameterfv(GL_POINT_DISTANCE_ATTENUATION, distance);
-
   glBindTexture(GL_TEXTURE_2D, texture_name);
 
   glEnable(GL_TEXTURE_2D);
@@ -73,92 +88,25 @@ void PointSprite::drawPointSprite(GLdouble* vertices, GLdouble* color, GLsizei c
 
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
-
-  glVertexPointer(3, GL_DOUBLE, 0, vertices);
-  glColorPointer (3, GL_DOUBLE, 0, color);
-
-
+  glBindBuffer(GL_ARRAY_BUFFER, vertexBuf_name);
+  glVertexPointer(3, GL_DOUBLE, stride, 0);
+  glColorPointer (4,GL_DOUBLE,stride,BUFFER_OFFSET(sizeof(double)*3));
   for(int i=0; i<count; i++){
-    glPointSize(size[i]*10);
+    glPointSize(size[i]);
     glDrawArrays(GL_POINTS, i, 1);
   }
-
-  glDisableClientState(GL_COLOR_ARRAY);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
   glDisableClientState(GL_VERTEX_ARRAY);
+  glDisableClientState(GL_COLOR_ARRAY);
+}
 
-  glDisable(GL_ALPHA_TEST);
-  glDisable(GL_POINT_SPRITE);
-  glDisable(GL_TEXTURE_2D);
+void PointSprite::set_vbo(MY_VERTEX vertexBuf[],int count,GLenum usage){
+  glBindBuffer(GL_ARRAY_BUFFER, vertexBuf_name);
+  glBufferData(GL_ARRAY_BUFFER, stride*count, vertexBuf, usage);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 
 
-void PointSprite::loadTexture(){
-	FILE            *fp;
-	png_structp     png_ptr;
-	png_infop       info_ptr;
-	png_uint_32   width, height;
-	int             bit_depth, color_type, interlace_type;
-	unsigned char   **pngimage;
-	 
-	fp = fopen( "SP_W.png", "rb" );
-
-	png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL );
-	info_ptr = png_create_info_struct( png_ptr );
-
-	png_init_io( png_ptr, fp );
-	png_read_info( png_ptr, info_ptr );
-	png_get_IHDR( png_ptr, info_ptr, &width, &height,
-	                &bit_depth, &color_type, &interlace_type,
-	                NULL, NULL);
-
-	pngimage = ( png_bytepp )malloc( height * sizeof( png_bytep ) );
-	for ( int i = 0; i < height; i++ )
-	{
-		pngimage[ i ] = ( png_bytep )malloc( png_get_rowbytes( png_ptr, info_ptr ) );
-	}
-	png_read_image( png_ptr, pngimage );
-
-	GLubyte *texture;
-	texture = ( unsigned char* )malloc( sizeof( unsigned char ) * width * height * 4 );
-	unsigned char	*pbuff;
-
-	for ( int y = 0; y < height; y++ )
-	{
-		pbuff = pngimage[ ( height - 1 ) - y ];
-		for( int i = 0; i < width; i++ )
-		{
-			texture[ ( y * width + i ) * 4 + 0 ] = pbuff[ i * 4 + 0 ];
-			texture[ ( y * width + i ) * 4 + 1 ] = pbuff[ i * 4 + 1 ];
-			texture[ ( y * width + i ) * 4 + 2 ] = pbuff[ i * 4 + 2 ];
-			texture[ ( y * width + i ) * 4 + 3 ] = pbuff[ i * 4 + 3 ];
-		}
-	}
 
 
-	glGenTextures( 1, &texture_name );
-	glBindTexture( GL_TEXTURE_2D, texture_name );
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-
-
-	
-	gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGBA, width, height,
-			   GL_RGBA, GL_UNSIGNED_BYTE, texture );//Segmentation Fault
-
-
-	glTexParameterf( GL_TEXTURE_2D,
-		GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-
-
-	glTexParameterf( GL_TEXTURE_2D,
-		GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
-
-
-
-	free( texture );
-	free( pngimage );
-	png_destroy_read_struct( &png_ptr, &info_ptr, ( png_infopp )NULL );
-
-	fclose(fp);
-
-}

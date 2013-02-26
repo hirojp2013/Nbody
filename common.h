@@ -48,7 +48,7 @@ const float ROT_SPEED = 0.1;
 
 enum{ARROW,NEARBY,AROUND,ENG_SUM,LINE,NOTHING,};
 
-const int PARTICLE_NUMBER_MAX = 10000;
+const int PARTICLE_NUMBER_MAX = 100;
 
 
 class Common {

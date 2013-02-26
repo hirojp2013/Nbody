@@ -11,7 +11,7 @@
 #include "binary.h"
 #include "motion.h"
 #include "ui.h"
-
+#include "pointsprite.hpp"
 
 #define TEXHEIGHT 64
 #define TEXWIDTH 64
@@ -75,13 +75,14 @@ void the_beam(){
 
 void init(void *filename)
 {
+  printf("%s(%d)\n",__FILE__,__LINE__);
   GLfloat light_position[] = { 0.0f, 30.0f, 50.0f, 0.0f };
   /*
  *** texture
  */
 
-  static GLubyte image[TEXHEIGHT][TEXWIDTH][4];
-
+  //  static GLubyte image[TEXHEIGHT][TEXWIDTH][4];
+  printf("%s(%d)\n",__FILE__,__LINE__);
 
   if (CAVEMasterDisplay()) {
     cm->display_num = CAVENumPipes();
@@ -103,10 +104,10 @@ void init(void *filename)
     cout << setprecision(15)
 	 << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
 
-
+    printf("%s(%d)\n",__FILE__,__LINE__);
     pobjs = new Particle_Objs;
 
-
+    printf("%s(%d)\n",__FILE__,__LINE__);
 	
 #if 0
     printf("INPUT --------------------------------------------\n");
@@ -142,9 +143,9 @@ void init(void *filename)
   }
   CAVEDisplayBarrier();
   //texture start
-
+  printf("%s(%d)\n",__FILE__,__LINE__);
   pobjs->init();
-
+  printf("%s(%d)\n",__FILE__,__LINE__);
   //texture end
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glShadeModel(GL_SMOOTH);
@@ -158,43 +159,16 @@ void init(void *filename)
   clyndObj[CAVEUniqueIndex()] = gluNewQuadric();
   discObj[CAVEUniqueIndex()] = gluNewQuadric();
   theBeam[CAVEUniqueIndex()] = glGenLists(1);
-  
+  printf("%s(%d)\n",__FILE__,__LINE__);
   glNewList(theBeam[CAVEUniqueIndex()],GL_COMPILE);
   the_beam();
   glEndList();
-  
+  printf("%s(%d)\n",__FILE__,__LINE__);
   bobj = new binary(TARGET_DIST_THRESH/10.);
-
+  printf("%s(%d)\n",__FILE__,__LINE__);
   PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
   vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
   poslistV.resize(cm->data.getIDNum(),pos_inf);
-  vector<int> curlist = cm->data.getCurrentList();
-  vector<int>::iterator p;
-
-  double pos[PARTICLE_NUMBER_MAX][3];
-  double color[PARTICLE_NUMBER_MAX][4];
-  int num=0;
-  for (p = curlist.begin(); p != curlist.end(); p++) {
-    if(*p<0){
-      continue;
-    }
-    Particle *pt = cm->data.getData(*p);
-    pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
-    pos_inf.id = pt->getId();
-    for(int i=0;i<3;i++){
-      pos_inf.pos[i] = pos[num][i];
-    }
-    pt->getV(pos_inf.vel,cm->scale);
-    poslistV[pos_inf.id-1] = pos_inf;
-
-    num++;
-  }
-
-
-  Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
-  bobj->color_set(color);
-  pobjs->set_x(pos);
-  pobjs->set_color(color);
 }
 
 void end(void)
@@ -208,8 +182,10 @@ void end(void)
 
 void step(void)
 {
-  double pos[PARTICLE_NUMBER_MAX][3];
-  double color[PARTICLE_NUMBER_MAX][4];
+  //  double pos[PARTICLE_NUMBER_MAX][3];
+  //  double color[PARTICLE_NUMBER_MAX][4];
+  MY_VERTEX vertecies[PARTICLE_NUMBER_MAX];
+  printf("%s(%d)\n",__FILE__,__LINE__);
   if (cm->runstate == 0) {
     if (CAVEMasterDisplay()) {
       vector<int> curlist = cm->data.getCurrentList();
@@ -218,7 +194,8 @@ void step(void)
       vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
       //      poslistV.clear();
       //      PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
-      //      poslistV.resize(cm->data.getIDNum(),pos_inf);
+      //  PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
+      //poslistV.resize(cm->data.getIDNum(),pos_inf);
       if (cm->is_acc && cm->interval + incl < 1.0) {
 	cm->interval += incl;
 	cm->is_acc = false;
@@ -235,22 +212,24 @@ void step(void)
 	  continue;
 	}
     	Particle *pt = cm->data.getData(*p);
-    	pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
-    	pos_inf.id = pt->getId();
+	pt->extrapolate(cm->t_dat, cm->scale, vertecies[num].vPos);
+	//	pos_inf.id = pt->getId();
     	for(int i=0;i<3;i++){
-    	  pos_inf.pos[i] = pos[num][i];
+	  //	  pos_inf.pos[i] = vertecies[num].vPos[i];
     	}
-    	pt->getV(pos_inf.vel,cm->scale);
-	poslistV[pos_inf.id-1] = pos_inf;
+	//	pt->getV(pos_inf.vel,cm->scale);
+	//	poslistV[pos_inf.id-1] = pos_inf;
 
     	num++;
       }
       */
       //      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
-
-      //      bobj->color_set(color);
+      printf("%s(%d)\n",__FILE__,__LINE__);
+      bobj->color_set(vertecies);
+      printf("%s(%d)\n",__FILE__,__LINE__);
       //      pobjs->set_x(pos);
-      //      pobjs->set_color(color);
+      pobjs->set_vertecies(vertecies);
+      printf("%s(%d)\n",__FILE__,__LINE__);
       if(cm->beam_flag){
 	cm->SelectParticle();
       }else if(cm->beam_clear_flag){
@@ -309,10 +288,10 @@ void step(void)
 	  continue;
 	}
 	Particle *pt = cm->data.getData(*p);
-	pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
+	pt->extrapolate(cm->t_dat, cm->scale, vertecies[num].vPos);
 	pos_inf.id = pt->getId();
 	for(int i=0;i<3;i++){
-	  pos_inf.pos[i] = pos[num][i];
+	  pos_inf.pos[i] = vertecies[num].vPos[i];
 	}
 	pt->getV(pos_inf.vel,cm->scale);
 	//	poslistV.push_back(pos_inf);
@@ -354,10 +333,10 @@ void step(void)
 			<< " time: " << CAVEGetTime() << endl;
       */
       Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
-      bobj->color_set(color);
-      pobjs->set_x(pos);
-      pobjs->set_color(color);
-
+      bobj->color_set(vertecies);
+      //pobjs->set_x(pos);
+      //      pobjs->set_color(color);
+      pobjs->set_vertecies(vertecies);
       if(cm->beam_flag){
 	cm->SelectParticle();
       }else if(cm->beam_clear_flag){
@@ -537,6 +516,8 @@ void get_omega(double pos[][3],double vel[][3],double dist,GLdouble omega[3]){
 
 void display(void)
 {
+
+  printf("%s(%d)\n",__FILE__,__LINE__);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_COLOR_MATERIAL);
   glPushMatrix();
@@ -545,14 +526,16 @@ void display(void)
     draw_beam();
     glTranslated(ORIG[0], ORIG[1], ORIG[2]);
     glRotatef(cm->rot,0.0,1.0,0.0); 
-    //    draw_grid();
+    draw_grid();
     //    glEnable(GL_LIGHTING);
     glRotated(cm->theta, 0.0, 0.0, 1.0);
     glRotated(cm->phi, 1.0, 0.0, 0.0);
-    GLdouble color[PARTICLE_NUMBER_MAX][4];
-    bobj->color_set(color);
-    pobjs->set_color(color);
+    //GLdouble vertecies[PARTICLE_NUMBER_MAX];
+    //    bobj->color_set(vertecies);
+    //    pobjs->set_color(color);
+    printf("%s(%d)\n",__FILE__,__LINE__);
     pobjs->draw();
+    printf("%s(%d)\n",__FILE__,__LINE__);
     //    glDisable(GL_LIGHTING);
 
     double r = cm->GetRadius();

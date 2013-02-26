@@ -2,6 +2,7 @@
 #include "angular_vel.h"
 #include "common.h"
 #include "motion.h"
+#include "pointsprite.hpp"
 
 const double MIN = 0;
 const double MAX = 1.;
@@ -43,7 +44,7 @@ void binary::draw_arrow(){
   }
 }
 
-void binary::color_set(double color[][4]){
+void binary::color_set(MY_VERTEX vertecies[]){
   vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
   int num=0;
   switch(cm->binary_state){
@@ -51,7 +52,9 @@ void binary::color_set(double color[][4]){
     glEnable(GL_BLEND);
 
     for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
-      clh.color_map(p_inf->kin,nearby_alpha_boundary(*p_inf),color[num]);
+      printf("%s(%d)\n",__FILE__,__LINE__);
+      clh.color_map(p_inf->kin,nearby_alpha_boundary(*p_inf),vertecies[num].vColor);
+      //      clh.color_map(p_inf->kin,1.0,vertecies[num].vColor);
       num++;
     }
 
@@ -59,7 +62,7 @@ void binary::color_set(double color[][4]){
   case AROUND:
     glEnable(GL_BLEND);
     for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
-      clh.color_map(p_inf->kin,around_alpha_boundary(*p_inf),color[num]);
+      clh.color_map(p_inf->kin,around_alpha_boundary(*p_inf),vertecies[num].vColor);
       num++;
     }
     break;
@@ -68,22 +71,23 @@ void binary::color_set(double color[][4]){
     for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
       clh.color_map(eng_sum_color_boundary(*p_inf),
 		    eng_sum_alpha_boundary(*p_inf),
-		    color[num]);
+		    vertecies[num].vColor);
       num++;
     }
     break;
   default:
     //    for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
-
+      printf("%s(%d)\n",__FILE__,__LINE__);
     for(int i=0;i<PARTICLE_NUMBER_MAX;i++){
-      color[i][0] = 0.0;
-      color[i][1] = 0.0;
-      color[i][2] = 1.0;
-      color[i][3] = 1.0;
+      vertecies[i].vColor[0] = 0.0;
+      vertecies[i].vColor[1] = 0.0;
+      vertecies[i].vColor[2] = 1.0;
+      vertecies[i].vColor[3] = 1.0;
     }
-    
+    printf("%s(%d)\n",__FILE__,__LINE__);
     break;
   }
+  printf("%s(%d)\n",__FILE__,__LINE__);
 }
 
 double binary::around_alpha_boundary(PARTICLE_INF par_inf){

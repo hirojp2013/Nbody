@@ -1,21 +1,20 @@
 #include "common.h"
-#include "pointsprite.h"
+#include "pointsprite.hpp"
+class PointSprite;
+
 
 class Particle_Objs{
  public:
   int *element_type;
-  double x[PARTICLE_NUMBER_MAX][3];
-  double color[PARTICLE_NUMBER_MAX][4];
+  MY_VERTEX vertecies[PARTICLE_NUMBER_MAX];
 
   Particle_Objs();
   ~Particle_Objs();
   void  init();
-  void set_x(double pos[][3]);
-  void set_color(double cl[][4]);
+  void set_vertecies(_MY_VERTEX_ myv[]);
   void draw();
  private:
   Common *cm;
   PointSprite *ps;
   void color_set();
-
 };
