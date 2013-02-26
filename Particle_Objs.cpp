@@ -15,8 +15,6 @@ void Particle_Objs::init(){
 void Particle_Objs::draw(){
   int id_num = cm->data.getIDNum();
   glPushMatrix();
-  printf("%s(%d)\n",__FILE__,__LINE__);
-  printf("%d\n",id_num);
   /*  vertecies[0].vPos[0] = 0.0;
   vertecies[0].vPos[1] = 0.0;
   vertecies[0].vPos[2] = 0.0;

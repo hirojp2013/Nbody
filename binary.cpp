@@ -39,7 +39,6 @@ void binary::draw_line(){
 
 void binary::draw_arrow(){
   if(cm->binary_state == ARROW){
-    printf("state ARROW\n");
     ang_vel->draw_arrow();
   }
 }
@@ -52,9 +51,8 @@ void binary::color_set(MY_VERTEX vertecies[]){
     glEnable(GL_BLEND);
 
     for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
-      printf("%s(%d)\n",__FILE__,__LINE__);
       clh.color_map(p_inf->kin,nearby_alpha_boundary(*p_inf),vertecies[num].vColor);
-      //      clh.color_map(p_inf->kin,1.0,vertecies[num].vColor);
+
       num++;
     }
 
@@ -77,17 +75,14 @@ void binary::color_set(MY_VERTEX vertecies[]){
     break;
   default:
     //    for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
-      printf("%s(%d)\n",__FILE__,__LINE__);
     for(int i=0;i<PARTICLE_NUMBER_MAX;i++){
       vertecies[i].vColor[0] = 0.0;
       vertecies[i].vColor[1] = 0.0;
       vertecies[i].vColor[2] = 1.0;
       vertecies[i].vColor[3] = 1.0;
     }
-    printf("%s(%d)\n",__FILE__,__LINE__);
     break;
   }
-  printf("%s(%d)\n",__FILE__,__LINE__);
 }
 
 double binary::around_alpha_boundary(PARTICLE_INF par_inf){
