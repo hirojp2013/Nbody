@@ -2,7 +2,7 @@
 #define _COMMON_H_
 #include<cfloat>
 #include "Particle.h"
-
+#include "snapshot.hpp"
 
 const GLdouble COLORS[][3] = {
   { 1.0, 0.0, 0.0 }, 
@@ -61,7 +61,7 @@ class Common {
     }
 
   ParticleData data;
-
+  Snapshot snapshot;
   int      display_num;
 	
   double   t_sys;                 // time
@@ -107,7 +107,13 @@ class Common {
 
   void SelectParticle();
   void coordtrans(float *orig_pos,float *dis_pos,float rot);
+  void button_has_pressed(){
+    snapshot.button_has_pressed();
+  };
 
+  void save_image(){
+    snapshot.save_image();
+  }
  private:
 
   Common();

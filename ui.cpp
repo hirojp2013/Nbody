@@ -188,6 +188,8 @@ void UI::Keyboard(void)
     cm->binary_state = LINE;
   }else if(CAVEgetbutton(CAVE_TKEY)){
     cm->binary_state = NOTHING;
+  }else if(CAVEgetbutton(CAVE_EKEY)){
+    cm->button_has_pressed();
   }
 }
 

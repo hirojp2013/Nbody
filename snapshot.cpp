@@ -10,10 +10,7 @@
 // Please read the file "LICENCE_ja.txt"(in Japanese) or "LICENCE_en.txt" (in English)
 // before you use this software. 
 
-#include "vfive.h"
-namespace vfive
-{
-
+#include "snapshot.hpp"
 
 Snapshot::Snapshot()
 {
@@ -152,5 +149,3 @@ Snapshot::button_has_pressed()
 }
   
 
-
-}

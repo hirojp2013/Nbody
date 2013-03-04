@@ -1,5 +1,5 @@
 #include "common.h"
-
+#include "snapshot.hpp"
 
 Common::Common()
 {
@@ -30,6 +30,8 @@ Common::Common()
   beam_flag = false;
   rot = 0.0;
   vmax =  1.0;
+
+  snapshot = new Snapshot;
 };
 
 Common::~Common()
