@@ -628,7 +628,7 @@ void display(void)
     bobj->draw_arrow();
     bobj->draw_line();
   }
-
+  cm->save_image();
   glPopMatrix();
 }
 

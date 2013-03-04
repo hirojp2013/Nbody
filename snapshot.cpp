@@ -94,8 +94,11 @@ Snapshot::makePPMimage(char *file1, int org_x, int org_y,
 
 
     fp = fopen(file1, "wb");
-    if (fp == NULL)
-	v5_error("File open error: image save.");
+    if (fp == NULL){
+      printf("File open error: image save.");
+      exit(1);
+    }
+
     fprintf(fp, "P6\n%d %d\n255\n", width, height);
     fwrite(pic_rgb, width * height * 3, 1, fp);
 
@@ -132,9 +135,12 @@ Snapshot::save_image()
   CAVEGetWindowGeometry(&org_x, &org_y, &width, &height);
   printf("saveimage: %s: %d x %d + %d + %d\n", 
 	 file, width, height, org_x, org_y);
-  if ( width * height >= SNAPSHOT_IMAGE_MAX ) 
-    v5_error("The screen size is too large. Increase SNAPSHOT_IMAGE_MAX");
-  glReadBuffer(GL_FRONT_RIGHT);
+  if ( width * height >= SNAPSHOT_IMAGE_MAX ) {
+    printf("The screen size is too large. Increase SNAPSHOT_IMAGE_MAX");
+    exit(1);
+  }
+    
+  glReadBuffer(GL_FRONT);
   makePPMimage(file, org_x, org_y, width, height);
   
   counter++;

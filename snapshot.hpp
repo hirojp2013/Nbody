@@ -1,5 +1,10 @@
 #ifndef _SNAPSHOT_H_
 #define _SNAPSHOT_H_
+#include <cave_ogl.h>
+#include <GL/glut.h>
+#include <GL/gl.h>
+
+#include "cstdlib"
 const int  SNAPSHOT_IMAGE_MAX = 2048 * 2048;
 class Snapshot {
   int       active;
