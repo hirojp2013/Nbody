@@ -164,6 +164,37 @@ void init(void *filename)
   glEndList();
   
   bobj = new binary(TARGET_DIST_THRESH/10.);
+
+  PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
+  vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
+  poslistV.resize(cm->data.getIDNum(),pos_inf);
+  vector<int> curlist = cm->data.getCurrentList();
+  vector<int>::iterator p;
+
+  double pos[PARTICLE_NUMBER_MAX][3];
+  double color[PARTICLE_NUMBER_MAX][4];
+  int num=0;
+  for (p = curlist.begin(); p != curlist.end(); p++) {
+    if(*p<0){
+      continue;
+    }
+    Particle *pt = cm->data.getData(*p);
+    pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
+    pos_inf.id = pt->getId();
+    for(int i=0;i<3;i++){
+      pos_inf.pos[i] = pos[num][i];
+    }
+    pt->getV(pos_inf.vel,cm->scale);
+    poslistV[pos_inf.id-1] = pos_inf;
+
+    num++;
+  }
+
+
+  Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
+  bobj->color_set(color);
+  pobjs->set_x(pos);
+  pobjs->set_color(color);
 }
 
 void end(void)
@@ -185,9 +216,9 @@ void step(void)
       vector<int>::iterator p;
       double incl = 0.0001;
       vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
-      poslistV.clear();
-      PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
-      poslistV.resize(cm->data.getIDNum(),pos_inf);
+      //      poslistV.clear();
+      //      PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
+      //      poslistV.resize(cm->data.getIDNum(),pos_inf);
       if (cm->is_acc && cm->interval + incl < 1.0) {
 	cm->interval += incl;
 	cm->is_acc = false;
@@ -198,7 +229,7 @@ void step(void)
 	cm->is_dec = false;
       }
       int num=0;
-
+      /*
       for (p = curlist.begin(); p != curlist.end(); p++) {
 	if(*p<0){
 	  continue;
@@ -214,11 +245,12 @@ void step(void)
 
     	num++;
       }
+      */
       //      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
 
-      bobj->color_set(color);
-      pobjs->set_x(pos);
-      pobjs->set_color(color);
+      //      bobj->color_set(color);
+      //      pobjs->set_x(pos);
+      //      pobjs->set_color(color);
       if(cm->beam_flag){
 	cm->SelectParticle();
       }else if(cm->beam_clear_flag){
