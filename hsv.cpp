@@ -3,13 +3,14 @@
 
 void hsv::hsv2rgb(float h,float s,float v,
 		  double color[3]){
-  int hueCase = 3 + (int)(h*3);
+  int hueCase = (int)(h*6);
+  int c = 3 + (int)(h*3);
   float frac = 6*h-hueCase;
   float lx = v*(1-s);
   float ly = v*(1-s*frac);
   float lz = v*(1-s*(1-frac));
 
-  switch(hueCase){
+  switch(c){
   case 0:
     //  case 6:
     color[0]  = v;color[1]=lz; color[2]=lx;break;
