@@ -212,13 +212,7 @@ void step(void)
   double color[PARTICLE_NUMBER_MAX][4];
   if (cm->runstate == 0) {
     if (CAVEMasterDisplay()) {
-      vector<int> curlist = cm->data.getCurrentList();
-      vector<int>::iterator p;
       double incl = 0.0001;
-      vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
-      //      poslistV.clear();
-      //      PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
-      //      poslistV.resize(cm->data.getIDNum(),pos_inf);
       if (cm->is_acc && cm->interval + incl < 1.0) {
 	cm->interval += incl;
 	cm->is_acc = false;
@@ -228,29 +222,6 @@ void step(void)
 	cm->interval -= incl;
 	cm->is_dec = false;
       }
-      int num=0;
-      /*
-      for (p = curlist.begin(); p != curlist.end(); p++) {
-	if(*p<0){
-	  continue;
-	}
-    	Particle *pt = cm->data.getData(*p);
-    	pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
-    	pos_inf.id = pt->getId();
-    	for(int i=0;i<3;i++){
-    	  pos_inf.pos[i] = pos[num][i];
-    	}
-    	pt->getV(pos_inf.vel,cm->scale);
-	poslistV[pos_inf.id-1] = pos_inf;
-
-    	num++;
-      }
-      */
-      //      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
-
-      //      bobj->color_set(color);
-      //      pobjs->set_x(pos);
-      //      pobjs->set_color(color);
       if(cm->beam_flag){
 	cm->SelectParticle();
       }else if(cm->beam_clear_flag){
@@ -341,7 +312,6 @@ void step(void)
 	      vector<TARGET_POS>::iterator st = cm->traj.back().begin();
 	      cm->traj.back().erase(st);
 	    }
-	    //>>>>>>> test3_b
 	  }
 	  queue< vector<TARGET_POS> >&t_queue = cm->traj;
 	  t_queue.back().push_back(tpos);
@@ -386,7 +356,6 @@ void draw_grid(void)
   glVertex3d(GRID_MAX, 0.0, 0.0);
   glEnd();
   //x_axes end
-
 
   if(cm->char_state){
     glRasterPos3d(label_pos, 0.0, 0.0);
@@ -510,9 +479,6 @@ void draw_beam(void)
 }
 
 
-
-//<<<<<<< HEAD
-//=======
 void Cross(double *orientV,double *diff_velV,GLdouble *ang_momV){
   ang_momV[0] = (orientV[1]*diff_velV[2] - orientV[2]*diff_velV[1])/2.0;
   ang_momV[1] = (orientV[2]*diff_velV[0] - orientV[0]*diff_velV[2])/2.0;
@@ -562,7 +528,6 @@ void display(void)
     
     for(p=poslistV.begin();p!=poslistV.end();p++){
       char idbuf[10];
-      //<<<<<<< HEAD
       glPushMatrix();
       {
 
