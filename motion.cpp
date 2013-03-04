@@ -184,17 +184,8 @@ void Motion::Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF
     poslistV[index_t].pot = poslistV[index_t].pot + ( 1.0/sqrt(dist));
   }
 
-  if((index_i == 74 && index_t == 84) || (index_i == 84 && index_t == 74)){
-    printf("%s(%d)\n",__FILE__,__LINE__);
-    printf("%f\n",dist);
-  }
-
 
   if(dist <= thresh_hold_scale){
-
-    if((index_i == 74 && index_t == 84) || (index_i == 84 && index_t == 74)){
-      printf("%s(%d)\n",__FILE__,__LINE__);
-    }
 
     id[0] = min(ipar.second.id,tpar.second.id);
     id[1] = max(ipar.second.id,tpar.second.id);
@@ -280,14 +271,10 @@ void Motion::FindBinary(GLdouble tcur,GLdouble scale){
     namei = test_chari;
     namet = test_chart;
     if(bin_map.count(namei)){
-      printf("%s(%d)\n",__FILE__,__LINE__);
       it = bin_map.find(namei);
-      printf("count %d\n",(*it).second.count);
 
     }else if(bin_map.count(namet)){
-      printf("%s(%d)\n",__FILE__,__LINE__);
       it = bin_map.find(namet);
-      printf("count %d\n",(*it).second.count);
     }
 
   }
