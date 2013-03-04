@@ -179,16 +179,16 @@ void UI::Keyboard(void)
   }else if(CAVEgetbutton(CAVE_PKEY)){
     cm->binary_state = ARROW;
   }else if(CAVEgetbutton(CAVE_OKEY)){
-    cm->binary_state = NEARBY;
+    cm->binary_state = KINETIC;
   }else if(CAVEgetbutton(CAVE_IKEY)){
-    cm->binary_state = AROUND;
+    cm->binary_state = POTENTIAL;
   }else if(CAVEgetbutton(CAVE_UKEY)){
-    cm->binary_state = ENG_SUM;
+    cm->binary_state = GRAVITATIONALLY_BOUND;
   }else if(CAVEgetbutton(CAVE_YKEY)){
     cm->binary_state = LINE;
   }else if(CAVEgetbutton(CAVE_TKEY)){
     cm->binary_state = NOTHING;
-  }else if(CAVEgetbutton(CAVE_EKEY)){
+  }else if(CAVEgetbutton(CAVE_EKEY) && !cm->get_active_state()){
     cm->button_has_pressed();
   }
 }

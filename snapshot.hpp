@@ -17,6 +17,7 @@ public:
   Snapshot();
   void      activate() { active = 1; };
   void      inactivate() { active = 0; };
+  int get_active_state(){return active;};
   void      button_has_pressed();
   void      save_image();
 };

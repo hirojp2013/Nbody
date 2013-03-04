@@ -115,6 +115,9 @@ class Common {
     snapshot->save_image();
   }
 
+  int get_active_state(){
+    return snapshot->get_active_state();
+  }
  private:
 
   Common();
