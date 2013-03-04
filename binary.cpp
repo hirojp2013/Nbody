@@ -76,9 +76,9 @@ void binary::color_set(double color[][4]){
     //    for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
 
     for(int i=0;i<PARTICLE_NUMBER_MAX;i++){
-      color[i][0] = 0.0;
-      color[i][1] = 0.0;
-      color[i][2] = 1.0;
+      color[i][0] = 1.0;
+      color[i][1] = 1.0;
+      color[i][2] = 0.0;
       color[i][3] = 1.0;
     }
     
