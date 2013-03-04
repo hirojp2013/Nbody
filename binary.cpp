@@ -47,7 +47,7 @@ void binary::color_set(double color[][4]){
   vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
   int num=0;
   switch(cm->binary_state){
-  case NEARBY:
+  case KINETIC:
     glEnable(GL_BLEND);
 
     for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
@@ -56,14 +56,14 @@ void binary::color_set(double color[][4]){
     }
 
     break;
-  case AROUND:
+  case POTENTIAL:
     glEnable(GL_BLEND);
     for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
       clh.color_map(p_inf->kin,around_alpha_boundary(*p_inf),color[num]);
       num++;
     }
     break;
-  case ENG_SUM:
+  case GRAVITATIONALLY_BOUND:
     glEnable(GL_BLEND);
     for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
       clh.color_map(eng_sum_color_boundary(*p_inf),

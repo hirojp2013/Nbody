@@ -179,7 +179,7 @@ void Motion::Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF
   int index_t = tpar.second.id-1;
 
   dist = cm->GetParticleDist(pos[0],pos[1]);
-  if(cm->binary_state == AROUND){
+  if(cm->binary_state == POTENTIAL){
     poslistV[index_i].pot = poslistV[index_i].pot + ( 1.0/sqrt(dist) );
     poslistV[index_t].pot = poslistV[index_t].pot + ( 1.0/sqrt(dist));
   }
@@ -223,11 +223,11 @@ void Motion::Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF
 
     binary.tag = true;
     binary.dist = dist;
-    if(cm->binary_state == NEARBY 
-       || cm->binary_state == ENG_SUM || cm->binary_state == AROUND){
+    if(cm->binary_state == KINETIC 
+       || cm->binary_state == GRAVITATIONALLY_BOUND || cm->binary_state == POTENTIAL){
       if(sqrt(dist) < poslistV[index_i].l){
 	poslistV[index_i].l = sqrt(dist);
-	if(cm->binary_state == ENG_SUM){
+	if(cm->binary_state == GRAVITATIONALLY_BOUND){
 	  poslistV[index_i].l = sqrt(dist);
 	  pt.getKin(&kin,tpar.second.vel,cm->scale);
 	  poslistV[index_i].eng_sum = poslistV[index_i].kin+kin
@@ -240,7 +240,7 @@ void Motion::Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF
       index_t = tpar.second.id-1;
       if(sqrt(dist) < poslistV[index_t].l){
 	poslistV[index_t].l = sqrt(dist);
-	if(cm->binary_state == ENG_SUM){
+	if(cm->binary_state == GRAVITATIONALLY_BOUND){
 	  pt.getKin(&kin,tpar.second.vel,cm->scale);
 	  poslistV[index_t].eng_sum = poslistV[index_i].kin+
 	    kin -(ipar.second.vel[0] * tpar.second.vel[0]+
