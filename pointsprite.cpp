@@ -62,6 +62,7 @@ void PointSprite::drawPointSprite(MY_VERTEX* vertices,  GLsizei count){
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glDisableClientState(GL_VERTEX_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
+  glDisable(GL_TEXTURE_2D);
   
 }
 
@@ -89,6 +90,7 @@ void PointSprite::drawPointSprite(MY_VERTEX* vertices, GLsizei count, GLdouble* 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glDisableClientState(GL_VERTEX_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
+  glDisable(GL_TEXTURE_2D);
 }
 
 void PointSprite::set_vbo(MY_VERTEX vertexBuf[],int count,GLenum usage){
