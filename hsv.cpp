@@ -4,7 +4,7 @@
 void hsv::hsv2rgb(float h,float s,float v,
 		  double color[3]){
   int hueCase = (int)(h*6);
-  int c = 3 + (int)(h*3);
+  int c = 4 + (int)(h*2);
   float frac = 6*h-hueCase;
   float lx = v*(1-s);
   float ly = v*(1-s*frac);

@@ -188,8 +188,6 @@ void UI::Keyboard(void)
     cm->binary_state = LINE;
   }else if(CAVEgetbutton(CAVE_TKEY)){
     cm->binary_state = NOTHING;
-  }else if(CAVEgetbutton(CAVE_EKEY) && !cm->get_active_state()){
-    cm->button_has_pressed();
   }
 }
 
@@ -204,17 +202,20 @@ void UI::Joystick(void)
     cm->runstate = (cm->runstate == 1) ? 0 : 1;
   } else if (CAVEBUTTON2 == 1) {
     if (CAVEButtonChange(2) == 0) {
-      cm->beam_flag = true;
+      //  cm->beam_flag = true;
+      cm->inc = -1;
     }
   } else if (CAVEButtonChange(2) == -1) {
-    cm->beam_flag = false;
+    //    cm->beam_flag = false;
+      cm->inc = 1;
   }
 
   if(CAVEBUTTON1==1){
     if(CAVEButtonChange(1) == 1){
-      cm->beam_clear_flag = true;
+      //      cm->beam_clear_flag = true;
     }
   }else if(CAVEButtonChange(1) == -1){
-    cm->beam_clear_flag = false;
+    //    cm->beam_clear_flag = false;
+    cm->button_has_pressed();
   }
 }

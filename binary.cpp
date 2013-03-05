@@ -48,26 +48,29 @@ void binary::color_set(double color[][4]){
   int num=0;
   switch(cm->binary_state){
   case KINETIC:
-    glEnable(GL_BLEND);
+    printf("state KINETIC\n");
+    //    glEnable(GL_BLEND);
 
     for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
-      clh.color_map(p_inf->kin,nearby_alpha_boundary(*p_inf),color[num]);
+      clh.color_map(p_inf->kin,1.0,color[num]);
       num++;
     }
 
     break;
   case POTENTIAL:
-    glEnable(GL_BLEND);
+    printf("state POTENTIAL\n");
+    //    glEnable(GL_BLEND);
     for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
-      clh.color_map(p_inf->kin,around_alpha_boundary(*p_inf),color[num]);
+      clh.color_map(p_inf->pot*LENGTH*2.,1.0,color[num]);
       num++;
     }
     break;
   case GRAVITATIONALLY_BOUND:
-    glEnable(GL_BLEND);
+    printf("state GRAVITATIONALLY_BOUND\n");
+    //    glEnable(GL_BLEND);
     for(vector<PARTICLE_INF>::iterator p_inf=poslistV.begin();p_inf!=poslistV.end();p_inf++){
       clh.color_map(eng_sum_color_boundary(*p_inf),
-		    eng_sum_alpha_boundary(*p_inf),
+		    1.0,
 		    color[num]);
       num++;
     }
