@@ -37,7 +37,7 @@ void binary::draw_line(){
 }
 
 void binary::draw_arrow(){
-  if(cm->binary_state == ARROW){
+  if(cm->binary_state == ARROW||cm->binary_state==ARROW_AND_GRAVITATIONALLY_BOUND){
     printf("state ARROW\n");
     ang_vel->draw_arrow();
   }
@@ -65,6 +65,7 @@ void binary::color_set(double color[][4]){
       num++;
     }
     break;
+  case ARROW_AND_GRAVITATIONALLY_BOUND:
   case GRAVITATIONALLY_BOUND:
     printf("state GRAVITATIONALLY_BOUND\n");
     //    glEnable(GL_BLEND);

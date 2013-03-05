@@ -215,10 +215,12 @@ void Motion::Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF
     binary.tag = true;
     binary.dist = dist;
     if(cm->binary_state == KINETIC 
-       || cm->binary_state == GRAVITATIONALLY_BOUND || cm->binary_state == POTENTIAL){
+       || cm->binary_state == GRAVITATIONALLY_BOUND || cm->binary_state == POTENTIAL
+       ||cm->binary_state == ARROW_AND_GRAVITATIONALLY_BOUND){
       if(sqrt(dist) < poslistV[index_i].l){
 	poslistV[index_i].l = sqrt(dist);
-	if(cm->binary_state == GRAVITATIONALLY_BOUND){
+	if(cm->binary_state == GRAVITATIONALLY_BOUND
+	   ||cm->binary_state==ARROW_AND_GRAVITATIONALLY_BOUND){
 	  poslistV[index_i].l = sqrt(dist);
 	  pt.getKin(&kin,tpar.second.vel,cm->scale);
 	  poslistV[index_i].eng_sum = poslistV[index_i].kin+kin
@@ -231,7 +233,8 @@ void Motion::Make_binary(pair<string,PARTICLE_INF> ipar,pair<string,PARTICLE_INF
       index_t = tpar.second.id-1;
       if(sqrt(dist) < poslistV[index_t].l){
 	poslistV[index_t].l = sqrt(dist);
-	if(cm->binary_state == GRAVITATIONALLY_BOUND){
+	if(cm->binary_state == GRAVITATIONALLY_BOUND||
+	   cm->binary_state == ARROW_AND_GRAVITATIONALLY_BOUND){
 	  pt.getKin(&kin,tpar.second.vel,cm->scale);
 	  poslistV[index_t].eng_sum = poslistV[index_i].kin+
 	    kin -(ipar.second.vel[0] * tpar.second.vel[0]+

@@ -186,6 +186,9 @@ void UI::Keyboard(void)
     cm->binary_state = GRAVITATIONALLY_BOUND;
   }else if(CAVEgetbutton(CAVE_YKEY)){
     cm->binary_state = LINE;
+  }else if(CAVEgetbutton(CAVE_EKEY)){
+    cm->binary_state = ARROW_AND_GRAVITATIONALLY_BOUND;
+  
   }else if(CAVEgetbutton(CAVE_TKEY)){
     cm->binary_state = NOTHING;
   }
