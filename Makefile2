@@ -8,7 +8,8 @@ LDLIBS = -L/usr/X11R6/lib64 -L/usr/local/CAVE/lib64 -lcave_ogl_mt -lglut -lGLU -
 TARGET = viewptc
 OBJS = Particle.o common.o ui.o binary.o motion.o main.o \
 	 angular_vel.o arrow.o color_legend_hue.o \
-	hsv.o Particle_Objs.o pointsprite.o snapshot.o
+	hsv.o Particle_Objs.o pointsprite.o snapshot.o\
+	tube_advector.o tube_advector_point.o
 
 .SUFFIXES : .cpp .o
 
@@ -45,3 +46,5 @@ hsv.o: hsv.cpp
 Particle_Objs.o: Particle_Objs.cpp
 pointsprite.o: pointsprite.cpp
 snapshot.o: snapshot.cpp
+tube_advector.o:tube_advector.cpp
+tube_advector_point.o: tube_advector_point.cpp

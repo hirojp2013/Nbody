@@ -135,7 +135,7 @@ TubeAdvector::put_interpolate_points_in_strings()
 }
 
 void
-TubeAdvector::release()
+TubeAdvector::release(TARGET_POS &tpos)
 {
 //changed by Murata 2010.02.08
   static int i_prev=0;
@@ -145,9 +145,9 @@ TubeAdvector::release()
   const float RELEASE_INTERVAL_DISTANCE = data->grid_size_min;
   float dis[3];
 
-    dis[0] = beam->tip[0]-(point[i_prev]->pos[0]);
-    dis[1] = beam->tip[1]-(point[i_prev]->pos[1]);
-    dis[2] = beam->tip[2]-(point[i_prev]->pos[2]);
+    dis[0] = tpos.x-(point[i_prev]->pos[0]);
+    dis[1] = tpos.y-(point[i_prev]->pos[1]);
+    dis[2] = tpos.z-(point[i_prev]->pos[2]);
   if ( vec_norm(dis)> RELEASE_INTERVAL_DISTANCE ) {
     point[alin]->erase();                  // delete the old point.
     point[alin]->start(beam->tip, sv, +1, coltable[sv]); // positive trace

@@ -7,6 +7,7 @@
 #include<algorithm>
 #include<cassert>
 
+#include "tube_advector.hpp"
 #include "common.h"
 #include "binary.h"
 #include "motion.h"
@@ -36,7 +37,7 @@ GLuint theArrow[CAVE_MAX_WALLS];
 
 
 binary *bobj;
-
+TubeAdvector *tubeAdvector;
 
 void the_beam(){
 
@@ -105,6 +106,7 @@ void init(void *filename)
 
 
     pobjs = new Particle_Objs;
+    tubeAdvector = new TubeAdvector;
 
 
 	
@@ -298,8 +300,9 @@ void step(void)
 	    vector<TARGET_POS>::iterator st = cm->traj.front().begin();
 	    cm->traj.front().erase(st);
 	  }
-	  queue< vector<TARGET_POS> >&t_queue = cm->traj;
-	  t_queue.front().push_back(tpos); 
+	  //queue< vector<TARGET_POS> >&t_queue = cm->traj;
+	  //	  t_queue.front().push_back(tpos); 
+	  tubeAdvector->release(tpos);
 	}else if(!cm->target_id.empty()
 		 &&pt->getId()==cm->target_id.back()){
 	  
@@ -566,25 +569,12 @@ void display(void)
 	  }
 	}
 	//	if (cm->runstate == 1) {
-		
+	
 	  // trajectory
 	  //				cout << "traj: " << pt->getVLen() << " " << cm->vmax << " " << color_val << endl;
-
-		
-	  glLineWidth(1.0);
-	  for (int i = cm->traj.front().size() - 1; i > 0; i--) {
-	    vector<TARGET_POS> target_list = cm->traj.front();
-	    TARGET_POS target = target_list[i];
-	    glColor3f(target.color[0],target.color[1],target.color[2]);
-	    glBegin(GL_LINES);
-	    glVertex3d(cm->traj.front()[i].x,
-		       cm->traj.front()[i].y,
-		       cm->traj.front()[i].z);
-	    glVertex3d(cm->traj.front()[i-1].x,
-		       cm->traj.front()[i-1].y, 
-		       cm->traj.front()[i-1].z);
-	    glEnd();
-	  }
+	
+	
+	tubeAdvector->draw();
 		
 	  //	}
       }else if(!cm->target_id.empty()
@@ -596,25 +586,7 @@ void display(void)
 	    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, idbuf[i]);
 	  }
 	}
-
-	//	if(cm->runstate == 1){
-	  glLineWidth(1.0);
-	  for (int i = cm->traj.back().size() - 1; i > 0; i--) {
-	    vector<TARGET_POS> target_list = cm->traj.back();
-	    TARGET_POS target = target_list[i];
-	    glColor3f(target.color[0],target.color[1],target.color[2]);
-	    glBegin(GL_LINES);
-		    
-	    glVertex3d(cm->traj.back()[i].x,
-		       cm->traj.back()[i].y,
-		       cm->traj.back()[i].z);
-	    glVertex3d(cm->traj.back()[i-1].x,
-		       cm->traj.back()[i-1].y,
-		       cm->traj.back()[i-1].z);
-	    glEnd();
-		    
-	  }
-	  //	}
+	tubeAdvector->draw();
       }else{
 	if(cm->char_state){
 	  glColor3f(0.0,0.0,1.0);

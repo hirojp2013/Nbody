@@ -23,7 +23,7 @@ namespace vfive
 
 static const ffloat_ DT_FACTOR = 0.1;
 
-TubeAdvector_point:: TubeAdvector_point(Data* d) : data(d)
+TubeAdvector_point:: TubeAdvector_point()
 {
 //  radius = 0.1;
   calcToggle = 0;
@@ -75,7 +75,7 @@ TubeAdvector_point:: setRkConsts()
   c27 = h*0.3238095238095238;
 }
 
-
+/*
 int
 TubeAdvector_point:: genRkh(Data* data,
 			    ffloat_ *tim, ffloat_ y[], int n, ffloat_ f[],
@@ -170,7 +170,7 @@ TubeAdvector_point:: genRkh(Data* data,
         return(0);
 }
 
-
+*/
 
 void
 TubeAdvector_point::start(float* p, int sv, int para, float* col) 
