@@ -1,9 +1,8 @@
 #ifndef _PARTICLE_H_
 #define _PARTICLE_H_
 
-#include <cave_ogl.h>
-#include <GL/glut.h>
-#include <GL/gl.h>
+//#include <cave_ogl.h>
+#include <GLUT/glut.h>
 
 
 
@@ -13,7 +12,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
-#include <boost/unordered_map.hpp>
+//#include <boost/unordered_map.hpp>
 #include <string>
 #include <stdlib.h>
 #include <stdio.h>

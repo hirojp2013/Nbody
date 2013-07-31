@@ -1,7 +1,8 @@
 #include "binary.h"
-#include "angular_vel.h"
+//#include "angular_vel.h"
 #include "common.h"
 #include "motion.h"
+#include <cmath>
 
 const double MIN = 0;
 const double MAX = 1.;

@@ -1,7 +1,7 @@
 #ifndef ARROW_H
 #define ARROW_H
 
-#include <cave_ogl.h>
+//#include <cave_ogl.h>
 #include"GL/glut.h"
 #include"GL/gl.h"
 

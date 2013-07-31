@@ -2,7 +2,7 @@
 #define COLOR_LEGEND_HUE
 #include "Icolor_legend.hpp"
 #include"hsv.hpp"
-#include<GL/glut.h>
+#include<GLUT/glut.h>
 #include<cstdio>
 
 class color_legend_hue:public Icolor_legend{

@@ -1,6 +1,6 @@
 #pragma once
 #define GL_GLEXT_PROTOTYPES
-#include <GL/gl.h>
+#include <GLUT/glut.h>
 #include "common.h"
 
 class PointSprite{

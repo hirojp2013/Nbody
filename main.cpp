@@ -1,18 +1,20 @@
-#include "common.h"
+//#include "common.h"
 #include "ui.h"
-#include "motion.h"
-#include "Particle.h"
+//#include "motion.h"
+//#include "Particle.h"
 #include "Particle_Objs.h"
+#include<GLUT/glut.h>
 #include<math.h>
 #include<algorithm>
 #include<cassert>
 
-#include "common.h"
+//#include "common.h"
 #include "binary.h"
-#include "motion.h"
-#include "ui.h"
+//#include "motion.h"
+//#include "ui.h"
 
 
+#define CAVE_MAX_WALLS 10
 #define TEXHEIGHT 64
 #define TEXWIDTH 64
 static const char texture[] = "ball.raw";
@@ -37,7 +39,7 @@ GLuint theArrow[CAVE_MAX_WALLS];
 
 binary *bobj;
 
-
+/*
 void the_beam(){
 
   glTranslated(0.0,0.0,-CROSS_LENGTH);
@@ -71,15 +73,15 @@ void the_beam(){
   glTranslated(0.0,0.0,CROSS_LENGTH);
   gluDisk(discObj[CAVEUniqueIndex()],0.0,BEAM_WIDTH,16,16);
 }
+*/
 
 
+/*
 void init(void *filename)
 {
   GLfloat light_position[] = { 0.0f, 30.0f, 50.0f, 0.0f };
-  /*
- *** texture
- */
-
+ //  texture
+ 
   static GLubyte image[TEXHEIGHT][TEXWIDTH][4];
 
 
@@ -196,7 +198,7 @@ void init(void *filename)
   pobjs->set_x(pos);
   pobjs->set_color(color);
 }
-
+*/
 void end(void)
 {
   for (int i = 0; i < CAVE_MAX_WALLS; i++) {
@@ -206,6 +208,7 @@ void end(void)
   }
 }
 
+/*
 void step(void)
 {
   double pos[PARTICLE_NUMBER_MAX][3];
@@ -318,11 +321,11 @@ void step(void)
 	}
       }
       
-      /*		cout << setprecision(15)
+      		cout << setprecision(15)
 			<< "interval: " << cm->interval << " t_sys: " << cm->t_sys
 			<< " frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat 
 			<< " time: " << CAVEGetTime() << endl;
-      */
+      
       Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
       bobj->color_set(color);
       pobjs->set_x(pos);
@@ -337,6 +340,7 @@ void step(void)
     CAVEDisplayBarrier();
   }
 }
+*/
 
 void draw_grid(void)
 {
@@ -422,6 +426,7 @@ void get_angl(float unitVec[],double *angular,double *azimuth){
   *azimuth = 90.0-*azimuth;
 }
 
+/*
 void draw_beam(void)
 {
 
@@ -449,11 +454,11 @@ void draw_beam(void)
 	  beaml += pow(BEAM_SCALE*wandvec[i],2.0);
 	}
 	   
-	/*	       cout << "main " << 
+		       cout << "main " << 
 		       "x " << beam[0] + (BEAM_SCALE*cm->wandvec[0])<<endl
 		       << "y " << beam[1] + (BEAM_SCALE*cm->wandvec[1])<<endl
 		       <<"z "<<beam[2] + (BEAM_SCALE*cm->wandvec[2])<<endl;
-	*/	
+		
 	dist = sqrt(dist);
 	beaml = sqrt(beaml);
 	get_angl(wandvec,&angular,&azimuth);
@@ -477,7 +482,7 @@ void draw_beam(void)
   }
   glPopAttrib();
 }
-
+*/
 
 void Cross(double *orientV,double *diff_velV,GLdouble *ang_momV){
   ang_momV[0] = (orientV[1]*diff_velV[2] - orientV[2]*diff_velV[1])/2.0;
@@ -500,7 +505,7 @@ void get_omega(double pos[][3],double vel[][3],double dist,GLdouble omega[3]){
 
 }
 
-
+/*
 void display(void)
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -631,12 +636,95 @@ void display(void)
   cm->save_image();
   glPopMatrix();
 }
+*/
+
+void display_func(void)
+{
+        static GLfloat mat_amb[4]={0.2, 0.2, 0.2, 0.0};	/* 環境光に対する反射 */
+        static GLfloat mat_dif[4]={0.6, 0.6, 0.6, 0.0};	/* 拡散光に対する反射 */
+        static GLfloat mat_spc[4]={0.2, 0.2, 0.2, 0.0};	/* 鏡面反射 */
+        static GLfloat mat_emi[4]={0.0, 0.0, 0.0, 0.0};	/* 発光 */
+        static GLfloat mat_shi[1]={30.0};	/* 光沢 */
+
+        /*　画面と、デプスバッファを消去 */
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        /* 現在の座標系を保存 */
+        glPushMatrix();
+
+        /* まず、座標系を画面の奥に移動 */
+        glTranslatef(0.0, 0.0, -15.0);
+
+        /* 質感を設定 */
+//        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_amb);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_dif);
+//        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_spc);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shi);
+//        glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emi);
+	
+        /* 球を描く */
+        glutSolidSphere(2.0, 24, 24);
+
+        /* 座標系をもとに戻す */
+        glPopMatrix();	
+	
+        /* 画面を更新 */
+        glFlush();
+}
+
+void init_light(void)
+{
+        static GLfloat lit_amb[4]={0.0, 0.0, 0.0, 0.0};	/* 環境光の強さ */
+        static GLfloat lit_dif[4]={1.0, 1.0, 1.0, 0.0};	/* 拡散光の強さ */
+        static GLfloat lit_spc[4]={1.0, 1.0, 1.0, 0.0};	/* 鏡面反射光の強さ */
+//	static GLfloat lit_pos[4]={6.0, 6.0, -9.0, 1.0};	/* 光源の位置 */
+
+        static GLfloat lit_pos[4]={1.0, -1.0, 1.0, 0.0};
+        
+        //    static GLfloat lit_dir[3]={0.0, 0.0, 12.0};
+
+
+        glLightfv(GL_LIGHT0, GL_AMBIENT, lit_amb);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, lit_dif);
+        glLightfv(GL_LIGHT0, GL_SPECULAR, lit_spc);
+        //      glLightf(GL_LIGHT0, GL_SPOT_CUTOFF,10.0);
+        glLightfv(GL_LIGHT0, GL_POSITION, lit_pos);
+//        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lit_dir);
+        
+
+        /* ライトを有効にする */
+        glEnable(GL_LIGHT0);
+        glEnable(GL_LIGHTING);
+}
+
+
+void reshape_func(int width, int height)
+{
+        /* 表示範囲設定 */
+        glViewport(0, 0, width, height);
+
+        /* 投影方法設定 */
+        glMatrixMode(GL_PROJECTION);
+
+        /*座標変換行列の初期化 */
+        glLoadIdentity();
+
+        /* 投影範囲を設定 */
+        glFrustum(-1.0, 1.0, -1.0, 1.0, 3.0, 10000.0);
+
+        glMatrixMode(GL_MODELVIEW);
+
+        /* ライトの設定 */
+        init_light();
+}
+
+
+
 
 int main(int argc, char *argv[])
 {
   string filename;
 
-	
   if (argc == 2) {
     filename = argv[1];
   } else {
@@ -645,24 +733,31 @@ int main(int argc, char *argv[])
   }
   //	cout << "Input file: " << filename << endl;
   ui = UI::GetInstance();
-  cm = Common::GetInstance();
+//  cm = Common::GetInstance();
   glutInit(&argc, argv);
-  CAVEConfigure(&argc, argv, NULL);
+//  CAVEConfigure(&argc, argv, NULL);
+  glutInitDisplayMode(GLUT_RGB|GLUT_DEPTH);
+  glutInitWindowSize(300,300);
+//  CAVEInitApplication((CAVECALLBACK)init, 1, filename.c_str());
+  glutCreateWindow("Sample 7");
+//  CAVEDisplay(display, 0);
+  glutDisplayFunc(display_func);
+//  CAVEFrameFunction(step, 0);
+  glutReshapeFunc(reshape_func);
+          
+//  CAVEInit();
+//  float headpos[3];
+//  CAVEGetPosition(CAVE_HEAD, headpos);
+//  while (!CAVEgetbutton(CAVE_ESCKEY)) {
+//    ui->Keyboard();
+//    ui->Joystick();
+//    ui->Navigation();
+//
+//    CAVEUSleep(10);
+//  }
 
-  CAVEInitApplication((CAVECALLBACK)init, 1, filename.c_str());
-  CAVEDisplay(display, 0);
-  CAVEFrameFunction(step, 0);
-  CAVEInit();
-  float headpos[3];
-  CAVEGetPosition(CAVE_HEAD, headpos);
-  while (!CAVEgetbutton(CAVE_ESCKEY)) {
-    ui->Keyboard();
-    ui->Joystick();
-    ui->Navigation();
-
-    CAVEUSleep(10);
-  }
-
-  end();
-  CAVEExit();
+//  end();
+//  CAVEExit();
+          glutMainLoop();
+          return 0;
 }

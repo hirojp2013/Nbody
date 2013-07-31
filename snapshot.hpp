@@ -1,8 +1,7 @@
 #ifndef _SNAPSHOT_H_
 #define _SNAPSHOT_H_
-#include <cave_ogl.h>
-#include <GL/glut.h>
-#include <GL/gl.h>
+//#include <cave_ogl.h>
+#include <GLUT/glut.h>
 
 #include "cstdlib"
 const int  SNAPSHOT_IMAGE_MAX = 2048 * 2048;

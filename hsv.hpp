@@ -1,4 +1,4 @@
-#include<GL/glut.h>
+#include<GLUT/glut.h>
 class hsv{
 public:
   void hsv2rgb(float h,float s,float v,
