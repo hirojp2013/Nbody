@@ -8,7 +8,7 @@
 #include<algorithm>
 #include<cassert>
 
-//#include "common.h"
+#include "common.h"
 #include "binary.h"
 //#include "motion.h"
 //#include "ui.h"
