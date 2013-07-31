@@ -6,7 +6,6 @@ Particle_Objs::Particle_Objs(){
 
 void Particle_Objs::init(){
   ps = new PointSprite;
-  CAVEDisplayBarrier();
 }
 
 void Particle_Objs::set_x(double pos[][3]){

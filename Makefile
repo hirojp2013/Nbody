@@ -1,12 +1,16 @@
 .PHONY: all clean
 CXX = g++ -framework OpenGL -framework GLUT -framework Foundation
 
+CFLAGS = `pkg-config --cflags libpng`
+
+LDLIBS = `pkg-config --libs libpng`
+
 TARGET = viewptc
 #OBJS = Particle.o common.o ui.o binary.o motion.o main.o \
 #	 angular_vel.o arrow.o color_legend_hue.o \
 #	hsv.o Particle_Objs.o pointsprite.o snapshot.o
 
-OBJS = main.o common.o Particle.o ui.o 
+OBJS = main.o common.o Particle.o ui.o Particle_Objs.o pointsprite.o
 
 .SUFFIXES : .cpp .o
 

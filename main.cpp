@@ -1,7 +1,7 @@
 //#include "common.h"
 #include "ui.h"
-//#include "motion.h"
-//#include "Particle.h"
+#include "motion.h"
+#include "Particle.h"
 #include "Particle_Objs.h"
 #include<GLUT/glut.h>
 #include<math.h>
@@ -29,120 +29,124 @@ static Common *cm = NULL;
 static Particle_Objs *pobjs;  
 double SCALE = 0.01;
 
-static GLUquadricObj *sphereObj[CAVE_MAX_WALLS] = { NULL };
-static GLUquadricObj *clyndObj[CAVE_MAX_WALLS] = {NULL};
-static GLUquadricObj *discObj[CAVE_MAX_WALLS] = {NULL};
+//static GLUquadricObj *sphereObj[CAVE_MAX_WALLS] = { NULL };
+//static GLUquadricObj *clyndObj[CAVE_MAX_WALLS] = {NULL};
+//static GLUquadricObj *discObj[CAVE_MAX_WALLS] = {NULL};
 
-GLuint theBeam[CAVE_MAX_WALLS];
+static GLUquadricObj *sphereObj;
+static GLUquadricObj *clyndObj; 
+static GLUquadricObj *discObj;
+
+//GLuint theBeam[CAVE_MAX_WALLS];
+GLuint theBeam;
 GLuint theArrow[CAVE_MAX_WALLS];
 
 
 binary *bobj;
 
-/*
-  void the_beam(){
+
+void the_beam(){
 
   glTranslated(0.0,0.0,-CROSS_LENGTH);
-  gluCylinder(clyndObj[CAVEUniqueIndex()],BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
-  gluDisk(discObj[CAVEUniqueIndex()],0.0,BEAM_WIDTH,16,16);
+  gluCylinder(clyndObj,BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
+  gluDisk(discObj,0.0,BEAM_WIDTH,16,16);
   glTranslated(0.0,0.0,CROSS_LENGTH);
 
-  gluCylinder(clyndObj[CAVEUniqueIndex()],BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
+  gluCylinder(clyndObj,BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
   glTranslated(0.0,0.0,CROSS_LENGTH);
-  gluDisk(discObj[CAVEUniqueIndex()],0.0,BEAM_WIDTH,16,16);
+  gluDisk(discObj,0.0,BEAM_WIDTH,16,16);
   glTranslated(0.0,0.0,-CROSS_LENGTH);
   glRotated(90,1.0,0.0,0.0);
 
   glTranslated(0.0,0.0,-CROSS_LENGTH);
-  gluCylinder(clyndObj[CAVEUniqueIndex()],BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
-  gluDisk(discObj[CAVEUniqueIndex()],0.0,BEAM_WIDTH,16,16);
+  gluCylinder(clyndObj,BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
+  gluDisk(discObj,0.0,BEAM_WIDTH,16,16);
   glTranslated(0.0,0.0,CROSS_LENGTH);
-  gluCylinder(clyndObj[CAVEUniqueIndex()],BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
+  gluCylinder(clyndObj,BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
   glTranslated(0.0,0.0,CROSS_LENGTH);
-  gluDisk(discObj[CAVEUniqueIndex()],0.0,BEAM_WIDTH,16,16);
-		
+  gluDisk(discObj,0.0,BEAM_WIDTH,16,16);
   glTranslated(0.0,0.0,-CROSS_LENGTH);
   glRotated(90,1.0,0.0,0.0);
 
   glRotated(90,0.0,1.0,0.0);
   glTranslated(0.0,0.0,-CROSS_LENGTH);
-  gluCylinder(clyndObj[CAVEUniqueIndex()],BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
-  gluDisk(discObj[CAVEUniqueIndex()],0.0,BEAM_WIDTH,16,16);
+  gluCylinder(clyndObj,BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
+  gluDisk(discObj,0.0,BEAM_WIDTH,16,16);
   glTranslated(0.0,0.0,CROSS_LENGTH);
-  gluCylinder(clyndObj[CAVEUniqueIndex()],BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
+  gluCylinder(clyndObj,BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
   glTranslated(0.0,0.0,CROSS_LENGTH);
-  gluDisk(discObj[CAVEUniqueIndex()],0.0,BEAM_WIDTH,16,16);
-  }
-*/
+  gluDisk(discObj,0.0,BEAM_WIDTH,16,16);
+}
 
 
-/*
-  void init(void *filename)
-  {
+
+
+void init(void *filename)
+{
   GLfloat light_position[] = { 0.0f, 30.0f, 50.0f, 0.0f };
   //  texture
  
   static GLubyte image[TEXHEIGHT][TEXWIDTH][4];
 
 
-  if (CAVEMasterDisplay()) {
-  cm->display_num = CAVENumPipes();
-  cout << "display_num: " << cm->display_num << endl;
-  bool ret = cm->data.readData((const char *)filename);
-  if (!ret) {
-  cout << "Can't read the input data." << endl;
-  exit(-1);
-  }
-  cm->t_dat_max = cm->data.getData(cm->data.getDataNum() - 1)->getTime();
-  cm->frame_max = (int)(cm->t_dat_max / cm->interval) + 1;
-  cm->frame_dat = cm->data.initList() - 1;
-  cout << setprecision(15)
-  << "time_max: " << cm->t_dat_max
-  << " interval: " << cm->interval
-  << " frame_max: " << cm->frame_max
-  << " vmax: " << cm->vmax
-  << endl;
-  cout << setprecision(15)
-  << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
+  //  if (CAVEMasterDisplay()) {
+  //    cm->display_num = CAVENumPipes();
+    cout << "display_num: " << cm->display_num << endl;
+    bool ret = cm->data.readData((const char *)filename);
+    if (!ret) {
+      cout << "Can't read the input data." << endl;
+      exit(-1);
+    }
+    cm->t_dat_max = cm->data.getData(cm->data.getDataNum() - 1)->getTime();
+    cm->frame_max = (int)(cm->t_dat_max / cm->interval) + 1;
+    cm->frame_dat = cm->data.initList() - 1;
+    cout << setprecision(15)
+         << "time_max: " << cm->t_dat_max
+         << " interval: " << cm->interval
+         << " frame_max: " << cm->frame_max
+         << " vmax: " << cm->vmax
+         << endl;
+    cout << setprecision(15)
+         << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
 
 
-  pobjs = new Particle_Objs;
+    pobjs = new Particle_Objs;
 
 
-	
-  #if 0
-  printf("INPUT --------------------------------------------\n");
-  for (int i = 0; i < cm->data.getDataNum(); i++) {
-  double va[3], vj[3], vv[3], vx[3];
-  Particle *p = cm->data.getData(i);
-  printf("--- !!Particle \n");
-  p->getA(va);
-  printf("a: \n");
-  for (int j = 0; j < 3; j++) {
-  printf("- %.15g\n", va[j]);
-  }
-  printf("id: %d\n", p->getId());
-  p->getJ(vj);
-  printf("j: \n");
-  for (int j = 0; j < 3; j++) {
-  printf("- %.15g\n", vj[j]);
-  }
-  printf("t: %.15g\n", p->getTime());
-  p->getV(vv);
-  printf("v: \n");
-  for (int j = 0; j < 3; j++) {
-  printf("- %.15g\n", vv[j]);
-  }
-  p->getX(vx);
-  printf("x: \n");
-  for (int j = 0; j < 3; j++) {
-  printf("- %.15g\n", vx[j]);
-  }
-  }
-  printf("INPUT end ----------------------------------------\n");
-  #endif
-  }
-  CAVEDisplayBarrier();
+    
+#if 0
+    printf("INPUT --------------------------------------------\n");
+    for (int i = 0; i < cm->data.getDataNum(); i++) {
+      double va[3], vj[3], vv[3], vx[3];
+      Particle *p = cm->data.getData(i);
+      printf("--- !!Particle \n");
+      p->getA(va);
+      printf("a: \n");
+      for (int j = 0; j < 3; j++) {
+        printf("- %.15g\n", va[j]);
+      }
+      printf("id: %d\n", p->getId());
+      p->getJ(vj);
+      printf("j: \n");
+      for (int j = 0; j < 3; j++) {
+        printf("- %.15g\n", vj[j]);
+      }
+      printf("t: %.15g\n", p->getTime());
+      p->getV(vv);
+      printf("v: \n");
+      for (int j = 0; j < 3; j++) {
+        printf("- %.15g\n", vv[j]);
+      }
+      p->getX(vx);
+      printf("x: \n");
+      for (int j = 0; j < 3; j++) {
+        printf("- %.15g\n", vx[j]);
+      }
+    }
+    printf("INPUT end ----------------------------------------\n");
+#endif
+    //  }
+    //  CAVEDisplayBarrier();
   //texture start
 
   pobjs->init();
@@ -156,16 +160,22 @@ binary *bobj;
 
   glBlendFunc(GL_SRC_ALPHA,GL_DST_ALPHA);
   //multithead tID
-  sphereObj[CAVEUniqueIndex()] = gluNewQuadric();
-  clyndObj[CAVEUniqueIndex()] = gluNewQuadric();
-  discObj[CAVEUniqueIndex()] = gluNewQuadric();
-  theBeam[CAVEUniqueIndex()] = glGenLists(1);
+  //sphereObj[CAVEUniqueIndex()] = gluNewQuadric();
+  //clyndObj[CAVEUniqueIndex()] = gluNewQuadric();
+  //discObj[CAVEUniqueIndex()] = gluNewQuadric();
+  //theBeam[CAVEUniqueIndex()] = glGenLists(1);
+
+  sphereObj = gluNewQuadric();
+  clyndObj = gluNewQuadric();
+  discObj = gluNewQuadric();
+  theBeam = glGenLists(1);
   
-  glNewList(theBeam[CAVEUniqueIndex()],GL_COMPILE);
+  //glNewList(theBeam[CAVEUniqueIndex()],GL_COMPILE);
+  glNewList(theBeam,GL_COMPILE);
   the_beam();
   glEndList();
   
-  bobj = new binary(TARGET_DIST_THRESH/10.);
+  //  bobj = new binary(TARGET_DIST_THRESH/10.);
 
   PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
   vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
@@ -177,35 +187,35 @@ binary *bobj;
   double color[PARTICLE_NUMBER_MAX][4];
   int num=0;
   for (p = curlist.begin(); p != curlist.end(); p++) {
-  if(*p<0){
-  continue;
-  }
-  Particle *pt = cm->data.getData(*p);
-  pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
-  pos_inf.id = pt->getId();
-  for(int i=0;i<3;i++){
-  pos_inf.pos[i] = pos[num][i];
-  }
-  pt->getV(pos_inf.vel,cm->scale);
-  poslistV[pos_inf.id-1] = pos_inf;
+    if(*p<0){
+      continue;
+    }
+    Particle *pt = cm->data.getData(*p);
+    pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
+    pos_inf.id = pt->getId();
+    for(int i=0;i<3;i++){
+      pos_inf.pos[i] = pos[num][i];
+    }
+    pt->getV(pos_inf.vel,cm->scale);
+    poslistV[pos_inf.id-1] = pos_inf;
 
-  num++;
+    num++;
   }
 
 
-  Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
-  bobj->color_set(color);
+  //  Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
+  //  bobj->color_set(color);
   pobjs->set_x(pos);
   pobjs->set_color(color);
-  }
-*/
+}
+
 void end(void)
 {
-  for (int i = 0; i < CAVE_MAX_WALLS; i++) {
-    if (sphereObj[i] != NULL) {
-      gluDeleteQuadric(sphereObj[i]);
-    }
-  }
+//  for (int i = 0; i < CAVE_MAX_WALLS; i++) {
+//    if (sphereObj[i] != NULL) {
+//      gluDeleteQuadric(sphereObj[i]);
+//    }
+//  }
 }
 
 /*

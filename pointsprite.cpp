@@ -7,9 +7,7 @@
 #include "pointsprite.h"
 #include <png.h>
 #include <cstdlib>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
+#include <GLUT/glut.h>
 #include <iostream>
 
 const GLfloat PointSprite::distance[] = {0.0, 0.0, 1.0};
