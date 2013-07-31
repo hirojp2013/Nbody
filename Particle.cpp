@@ -1,4 +1,6 @@
 #include "Particle.h"
+#include<cmath>
+
 Particle::Particle()
 {
   init();

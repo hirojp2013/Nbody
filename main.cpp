@@ -40,7 +40,7 @@ GLuint theArrow[CAVE_MAX_WALLS];
 binary *bobj;
 
 /*
-void the_beam(){
+  void the_beam(){
 
   glTranslated(0.0,0.0,-CROSS_LENGTH);
   gluCylinder(clyndObj[CAVEUniqueIndex()],BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
@@ -72,75 +72,75 @@ void the_beam(){
   gluCylinder(clyndObj[CAVEUniqueIndex()],BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
   glTranslated(0.0,0.0,CROSS_LENGTH);
   gluDisk(discObj[CAVEUniqueIndex()],0.0,BEAM_WIDTH,16,16);
-}
+  }
 */
 
 
 /*
-void init(void *filename)
-{
+  void init(void *filename)
+  {
   GLfloat light_position[] = { 0.0f, 30.0f, 50.0f, 0.0f };
- //  texture
+  //  texture
  
   static GLubyte image[TEXHEIGHT][TEXWIDTH][4];
 
 
   if (CAVEMasterDisplay()) {
-    cm->display_num = CAVENumPipes();
-    cout << "display_num: " << cm->display_num << endl;
-    bool ret = cm->data.readData((const char *)filename);
-    if (!ret) {
-      cout << "Can't read the input data." << endl;
-      exit(-1);
-    }
-    cm->t_dat_max = cm->data.getData(cm->data.getDataNum() - 1)->getTime();
-    cm->frame_max = (int)(cm->t_dat_max / cm->interval) + 1;
-    cm->frame_dat = cm->data.initList() - 1;
-    cout << setprecision(15)
-	 << "time_max: " << cm->t_dat_max
-	 << " interval: " << cm->interval
-	 << " frame_max: " << cm->frame_max
-	 << " vmax: " << cm->vmax
-	 << endl;
-    cout << setprecision(15)
-	 << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
+  cm->display_num = CAVENumPipes();
+  cout << "display_num: " << cm->display_num << endl;
+  bool ret = cm->data.readData((const char *)filename);
+  if (!ret) {
+  cout << "Can't read the input data." << endl;
+  exit(-1);
+  }
+  cm->t_dat_max = cm->data.getData(cm->data.getDataNum() - 1)->getTime();
+  cm->frame_max = (int)(cm->t_dat_max / cm->interval) + 1;
+  cm->frame_dat = cm->data.initList() - 1;
+  cout << setprecision(15)
+  << "time_max: " << cm->t_dat_max
+  << " interval: " << cm->interval
+  << " frame_max: " << cm->frame_max
+  << " vmax: " << cm->vmax
+  << endl;
+  cout << setprecision(15)
+  << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
 
 
-    pobjs = new Particle_Objs;
+  pobjs = new Particle_Objs;
 
 
 	
-#if 0
-    printf("INPUT --------------------------------------------\n");
-    for (int i = 0; i < cm->data.getDataNum(); i++) {
-      double va[3], vj[3], vv[3], vx[3];
-      Particle *p = cm->data.getData(i);
-      printf("--- !!Particle \n");
-      p->getA(va);
-      printf("a: \n");
-      for (int j = 0; j < 3; j++) {
-	printf("- %.15g\n", va[j]);
-      }
-      printf("id: %d\n", p->getId());
-      p->getJ(vj);
-      printf("j: \n");
-      for (int j = 0; j < 3; j++) {
-	printf("- %.15g\n", vj[j]);
-      }
-      printf("t: %.15g\n", p->getTime());
-      p->getV(vv);
-      printf("v: \n");
-      for (int j = 0; j < 3; j++) {
-	printf("- %.15g\n", vv[j]);
-      }
-      p->getX(vx);
-      printf("x: \n");
-      for (int j = 0; j < 3; j++) {
-	printf("- %.15g\n", vx[j]);
-      }
-    }
-    printf("INPUT end ----------------------------------------\n");
-#endif
+  #if 0
+  printf("INPUT --------------------------------------------\n");
+  for (int i = 0; i < cm->data.getDataNum(); i++) {
+  double va[3], vj[3], vv[3], vx[3];
+  Particle *p = cm->data.getData(i);
+  printf("--- !!Particle \n");
+  p->getA(va);
+  printf("a: \n");
+  for (int j = 0; j < 3; j++) {
+  printf("- %.15g\n", va[j]);
+  }
+  printf("id: %d\n", p->getId());
+  p->getJ(vj);
+  printf("j: \n");
+  for (int j = 0; j < 3; j++) {
+  printf("- %.15g\n", vj[j]);
+  }
+  printf("t: %.15g\n", p->getTime());
+  p->getV(vv);
+  printf("v: \n");
+  for (int j = 0; j < 3; j++) {
+  printf("- %.15g\n", vv[j]);
+  }
+  p->getX(vx);
+  printf("x: \n");
+  for (int j = 0; j < 3; j++) {
+  printf("- %.15g\n", vx[j]);
+  }
+  }
+  printf("INPUT end ----------------------------------------\n");
+  #endif
   }
   CAVEDisplayBarrier();
   //texture start
@@ -177,19 +177,19 @@ void init(void *filename)
   double color[PARTICLE_NUMBER_MAX][4];
   int num=0;
   for (p = curlist.begin(); p != curlist.end(); p++) {
-    if(*p<0){
-      continue;
-    }
-    Particle *pt = cm->data.getData(*p);
-    pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
-    pos_inf.id = pt->getId();
-    for(int i=0;i<3;i++){
-      pos_inf.pos[i] = pos[num][i];
-    }
-    pt->getV(pos_inf.vel,cm->scale);
-    poslistV[pos_inf.id-1] = pos_inf;
+  if(*p<0){
+  continue;
+  }
+  Particle *pt = cm->data.getData(*p);
+  pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
+  pos_inf.id = pt->getId();
+  for(int i=0;i<3;i++){
+  pos_inf.pos[i] = pos[num][i];
+  }
+  pt->getV(pos_inf.vel,cm->scale);
+  poslistV[pos_inf.id-1] = pos_inf;
 
-    num++;
+  num++;
   }
 
 
@@ -197,7 +197,7 @@ void init(void *filename)
   bobj->color_set(color);
   pobjs->set_x(pos);
   pobjs->set_color(color);
-}
+  }
 */
 void end(void)
 {
@@ -209,137 +209,137 @@ void end(void)
 }
 
 /*
-void step(void)
-{
+  void step(void)
+  {
   double pos[PARTICLE_NUMBER_MAX][3];
   double color[PARTICLE_NUMBER_MAX][4];
   if (cm->runstate == 0) {
-    if (CAVEMasterDisplay()) {
-      double incl = 0.0001;
-      if (cm->is_acc && cm->interval + incl < 1.0) {
-	cm->interval += incl;
-	cm->is_acc = false;
-      }
-      
-      if (cm->is_dec && cm->interval - incl > 0.0001) {
-	cm->interval -= incl;
-	cm->is_dec = false;
-      }
-      if(cm->beam_flag){
-	cm->SelectParticle();
-      }else if(cm->beam_clear_flag){
-	cm->allClear();
-      }
-    }
-    CAVEDisplayBarrier();
-  }else{
-    if(CAVEMasterDisplay()){
-      vector<int> curlist = cm->data.getCurrentList();
-      vector<int>::iterator p;
-      double incl = 0.001;
-      vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
-      poslistV.clear();
-      PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
-      poslistV.resize(cm->data.getIDNum(),pos_inf);
-      if (cm->inc > 0) {
-	if (cm->t_sys < cm->t_dat_max) {
-	  cm->t_sys += cm->interval;
-	} else {
-	  cm->t_sys = 0;
-	  cm->frame_dat = -1;
-	  cm->allClear();
-	  Motion::GetInstance()->init();
-	}
-	
-	while (cm->frame_dat < cm->data.getDataNum() - 1) {
-	  if (cm->data.getData(cm->frame_dat + 1)->getTime() > cm->t_sys) {
-	    break;
-	  }
-	  cm->frame_dat++;
-	  cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
-	}
-      }
-      else{
-	if (cm->t_sys > 0) {
-	  cm->t_sys -= cm->interval;
-	} else {
-	  cm->t_sys = ((int)(cm->t_dat_max / cm->interval) + 1) * cm->interval;
-	  cm->frame_dat = cm->data.getDataNum();
-	  cm->allClear();
-	  Motion::GetInstance()->init();
-	}
-	while (cm->frame_dat > 0) {
-	  if (cm->data.getData(cm->frame_dat - 1)->getTime() < cm->t_sys) {
-	    break;
-	  }
-	  cm->frame_dat--;
-	  cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
-	}
-      }
-
-      int num = 0;
-      for (p = curlist.begin(); p != curlist.end(); p++) {
-	if(*p<0){
-	  continue;
-	}
-	Particle *pt = cm->data.getData(*p);
-	pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
-	pos_inf.id = pt->getId();
-	for(int i=0;i<3;i++){
-	  pos_inf.pos[i] = pos[num][i];
-	}
-	pt->getV(pos_inf.vel,cm->scale);
-	//	poslistV.push_back(pos_inf);
-	poslistV[pos_inf.id-1] = pos_inf;
-	num++;
-
-	if(!cm->target_id.empty()
-	   &&pt->getId()==cm->target_id.front()){
-	  float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-	  TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1], pos_inf.pos[2], { color_val, color_val, color_val }  };
-	  if (cm->traj.front().size() == TRAJ_MAX) {
-	    vector<TARGET_POS>::iterator st = cm->traj.front().begin();
-	    cm->traj.front().erase(st);
-	  }
-	  queue< vector<TARGET_POS> >&t_queue = cm->traj;
-	  t_queue.front().push_back(tpos); 
-	}else if(!cm->target_id.empty()
-		 &&pt->getId()==cm->target_id.back()){
-	  
-	  float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-	  TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1],
-			      pos_inf.pos[2], { color_val, color_val, color_val }  };
-	  if(!cm->traj.empty()){
-	    
-	    if (cm->traj.back().size() == TRAJ_MAX) {
-	      vector<TARGET_POS>::iterator st = cm->traj.back().begin();
-	      cm->traj.back().erase(st);
-	    }
-	  }
-	  queue< vector<TARGET_POS> >&t_queue = cm->traj;
-	  t_queue.back().push_back(tpos);
-	}
-      }
-      
-      		cout << setprecision(15)
-			<< "interval: " << cm->interval << " t_sys: " << cm->t_sys
-			<< " frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat 
-			<< " time: " << CAVEGetTime() << endl;
-      
-      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
-      bobj->color_set(color);
-      pobjs->set_x(pos);
-      pobjs->set_color(color);
-
-      if(cm->beam_flag){
-	cm->SelectParticle();
-      }else if(cm->beam_clear_flag){
-	cm->allClear();
-      }
-    }
-    CAVEDisplayBarrier();
+  if (CAVEMasterDisplay()) {
+  double incl = 0.0001;
+  if (cm->is_acc && cm->interval + incl < 1.0) {
+  cm->interval += incl;
+  cm->is_acc = false;
   }
-}
+      
+  if (cm->is_dec && cm->interval - incl > 0.0001) {
+  cm->interval -= incl;
+  cm->is_dec = false;
+  }
+  if(cm->beam_flag){
+  cm->SelectParticle();
+  }else if(cm->beam_clear_flag){
+  cm->allClear();
+  }
+  }
+  CAVEDisplayBarrier();
+  }else{
+  if(CAVEMasterDisplay()){
+  vector<int> curlist = cm->data.getCurrentList();
+  vector<int>::iterator p;
+  double incl = 0.001;
+  vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
+  poslistV.clear();
+  PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
+  poslistV.resize(cm->data.getIDNum(),pos_inf);
+  if (cm->inc > 0) {
+  if (cm->t_sys < cm->t_dat_max) {
+  cm->t_sys += cm->interval;
+  } else {
+  cm->t_sys = 0;
+  cm->frame_dat = -1;
+  cm->allClear();
+  Motion::GetInstance()->init();
+  }
+	
+  while (cm->frame_dat < cm->data.getDataNum() - 1) {
+  if (cm->data.getData(cm->frame_dat + 1)->getTime() > cm->t_sys) {
+  break;
+  }
+  cm->frame_dat++;
+  cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
+  }
+  }
+  else{
+  if (cm->t_sys > 0) {
+  cm->t_sys -= cm->interval;
+  } else {
+  cm->t_sys = ((int)(cm->t_dat_max / cm->interval) + 1) * cm->interval;
+  cm->frame_dat = cm->data.getDataNum();
+  cm->allClear();
+  Motion::GetInstance()->init();
+  }
+  while (cm->frame_dat > 0) {
+  if (cm->data.getData(cm->frame_dat - 1)->getTime() < cm->t_sys) {
+  break;
+  }
+  cm->frame_dat--;
+  cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
+  }
+  }
+
+  int num = 0;
+  for (p = curlist.begin(); p != curlist.end(); p++) {
+  if(*p<0){
+  continue;
+  }
+  Particle *pt = cm->data.getData(*p);
+  pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
+  pos_inf.id = pt->getId();
+  for(int i=0;i<3;i++){
+  pos_inf.pos[i] = pos[num][i];
+  }
+  pt->getV(pos_inf.vel,cm->scale);
+  //	poslistV.push_back(pos_inf);
+  poslistV[pos_inf.id-1] = pos_inf;
+  num++;
+
+  if(!cm->target_id.empty()
+  &&pt->getId()==cm->target_id.front()){
+  float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
+  TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1], pos_inf.pos[2], { color_val, color_val, color_val }  };
+  if (cm->traj.front().size() == TRAJ_MAX) {
+  vector<TARGET_POS>::iterator st = cm->traj.front().begin();
+  cm->traj.front().erase(st);
+  }
+  queue< vector<TARGET_POS> >&t_queue = cm->traj;
+  t_queue.front().push_back(tpos); 
+  }else if(!cm->target_id.empty()
+  &&pt->getId()==cm->target_id.back()){
+	  
+  float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
+  TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1],
+  pos_inf.pos[2], { color_val, color_val, color_val }  };
+  if(!cm->traj.empty()){
+	    
+  if (cm->traj.back().size() == TRAJ_MAX) {
+  vector<TARGET_POS>::iterator st = cm->traj.back().begin();
+  cm->traj.back().erase(st);
+  }
+  }
+  queue< vector<TARGET_POS> >&t_queue = cm->traj;
+  t_queue.back().push_back(tpos);
+  }
+  }
+      
+  cout << setprecision(15)
+  << "interval: " << cm->interval << " t_sys: " << cm->t_sys
+  << " frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat 
+  << " time: " << CAVEGetTime() << endl;
+      
+  Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
+  bobj->color_set(color);
+  pobjs->set_x(pos);
+  pobjs->set_color(color);
+
+  if(cm->beam_flag){
+  cm->SelectParticle();
+  }else if(cm->beam_clear_flag){
+  cm->allClear();
+  }
+  }
+  CAVEDisplayBarrier();
+  }
+  }
 */
 
 void draw_grid(void)
@@ -427,61 +427,61 @@ void get_angl(float unitVec[],double *angular,double *azimuth){
 }
 
 /*
-void draw_beam(void)
-{
+  void draw_beam(void)
+  {
 
   float wandvec[3];
   float beam[3];
   CAVEGetPosition(CAVE_WAND_NAV, beam);
   CAVEGetVector(CAVE_WAND_FRONT_NAV, wandvec);
   if (!cm->beam_flag) {
-    return;
+  return;
   }
   glPushAttrib(GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT);
   {
-    glDisable(GL_LIGHTING);
-    glLineWidth(3.0);
-    glPushMatrix();
-    {
-      glEnable(GL_LIGHTING);
-      glTranslated(beam[0],beam[1],beam[2]); 
-      glPushMatrix();
-      {
-	double azimuth,angular,dist;
-	double beaml=0.0;	    
-	glColor3d(1.0,1.0,1.0);
-	for(int i=0;i<3;i++){
-	  beaml += pow(BEAM_SCALE*wandvec[i],2.0);
-	}
+  glDisable(GL_LIGHTING);
+  glLineWidth(3.0);
+  glPushMatrix();
+  {
+  glEnable(GL_LIGHTING);
+  glTranslated(beam[0],beam[1],beam[2]); 
+  glPushMatrix();
+  {
+  double azimuth,angular,dist;
+  double beaml=0.0;	    
+  glColor3d(1.0,1.0,1.0);
+  for(int i=0;i<3;i++){
+  beaml += pow(BEAM_SCALE*wandvec[i],2.0);
+  }
 	   
-		       cout << "main " << 
-		       "x " << beam[0] + (BEAM_SCALE*cm->wandvec[0])<<endl
-		       << "y " << beam[1] + (BEAM_SCALE*cm->wandvec[1])<<endl
-		       <<"z "<<beam[2] + (BEAM_SCALE*cm->wandvec[2])<<endl;
+  cout << "main " << 
+  "x " << beam[0] + (BEAM_SCALE*cm->wandvec[0])<<endl
+  << "y " << beam[1] + (BEAM_SCALE*cm->wandvec[1])<<endl
+  <<"z "<<beam[2] + (BEAM_SCALE*cm->wandvec[2])<<endl;
 		
-	dist = sqrt(dist);
-	beaml = sqrt(beaml);
-	get_angl(wandvec,&angular,&azimuth);
-	glRotated(angular,0.0,1.0,0.0);
-	glRotated(-azimuth,1.0,0.0,0.0);
-	gluCylinder(clyndObj[CAVEUniqueIndex()],BEAM_WIDTH,BEAM_WIDTH,beaml,16,16);
-	gluDisk(discObj[CAVEUniqueIndex()],0.0,BEAM_WIDTH,16,16);
-      }
-      glPopMatrix();
-      glPushMatrix();
-      {
-	glTranslated(wandvec[0]*(BEAM_SCALE),wandvec[1]*(BEAM_SCALE),wandvec[2]*(BEAM_SCALE));
+  dist = sqrt(dist);
+  beaml = sqrt(beaml);
+  get_angl(wandvec,&angular,&azimuth);
+  glRotated(angular,0.0,1.0,0.0);
+  glRotated(-azimuth,1.0,0.0,0.0);
+  gluCylinder(clyndObj[CAVEUniqueIndex()],BEAM_WIDTH,BEAM_WIDTH,beaml,16,16);
+  gluDisk(discObj[CAVEUniqueIndex()],0.0,BEAM_WIDTH,16,16);
+  }
+  glPopMatrix();
+  glPushMatrix();
+  {
+  glTranslated(wandvec[0]*(BEAM_SCALE),wandvec[1]*(BEAM_SCALE),wandvec[2]*(BEAM_SCALE));
 	      
-	glRotatef(cm->rot,0.0,1.0,0.0);
-	glCallList(theBeam[CAVEUniqueIndex()]);
-      }
-      glPopMatrix();
-      glDisable(GL_LIGHTING);
-    }
-    glPopMatrix();
+  glRotatef(cm->rot,0.0,1.0,0.0);
+  glCallList(theBeam[CAVEUniqueIndex()]);
+  }
+  glPopMatrix();
+  glDisable(GL_LIGHTING);
+  }
+  glPopMatrix();
   }
   glPopAttrib();
-}
+  }
 */
 
 void Cross(double *orientV,double *diff_velV,GLdouble *ang_momV){
@@ -506,216 +506,216 @@ void get_omega(double pos[][3],double vel[][3],double dist,GLdouble omega[3]){
 }
 
 /*
-void display(void)
-{
+  void display(void)
+  {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_COLOR_MATERIAL);
   glPushMatrix();
   {
-    CAVENavTransform();
-    draw_beam();
-    glTranslated(ORIG[0], ORIG[1], ORIG[2]);
-    glRotatef(cm->rot,0.0,1.0,0.0); 
-    //    draw_grid();
-    //    glEnable(GL_LIGHTING);
-    glRotated(cm->theta, 0.0, 0.0, 1.0);
-    glRotated(cm->phi, 1.0, 0.0, 0.0);
-    GLdouble color[PARTICLE_NUMBER_MAX][4];
-    bobj->color_set(color);
-    pobjs->set_color(color);
-    pobjs->draw();
-    //    glDisable(GL_LIGHTING);
+  CAVENavTransform();
+  draw_beam();
+  glTranslated(ORIG[0], ORIG[1], ORIG[2]);
+  glRotatef(cm->rot,0.0,1.0,0.0); 
+  //    draw_grid();
+  //    glEnable(GL_LIGHTING);
+  glRotated(cm->theta, 0.0, 0.0, 1.0);
+  glRotated(cm->phi, 1.0, 0.0, 0.0);
+  GLdouble color[PARTICLE_NUMBER_MAX][4];
+  bobj->color_set(color);
+  pobjs->set_color(color);
+  pobjs->draw();
+  //    glDisable(GL_LIGHTING);
 
-    double r = cm->GetRadius();
-    Motion *mo = Motion::GetInstance();
-    vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
-    vector<PARTICLE_INF>::iterator p;
+  double r = cm->GetRadius();
+  Motion *mo = Motion::GetInstance();
+  vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
+  vector<PARTICLE_INF>::iterator p;
     
-    for(p=poslistV.begin();p!=poslistV.end();p++){
-      char idbuf[10];
-      glPushMatrix();
-      {
+  for(p=poslistV.begin();p!=poslistV.end();p++){
+  char idbuf[10];
+  glPushMatrix();
+  {
 
-	sprintf(idbuf, "%d", p->id);
-	glEnable(GL_LIGHTING);
-	if (!cm->target_id.empty()
-	    &&(p->id == cm->target_id.front()
-	       ||p->id==cm->target_id.back())) {
+  sprintf(idbuf, "%d", p->id);
+  glEnable(GL_LIGHTING);
+  if (!cm->target_id.empty()
+  &&(p->id == cm->target_id.front()
+  ||p->id==cm->target_id.back())) {
 		
-	  glColor3d( 1.0, 1.0, 1.0 );
-	}
+  glColor3d( 1.0, 1.0, 1.0 );
+  }
 	    
-	glRotated(cm->theta, 0.0, 0.0, 1.0);
-	glRotated(cm->phi, 1.0, 0.0, 0.0);
-	glTranslated(p->pos[0],
-		     p->pos[1],
-		     p->pos[2]);
-      }
+  glRotated(cm->theta, 0.0, 0.0, 1.0);
+  glRotated(cm->phi, 1.0, 0.0, 0.0);
+  glTranslated(p->pos[0],
+  p->pos[1],
+  p->pos[2]);
+  }
 
-      glDisable(GL_BLEND);
-      glPopMatrix();
-      glDisable(GL_LIGHTING);
-      glRasterPos3d(p->pos[0] + r,
-		    p->pos[1] + r,
-		    p->pos[2] + r);
+  glDisable(GL_BLEND);
+  glPopMatrix();
+  glDisable(GL_LIGHTING);
+  glRasterPos3d(p->pos[0] + r,
+  p->pos[1] + r,
+  p->pos[2] + r);
 	
-      //trajectory
+  //trajectory
 
 
-      if(!cm->target_id.empty()
-	 &&p->id == cm->target_id.front()){
-	if(cm->char_state==1){
-	  glColor3f(0.0,0.0,0.0);
-	  for (int i = 0; i < strlen(idbuf); i++) {
-	    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, idbuf[i]);
-	  }
-	}
-	//	if (cm->runstate == 1) {
+  if(!cm->target_id.empty()
+  &&p->id == cm->target_id.front()){
+  if(cm->char_state==1){
+  glColor3f(0.0,0.0,0.0);
+  for (int i = 0; i < strlen(idbuf); i++) {
+  glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, idbuf[i]);
+  }
+  }
+  //	if (cm->runstate == 1) {
 		
-	  // trajectory
-	  //				cout << "traj: " << pt->getVLen() << " " << cm->vmax << " " << color_val << endl;
+  // trajectory
+  //				cout << "traj: " << pt->getVLen() << " " << cm->vmax << " " << color_val << endl;
 
 		
-	  glLineWidth(1.0);
-	  for (int i = cm->traj.front().size() - 1; i > 0; i--) {
-	    vector<TARGET_POS> target_list = cm->traj.front();
-	    TARGET_POS target = target_list[i];
-	    glColor3f(target.color[0],target.color[1],target.color[2]);
-	    glBegin(GL_LINES);
-	    glVertex3d(cm->traj.front()[i].x,
-		       cm->traj.front()[i].y,
-		       cm->traj.front()[i].z);
-	    glVertex3d(cm->traj.front()[i-1].x,
-		       cm->traj.front()[i-1].y, 
-		       cm->traj.front()[i-1].z);
-	    glEnd();
-	  }
+  glLineWidth(1.0);
+  for (int i = cm->traj.front().size() - 1; i > 0; i--) {
+  vector<TARGET_POS> target_list = cm->traj.front();
+  TARGET_POS target = target_list[i];
+  glColor3f(target.color[0],target.color[1],target.color[2]);
+  glBegin(GL_LINES);
+  glVertex3d(cm->traj.front()[i].x,
+  cm->traj.front()[i].y,
+  cm->traj.front()[i].z);
+  glVertex3d(cm->traj.front()[i-1].x,
+  cm->traj.front()[i-1].y, 
+  cm->traj.front()[i-1].z);
+  glEnd();
+  }
 		
-	  //	}
-      }else if(!cm->target_id.empty()
-	       &&p->id==cm->target_id.back()){
+  //	}
+  }else if(!cm->target_id.empty()
+  &&p->id==cm->target_id.back()){
 	    
-	if(cm->char_state == 1){
-	  glColor3f(0.0,0.0,0.0);
-	  for (int i = 0; i < strlen(idbuf); i++) {
-	    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, idbuf[i]);
-	  }
-	}
+  if(cm->char_state == 1){
+  glColor3f(0.0,0.0,0.0);
+  for (int i = 0; i < strlen(idbuf); i++) {
+  glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, idbuf[i]);
+  }
+  }
 
-	//	if(cm->runstate == 1){
-	  glLineWidth(1.0);
-	  for (int i = cm->traj.back().size() - 1; i > 0; i--) {
-	    vector<TARGET_POS> target_list = cm->traj.back();
-	    TARGET_POS target = target_list[i];
-	    glColor3f(target.color[0],target.color[1],target.color[2]);
-	    glBegin(GL_LINES);
+  //	if(cm->runstate == 1){
+  glLineWidth(1.0);
+  for (int i = cm->traj.back().size() - 1; i > 0; i--) {
+  vector<TARGET_POS> target_list = cm->traj.back();
+  TARGET_POS target = target_list[i];
+  glColor3f(target.color[0],target.color[1],target.color[2]);
+  glBegin(GL_LINES);
 		    
-	    glVertex3d(cm->traj.back()[i].x,
-		       cm->traj.back()[i].y,
-		       cm->traj.back()[i].z);
-	    glVertex3d(cm->traj.back()[i-1].x,
-		       cm->traj.back()[i-1].y,
-		       cm->traj.back()[i-1].z);
-	    glEnd();
+  glVertex3d(cm->traj.back()[i].x,
+  cm->traj.back()[i].y,
+  cm->traj.back()[i].z);
+  glVertex3d(cm->traj.back()[i-1].x,
+  cm->traj.back()[i-1].y,
+  cm->traj.back()[i-1].z);
+  glEnd();
 		    
-	  }
-	  //	}
-      }else{
-	if(cm->char_state){
-	  glColor3f(0.0,0.0,1.0);
-	  for (int i = 0; i < strlen(idbuf); i++) {
-	    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, idbuf[i]);
-	  }
-	}
-      }
-    }
+  }
+  //	}
+  }else{
+  if(cm->char_state){
+  glColor3f(0.0,0.0,1.0);
+  for (int i = 0; i < strlen(idbuf); i++) {
+  glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, idbuf[i]);
+  }
+  }
+  }
+  }
     
-    bobj->draw_arrow();
-    bobj->draw_line();
+  bobj->draw_arrow();
+  bobj->draw_line();
   }
   cm->save_image();
   glPopMatrix();
-}
+  }
 */
 
 void display_func(void)
 {
-        static GLfloat mat_amb[4]={0.2, 0.2, 0.2, 0.0};	/* 環境光に対する反射 */
-        static GLfloat mat_dif[4]={0.6, 0.6, 0.6, 0.0};	/* 拡散光に対する反射 */
-        static GLfloat mat_spc[4]={0.2, 0.2, 0.2, 0.0};	/* 鏡面反射 */
-        static GLfloat mat_emi[4]={0.0, 0.0, 0.0, 0.0};	/* 発光 */
-        static GLfloat mat_shi[1]={30.0};	/* 光沢 */
+  static GLfloat mat_amb[4]={0.2, 0.2, 0.2, 0.0};	/* 環境光に対する反射 */
+  static GLfloat mat_dif[4]={0.6, 0.6, 0.6, 0.0};	/* 拡散光に対する反射 */
+  static GLfloat mat_spc[4]={0.2, 0.2, 0.2, 0.0};	/* 鏡面反射 */
+  static GLfloat mat_emi[4]={0.0, 0.0, 0.0, 0.0};	/* 発光 */
+  static GLfloat mat_shi[1]={30.0};	/* 光沢 */
 
-        /*　画面と、デプスバッファを消去 */
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  /*　画面と、デプスバッファを消去 */
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        /* 現在の座標系を保存 */
-        glPushMatrix();
+  /* 現在の座標系を保存 */
+  glPushMatrix();
 
-        /* まず、座標系を画面の奥に移動 */
-        glTranslatef(0.0, 0.0, -15.0);
+  /* まず、座標系を画面の奥に移動 */
+  glTranslatef(0.0, 0.0, -15.0);
 
-        /* 質感を設定 */
-//        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_amb);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_dif);
-//        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_spc);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shi);
-//        glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emi);
+  /* 質感を設定 */
+  //        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_amb);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_dif);
+  //        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_spc);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shi);
+  //        glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emi);
 	
-        /* 球を描く */
-        glutSolidSphere(2.0, 24, 24);
+  /* 球を描く */
+  glutSolidSphere(2.0, 24, 24);
 
-        /* 座標系をもとに戻す */
-        glPopMatrix();	
+  /* 座標系をもとに戻す */
+  glPopMatrix();	
 	
-        /* 画面を更新 */
-        glFlush();
+  /* 画面を更新 */
+  glFlush();
 }
 
 void init_light(void)
 {
-        static GLfloat lit_amb[4]={0.0, 0.0, 0.0, 0.0};	/* 環境光の強さ */
-        static GLfloat lit_dif[4]={1.0, 1.0, 1.0, 0.0};	/* 拡散光の強さ */
-        static GLfloat lit_spc[4]={1.0, 1.0, 1.0, 0.0};	/* 鏡面反射光の強さ */
-//	static GLfloat lit_pos[4]={6.0, 6.0, -9.0, 1.0};	/* 光源の位置 */
+  static GLfloat lit_amb[4]={0.0, 0.0, 0.0, 0.0};	/* 環境光の強さ */
+  static GLfloat lit_dif[4]={1.0, 1.0, 1.0, 0.0};	/* 拡散光の強さ */
+  static GLfloat lit_spc[4]={1.0, 1.0, 1.0, 0.0};	/* 鏡面反射光の強さ */
+  //	static GLfloat lit_pos[4]={6.0, 6.0, -9.0, 1.0};	/* 光源の位置 */
 
-        static GLfloat lit_pos[4]={1.0, -1.0, 1.0, 0.0};
+  static GLfloat lit_pos[4]={1.0, -1.0, 1.0, 0.0};
         
-        //    static GLfloat lit_dir[3]={0.0, 0.0, 12.0};
+  //    static GLfloat lit_dir[3]={0.0, 0.0, 12.0};
 
 
-        glLightfv(GL_LIGHT0, GL_AMBIENT, lit_amb);
-        glLightfv(GL_LIGHT0, GL_DIFFUSE, lit_dif);
-        glLightfv(GL_LIGHT0, GL_SPECULAR, lit_spc);
-        //      glLightf(GL_LIGHT0, GL_SPOT_CUTOFF,10.0);
-        glLightfv(GL_LIGHT0, GL_POSITION, lit_pos);
-//        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lit_dir);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, lit_amb);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, lit_dif);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, lit_spc);
+  //      glLightf(GL_LIGHT0, GL_SPOT_CUTOFF,10.0);
+  glLightfv(GL_LIGHT0, GL_POSITION, lit_pos);
+  //        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lit_dir);
         
 
-        /* ライトを有効にする */
-        glEnable(GL_LIGHT0);
-        glEnable(GL_LIGHTING);
+  /* ライトを有効にする */
+  glEnable(GL_LIGHT0);
+  glEnable(GL_LIGHTING);
 }
 
 
 void reshape_func(int width, int height)
 {
-        /* 表示範囲設定 */
-        glViewport(0, 0, width, height);
+  /* 表示範囲設定 */
+  glViewport(0, 0, width, height);
 
-        /* 投影方法設定 */
-        glMatrixMode(GL_PROJECTION);
+  /* 投影方法設定 */
+  glMatrixMode(GL_PROJECTION);
 
-        /*座標変換行列の初期化 */
-        glLoadIdentity();
+  /*座標変換行列の初期化 */
+  glLoadIdentity();
 
-        /* 投影範囲を設定 */
-        glFrustum(-1.0, 1.0, -1.0, 1.0, 3.0, 10000.0);
+  /* 投影範囲を設定 */
+  glFrustum(-1.0, 1.0, -1.0, 1.0, 3.0, 10000.0);
 
-        glMatrixMode(GL_MODELVIEW);
+  glMatrixMode(GL_MODELVIEW);
 
-        /* ライトの設定 */
-        init_light();
+  /* ライトの設定 */
+  init_light();
 }
 
 
@@ -733,31 +733,31 @@ int main(int argc, char *argv[])
   }
   //	cout << "Input file: " << filename << endl;
   ui = UI::GetInstance();
-//  cm = Common::GetInstance();
+  //  cm = Common::GetInstance();
   glutInit(&argc, argv);
-//  CAVEConfigure(&argc, argv, NULL);
+  //  CAVEConfigure(&argc, argv, NULL);
   glutInitDisplayMode(GLUT_RGB|GLUT_DEPTH);
   glutInitWindowSize(300,300);
-//  CAVEInitApplication((CAVECALLBACK)init, 1, filename.c_str());
+  //  CAVEInitApplication((CAVECALLBACK)init, 1, filename.c_str());
   glutCreateWindow("Sample 7");
-//  CAVEDisplay(display, 0);
+  //  CAVEDisplay(display, 0);
   glutDisplayFunc(display_func);
-//  CAVEFrameFunction(step, 0);
+  //  CAVEFrameFunction(step, 0);
   glutReshapeFunc(reshape_func);
           
-//  CAVEInit();
-//  float headpos[3];
-//  CAVEGetPosition(CAVE_HEAD, headpos);
-//  while (!CAVEgetbutton(CAVE_ESCKEY)) {
-//    ui->Keyboard();
-//    ui->Joystick();
-//    ui->Navigation();
-//
-//    CAVEUSleep(10);
-//  }
+  //  CAVEInit();
+  //  float headpos[3];
+  //  CAVEGetPosition(CAVE_HEAD, headpos);
+  //  while (!CAVEgetbutton(CAVE_ESCKEY)) {
+  //    ui->Keyboard();
+  //    ui->Joystick();
+  //    ui->Navigation();
+  //
+  //    CAVEUSleep(10);
+  //  }
 
-//  end();
-//  CAVEExit();
-          glutMainLoop();
-          return 0;
+  //  end();
+  //  CAVEExit();
+  glutMainLoop();
+  return 0;
 }

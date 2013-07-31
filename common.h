@@ -5,12 +5,12 @@
 #include "snapshot.hpp"
 
 const GLdouble COLORS[][3] = {
-  { 1.0, 0.0, 0.0 }, 
-  { 0.0, 1.0, 0.0 }, 
-  { 0.0, 0.0, 1.0 }, 
-  { 0.0, 1.0, 1.0 }, 
-  { 1.0, 0.0, 1.0 }, 
-  { 1.0, 1.0, 0.0 }
+        { 1.0, 0.0, 0.0 }, 
+        { 0.0, 1.0, 0.0 }, 
+        { 0.0, 0.0, 1.0 }, 
+        { 0.0, 1.0, 1.0 }, 
+        { 1.0, 0.0, 1.0 }, 
+        { 1.0, 1.0, 0.0 }
 };
 const int      COLOR_NUM = sizeof(COLORS) / sizeof(COLORS[0]);
 const GLdouble SIZE = 20;  // particle size
@@ -25,10 +25,10 @@ const float    V_NAV = 2.0f;
 const double ORIG[] = { 0.0, 5.0, -2.0 };
 
 typedef struct {
-  double x;
-  double y;
-  double z;
-  GLfloat color[3];
+        double x;
+        double y;
+        double z;
+        GLfloat color[3];
 } TARGET_POS;
 
 const double BEAM_SCALE = 1.7;
@@ -53,74 +53,74 @@ const int PARTICLE_NUMBER_MAX = 10000;
 
 class Common {
 
- public:
-  static Common *GetInstance()
-    {
-      static Common common;
-      return &common;
-    }
+public:
+        static Common *GetInstance()
+        {
+                static Common common;
+                return &common;
+        }
 
-  ParticleData data;
-  Snapshot *snapshot;
-  int      display_num;
+        ParticleData data;
+        Snapshot *snapshot;
+        int      display_num;
 	
-  double   t_sys;                 // time
-  double   interval;
-  int      frame;                 // frame number
-  int      frame_max;
+        double   t_sys;                 // time
+        double   interval;
+        int      frame;                 // frame number
+        int      frame_max;
 	
-  double   t_dat;                 // time (particle data)
-  double   t_dat_max; 
-  int      frame_dat;
-  int      frame_dat_prev;
+        double   t_dat;                 // time (particle data)
+        double   t_dat_max; 
+        int      frame_dat;
+        int      frame_dat_prev;
 	
-  int      runstate;              // status (0:stop  1:run)
-  int      inc;     
-  int char_state;
-  // frame increment per step
-  bool     is_acc;                // accelerate
-  bool     is_dec;                // decelerate
-  GLdouble scale;                 // scale of the system
-  GLdouble radius;                // particle radius
-  GLdouble theta;                 // angle of rotation around z-axis
-  GLdouble phi;                   // angle of rotation around x-axis
-  GLdouble dx;                    // target position x (gluLookAt)
-  GLdouble dy;                    // target position y (gluLookAt)
-  GLdouble dd;                    // unit of movement of the target position
+        int      runstate;              // status (0:stop  1:run)
+        int      inc;     
+        int char_state;
+        // frame increment per step
+        bool     is_acc;                // accelerate
+        bool     is_dec;                // decelerate
+        GLdouble scale;                 // scale of the system
+        GLdouble radius;                // particle radius
+        GLdouble theta;                 // angle of rotation around z-axis
+        GLdouble phi;                   // angle of rotation around x-axis
+        GLdouble dx;                    // target position x (gluLookAt)
+        GLdouble dy;                    // target position y (gluLookAt)
+        GLdouble dd;                    // unit of movement of the target position
 
-  int binary_state;
+        int binary_state;
 
-  queue< vector<TARGET_POS> > traj ;
-  bool         beam_flag;
-  bool         beam_clear_flag;
-  float rot;
-  double       vmax;
+        queue< vector<TARGET_POS> > traj ;
+        bool         beam_flag;
+        bool         beam_clear_flag;
+        float rot;
+        double       vmax;
 
-  //int target_id;
-  queue<int>  target_id;
-  double GetRadius() { return radius/scale; }
-  double GetParticleDist(double *p1,double *p2);
+        //int target_id;
+        queue<int>  target_id;
+        double GetRadius() { return radius/scale; }
+        double GetParticleDist(double *p1,double *p2);
 
-  void clearTraj();
-  void clearId();
-  void allClear();
+        void clearTraj();
+        void clearId();
+        void allClear();
 
-  void SelectParticle();
-  void coordtrans(float *orig_pos,float *dis_pos,float rot);
-  void button_has_pressed(){
-    snapshot->button_has_pressed();
-  };
+        void SelectParticle();
+        void coordtrans(float *orig_pos,float *dis_pos,float rot);
+        void button_has_pressed(){
+                snapshot->button_has_pressed();
+        };
 
-  void save_image(){
-    snapshot->save_image();
-  }
+        void save_image(){
+                snapshot->save_image();
+        }
 
- private:
+private:
 
-  Common();
-  ~Common();
-  Common(const Common& obj);
-  Common operator=(const Common& obj);
+        Common();
+        ~Common();
+        Common(const Common& obj);
+        Common operator=(const Common& obj);
 
 };
 
