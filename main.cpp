@@ -529,12 +529,19 @@ void display(void)
     //    draw_beam();
     glTranslated(ORIG[0], ORIG[1], ORIG[2]);
     glRotatef(cm->rot,0.0,1.0,0.0); 
-    //    draw_grid();
+        draw_grid();
     //    glEnable(GL_LIGHTING);
     glRotated(cm->theta, 0.0, 0.0, 1.0);
     glRotated(cm->phi, 1.0, 0.0, 0.0);
     GLdouble color[PARTICLE_NUMBER_MAX][4];
     //    bobj->color_set(color);
+
+    for(int i=0;i<PARTICLE_NUMBER_MAX;i++){
+      color[i][0] = 0.0;
+      color[i][1] = 0.0;
+      color[i][2] = 1.0;
+      color[i][3] = 1.0;
+    }
     pobjs->set_color(color);
     pobjs->draw();
     //    glDisable(GL_LIGHTING);
@@ -648,6 +655,7 @@ void display(void)
   }
   //  cm->save_image();
   glPopMatrix();
+  glFlush();
 }
 
 
