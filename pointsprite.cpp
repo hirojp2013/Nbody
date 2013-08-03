@@ -13,9 +13,7 @@
 const GLfloat PointSprite::distance[] = {0.0, 0.0, 1.0};
 
 PointSprite::PointSprite(){
-  printf("%s(%d)\n",__FILE__,__LINE__);
   loadTexture();
-  printf("%s(%d)\n",__FILE__,__LINE__);
 }
 
 PointSprite::~PointSprite(){
@@ -139,27 +137,19 @@ void PointSprite::loadTexture(){
         }
     }
 
-  printf("%s(%d)\n",__FILE__,__LINE__);
   glGenTextures( 1, &texture_name );
-  printf("%s(%d)\n",__FILE__,__LINE__);
   glBindTexture( GL_TEXTURE_2D, texture_name );
-  printf("%s(%d)\n",__FILE__,__LINE__);
   glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-
-  printf("%s(%d)\n",__FILE__,__LINE__);
 
   gluBuild2DMipmaps( GL_TEXTURE_2D, GL_RGBA, width, height,
                      GL_RGBA, GL_UNSIGNED_BYTE, texture );//Segmentation Fault
 
-  printf("%s(%d)\n",__FILE__,__LINE__);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
   glTexParameterf( GL_TEXTURE_2D,
                    GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-  printf("%s(%d)\n",__FILE__,__LINE__);
-
   glTexParameterf( GL_TEXTURE_2D,
                    GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
-
-  printf("%s(%d)\n",__FILE__,__LINE__);
 
   free( texture );
   free( pngimage );

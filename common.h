@@ -22,7 +22,7 @@ const double   GRID_INTERVAL = 1.0;
 const int      GRID_NUM = (int)(GRID_MAX / GRID_INTERVAL) + 1;
 const float    V_NAV = 2.0f;
 
-const double ORIG[] = { 0.0, 5.0, -2.0 };
+const double ORIG[] = { 0.0, -1.0, -5.0 };
 
 typedef struct {
         double x;
