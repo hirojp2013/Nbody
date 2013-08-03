@@ -7,6 +7,7 @@
 #include<math.h>
 #include<algorithm>
 #include<cassert>
+#include<cstring>
 
 #include "common.h"
 #include "binary.h"
@@ -81,17 +82,17 @@ void the_beam(){
 
 
 
-void init(void *filename)
+void init(const char *filename)
 {
   GLfloat light_position[] = { 0.0f, 30.0f, 50.0f, 0.0f };
   //  texture
  
   static GLubyte image[TEXHEIGHT][TEXWIDTH][4];
-
+  printf("%s(%d)\n",__FILE__,__LINE__);
 
   //  if (CAVEMasterDisplay()) {
   //    cm->display_num = CAVENumPipes();
-    cout << "display_num: " << cm->display_num << endl;
+  //    cout << "display_num: " << cm->display_num << endl;
     bool ret = cm->data.readData((const char *)filename);
     if (!ret) {
       cout << "Can't read the input data." << endl;
@@ -110,6 +111,7 @@ void init(void *filename)
          << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
 
 
+    printf("%s(%d)\n",__FILE__,__LINE__);
     pobjs = new Particle_Objs;
 
 
@@ -147,10 +149,10 @@ void init(void *filename)
 #endif
     //  }
     //  CAVEDisplayBarrier();
-  //texture start
-
+    //texture start
+    printf("%s(%d)\n",__FILE__,__LINE__);
   pobjs->init();
-
+  printf("%s(%d)\n",__FILE__,__LINE__);
   //texture end
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glShadeModel(GL_SMOOTH);
@@ -174,7 +176,7 @@ void init(void *filename)
   glNewList(theBeam,GL_COMPILE);
   the_beam();
   glEndList();
-  
+  printf("%s(%d)\n",__FILE__,__LINE__);
   //  bobj = new binary(TARGET_DIST_THRESH/10.);
 
   PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
@@ -218,139 +220,140 @@ void end(void)
 //  }
 }
 
-/*
-  void step(void)
-  {
+
+void step(void)
+{
   double pos[PARTICLE_NUMBER_MAX][3];
   double color[PARTICLE_NUMBER_MAX][4];
   if (cm->runstate == 0) {
-  if (CAVEMasterDisplay()) {
-  double incl = 0.0001;
-  if (cm->is_acc && cm->interval + incl < 1.0) {
-  cm->interval += incl;
-  cm->is_acc = false;
-  }
+    //    printf("%s(%d)\n",__FILE__,__LINE__)
+    //    if (CAVEMasterDisplay()) {
+    double incl = 0.0001;
+    if (cm->is_acc && cm->interval + incl < 1.0) {
+      cm->interval += incl;
+      cm->is_acc = false;
+    }
       
-  if (cm->is_dec && cm->interval - incl > 0.0001) {
-  cm->interval -= incl;
-  cm->is_dec = false;
-  }
-  if(cm->beam_flag){
-  cm->SelectParticle();
-  }else if(cm->beam_clear_flag){
-  cm->allClear();
-  }
-  }
-  CAVEDisplayBarrier();
+    if (cm->is_dec && cm->interval - incl > 0.0001) {
+      cm->interval -= incl;
+      cm->is_dec = false;
+    }
+    if(cm->beam_flag){
+      cm->SelectParticle();
+    }else if(cm->beam_clear_flag){
+      cm->allClear();
+    }
+    //    }
+    //    CAVEDisplayBarrier();
   }else{
-  if(CAVEMasterDisplay()){
-  vector<int> curlist = cm->data.getCurrentList();
-  vector<int>::iterator p;
-  double incl = 0.001;
-  vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
-  poslistV.clear();
-  PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
-  poslistV.resize(cm->data.getIDNum(),pos_inf);
-  if (cm->inc > 0) {
-  if (cm->t_sys < cm->t_dat_max) {
-  cm->t_sys += cm->interval;
-  } else {
-  cm->t_sys = 0;
-  cm->frame_dat = -1;
-  cm->allClear();
-  Motion::GetInstance()->init();
-  }
+    //    if(CAVEMasterDisplay()){
+    vector<int> curlist = cm->data.getCurrentList();
+    vector<int>::iterator p;
+    double incl = 0.001;
+    vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
+    poslistV.clear();
+    PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
+    poslistV.resize(cm->data.getIDNum(),pos_inf);
+    if (cm->inc > 0) {
+      if (cm->t_sys < cm->t_dat_max) {
+        cm->t_sys += cm->interval;
+      } else {
+        cm->t_sys = 0;
+        cm->frame_dat = -1;
+        cm->allClear();
+        //        Motion::GetInstance()->init();
+      }
 	
-  while (cm->frame_dat < cm->data.getDataNum() - 1) {
-  if (cm->data.getData(cm->frame_dat + 1)->getTime() > cm->t_sys) {
-  break;
-  }
-  cm->frame_dat++;
-  cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
-  }
-  }
-  else{
-  if (cm->t_sys > 0) {
-  cm->t_sys -= cm->interval;
-  } else {
-  cm->t_sys = ((int)(cm->t_dat_max / cm->interval) + 1) * cm->interval;
-  cm->frame_dat = cm->data.getDataNum();
-  cm->allClear();
-  Motion::GetInstance()->init();
-  }
-  while (cm->frame_dat > 0) {
-  if (cm->data.getData(cm->frame_dat - 1)->getTime() < cm->t_sys) {
-  break;
-  }
-  cm->frame_dat--;
-  cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
-  }
-  }
+      while (cm->frame_dat < cm->data.getDataNum() - 1) {
+        if (cm->data.getData(cm->frame_dat + 1)->getTime() > cm->t_sys) {
+          break;
+        }
+        cm->frame_dat++;
+        cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
+      }
+    }
+      else{
+        if (cm->t_sys > 0) {
+          cm->t_sys -= cm->interval;
+        } else {
+          cm->t_sys = ((int)(cm->t_dat_max / cm->interval) + 1) * cm->interval;
+          cm->frame_dat = cm->data.getDataNum();
+          cm->allClear();
+          //          Motion::GetInstance()->init();
+        }
+        while (cm->frame_dat > 0) {
+          if (cm->data.getData(cm->frame_dat - 1)->getTime() < cm->t_sys) {
+            break;
+          }
+          cm->frame_dat--;
+          cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
+        }
+      }
 
-  int num = 0;
-  for (p = curlist.begin(); p != curlist.end(); p++) {
-  if(*p<0){
-  continue;
-  }
-  Particle *pt = cm->data.getData(*p);
-  pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
-  pos_inf.id = pt->getId();
-  for(int i=0;i<3;i++){
-  pos_inf.pos[i] = pos[num][i];
-  }
-  pt->getV(pos_inf.vel,cm->scale);
-  //	poslistV.push_back(pos_inf);
-  poslistV[pos_inf.id-1] = pos_inf;
-  num++;
+      int num = 0;
+      for (p = curlist.begin(); p != curlist.end(); p++) {
+        if(*p<0){
+          continue;
+        }
+        Particle *pt = cm->data.getData(*p);
+        pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
+        pos_inf.id = pt->getId();
+        for(int i=0;i<3;i++){
+          pos_inf.pos[i] = pos[num][i];
+        }
+        pt->getV(pos_inf.vel,cm->scale);
+        //	poslistV.push_back(pos_inf);
+        poslistV[pos_inf.id-1] = pos_inf;
+        num++;
 
-  if(!cm->target_id.empty()
-  &&pt->getId()==cm->target_id.front()){
-  float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-  TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1], pos_inf.pos[2], { color_val, color_val, color_val }  };
-  if (cm->traj.front().size() == TRAJ_MAX) {
-  vector<TARGET_POS>::iterator st = cm->traj.front().begin();
-  cm->traj.front().erase(st);
-  }
-  queue< vector<TARGET_POS> >&t_queue = cm->traj;
-  t_queue.front().push_back(tpos); 
-  }else if(!cm->target_id.empty()
-  &&pt->getId()==cm->target_id.back()){
+        if(!cm->target_id.empty()
+           &&pt->getId()==cm->target_id.front()){
+          float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
+          TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1], pos_inf.pos[2], { color_val, color_val, color_val }  };
+          if (cm->traj.front().size() == TRAJ_MAX) {
+            vector<TARGET_POS>::iterator st = cm->traj.front().begin();
+            cm->traj.front().erase(st);
+          }
+          queue< vector<TARGET_POS> >&t_queue = cm->traj;
+          t_queue.front().push_back(tpos); 
+        }else if(!cm->target_id.empty()
+                 &&pt->getId()==cm->target_id.back()){
 	  
-  float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-  TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1],
-  pos_inf.pos[2], { color_val, color_val, color_val }  };
-  if(!cm->traj.empty()){
+          float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
+          TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1],
+                              pos_inf.pos[2], { color_val, color_val, color_val }  };
+          if(!cm->traj.empty()){
 	    
-  if (cm->traj.back().size() == TRAJ_MAX) {
-  vector<TARGET_POS>::iterator st = cm->traj.back().begin();
-  cm->traj.back().erase(st);
-  }
-  }
-  queue< vector<TARGET_POS> >&t_queue = cm->traj;
-  t_queue.back().push_back(tpos);
-  }
-  }
+            if (cm->traj.back().size() == TRAJ_MAX) {
+              vector<TARGET_POS>::iterator st = cm->traj.back().begin();
+              cm->traj.back().erase(st);
+            }
+          }
+          queue< vector<TARGET_POS> >&t_queue = cm->traj;
+          t_queue.back().push_back(tpos);
+        }
+      }
       
-  cout << setprecision(15)
-  << "interval: " << cm->interval << " t_sys: " << cm->t_sys
-  << " frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat 
-  << " time: " << CAVEGetTime() << endl;
+      //      cout << setprecision(15)
+      //           << "interval: " << cm->interval << " t_sys: " << cm->t_sys
+      //           << " frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat 
+      //           << " time: " << CAVEGetTime() << endl;
       
-  Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
-  bobj->color_set(color);
-  pobjs->set_x(pos);
-  pobjs->set_color(color);
+      //      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
+      //      bobj->color_set(color);
+      pobjs->set_x(pos);
+      pobjs->set_color(color);
 
-  if(cm->beam_flag){
-  cm->SelectParticle();
-  }else if(cm->beam_clear_flag){
-  cm->allClear();
+      if(cm->beam_flag){
+        cm->SelectParticle();
+      }else if(cm->beam_clear_flag){
+        cm->allClear();
+      }
+      //    }
+      //    CAVEDisplayBarrier();
   }
-  }
-  CAVEDisplayBarrier();
-  }
-  }
-*/
+}
+
 
 void draw_grid(void)
 {
@@ -515,138 +518,138 @@ void get_omega(double pos[][3],double vel[][3],double dist,GLdouble omega[3]){
 
 }
 
-/*
-  void display(void)
-  {
+
+void display(void)
+{
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_COLOR_MATERIAL);
   glPushMatrix();
   {
-  CAVENavTransform();
-  draw_beam();
-  glTranslated(ORIG[0], ORIG[1], ORIG[2]);
-  glRotatef(cm->rot,0.0,1.0,0.0); 
-  //    draw_grid();
-  //    glEnable(GL_LIGHTING);
-  glRotated(cm->theta, 0.0, 0.0, 1.0);
-  glRotated(cm->phi, 1.0, 0.0, 0.0);
-  GLdouble color[PARTICLE_NUMBER_MAX][4];
-  bobj->color_set(color);
-  pobjs->set_color(color);
-  pobjs->draw();
-  //    glDisable(GL_LIGHTING);
+    //    CAVENavTransform();
+    //    draw_beam();
+    glTranslated(ORIG[0], ORIG[1], ORIG[2]);
+    glRotatef(cm->rot,0.0,1.0,0.0); 
+    //    draw_grid();
+    //    glEnable(GL_LIGHTING);
+    glRotated(cm->theta, 0.0, 0.0, 1.0);
+    glRotated(cm->phi, 1.0, 0.0, 0.0);
+    GLdouble color[PARTICLE_NUMBER_MAX][4];
+    //    bobj->color_set(color);
+    pobjs->set_color(color);
+    pobjs->draw();
+    //    glDisable(GL_LIGHTING);
 
-  double r = cm->GetRadius();
-  Motion *mo = Motion::GetInstance();
-  vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
-  vector<PARTICLE_INF>::iterator p;
+    double r = cm->GetRadius();
+    //    Motion *mo = Motion::GetInstance();
+    vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
+    vector<PARTICLE_INF>::iterator p;
     
-  for(p=poslistV.begin();p!=poslistV.end();p++){
-  char idbuf[10];
-  glPushMatrix();
-  {
+    for(p=poslistV.begin();p!=poslistV.end();p++){
+      char idbuf[10];
+      glPushMatrix();
+      {
 
-  sprintf(idbuf, "%d", p->id);
-  glEnable(GL_LIGHTING);
-  if (!cm->target_id.empty()
-  &&(p->id == cm->target_id.front()
-  ||p->id==cm->target_id.back())) {
+        sprintf(idbuf, "%d", p->id);
+        glEnable(GL_LIGHTING);
+        if (!cm->target_id.empty()
+            &&(p->id == cm->target_id.front()
+               ||p->id==cm->target_id.back())) {
 		
-  glColor3d( 1.0, 1.0, 1.0 );
-  }
+          glColor3d( 1.0, 1.0, 1.0 );
+        }
 	    
-  glRotated(cm->theta, 0.0, 0.0, 1.0);
-  glRotated(cm->phi, 1.0, 0.0, 0.0);
-  glTranslated(p->pos[0],
-  p->pos[1],
-  p->pos[2]);
-  }
+        glRotated(cm->theta, 0.0, 0.0, 1.0);
+        glRotated(cm->phi, 1.0, 0.0, 0.0);
+        glTranslated(p->pos[0],
+                     p->pos[1],
+                     p->pos[2]);
+      }
 
-  glDisable(GL_BLEND);
-  glPopMatrix();
-  glDisable(GL_LIGHTING);
-  glRasterPos3d(p->pos[0] + r,
-  p->pos[1] + r,
-  p->pos[2] + r);
+      glDisable(GL_BLEND);
+      glPopMatrix();
+      glDisable(GL_LIGHTING);
+      glRasterPos3d(p->pos[0] + r,
+                    p->pos[1] + r,
+                    p->pos[2] + r);
 	
-  //trajectory
+      //trajectory
 
 
-  if(!cm->target_id.empty()
-  &&p->id == cm->target_id.front()){
-  if(cm->char_state==1){
-  glColor3f(0.0,0.0,0.0);
-  for (int i = 0; i < strlen(idbuf); i++) {
-  glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, idbuf[i]);
-  }
-  }
-  //	if (cm->runstate == 1) {
+      if(!cm->target_id.empty()
+         &&p->id == cm->target_id.front()){
+        if(cm->char_state==1){
+          glColor3f(0.0,0.0,0.0);
+          for (int i = 0; i < strlen(idbuf); i++) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, idbuf[i]);
+          }
+        }
+        //	if (cm->runstate == 1) {
 		
-  // trajectory
-  //				cout << "traj: " << pt->getVLen() << " " << cm->vmax << " " << color_val << endl;
+        // trajectory
+        //				cout << "traj: " << pt->getVLen() << " " << cm->vmax << " " << color_val << endl;
 
 		
-  glLineWidth(1.0);
-  for (int i = cm->traj.front().size() - 1; i > 0; i--) {
-  vector<TARGET_POS> target_list = cm->traj.front();
-  TARGET_POS target = target_list[i];
-  glColor3f(target.color[0],target.color[1],target.color[2]);
-  glBegin(GL_LINES);
-  glVertex3d(cm->traj.front()[i].x,
-  cm->traj.front()[i].y,
-  cm->traj.front()[i].z);
-  glVertex3d(cm->traj.front()[i-1].x,
-  cm->traj.front()[i-1].y, 
-  cm->traj.front()[i-1].z);
-  glEnd();
-  }
+        glLineWidth(1.0);
+        for (int i = cm->traj.front().size() - 1; i > 0; i--) {
+          vector<TARGET_POS> target_list = cm->traj.front();
+          TARGET_POS target = target_list[i];
+          glColor3f(target.color[0],target.color[1],target.color[2]);
+          glBegin(GL_LINES);
+          glVertex3d(cm->traj.front()[i].x,
+                     cm->traj.front()[i].y,
+                     cm->traj.front()[i].z);
+          glVertex3d(cm->traj.front()[i-1].x,
+                     cm->traj.front()[i-1].y, 
+                     cm->traj.front()[i-1].z);
+          glEnd();
+        }
 		
-  //	}
-  }else if(!cm->target_id.empty()
-  &&p->id==cm->target_id.back()){
+        //	}
+      }else if(!cm->target_id.empty()
+               &&p->id==cm->target_id.back()){
 	    
-  if(cm->char_state == 1){
-  glColor3f(0.0,0.0,0.0);
-  for (int i = 0; i < strlen(idbuf); i++) {
-  glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, idbuf[i]);
-  }
-  }
+        if(cm->char_state == 1){
+          glColor3f(0.0,0.0,0.0);
+          for (int i = 0; i < strlen(idbuf); i++) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, idbuf[i]);
+          }
+        }
 
-  //	if(cm->runstate == 1){
-  glLineWidth(1.0);
-  for (int i = cm->traj.back().size() - 1; i > 0; i--) {
-  vector<TARGET_POS> target_list = cm->traj.back();
-  TARGET_POS target = target_list[i];
-  glColor3f(target.color[0],target.color[1],target.color[2]);
-  glBegin(GL_LINES);
+        //	if(cm->runstate == 1){
+        glLineWidth(1.0);
+        for (int i = cm->traj.back().size() - 1; i > 0; i--) {
+          vector<TARGET_POS> target_list = cm->traj.back();
+          TARGET_POS target = target_list[i];
+          glColor3f(target.color[0],target.color[1],target.color[2]);
+          glBegin(GL_LINES);
 		    
-  glVertex3d(cm->traj.back()[i].x,
-  cm->traj.back()[i].y,
-  cm->traj.back()[i].z);
-  glVertex3d(cm->traj.back()[i-1].x,
-  cm->traj.back()[i-1].y,
-  cm->traj.back()[i-1].z);
-  glEnd();
+          glVertex3d(cm->traj.back()[i].x,
+                     cm->traj.back()[i].y,
+                     cm->traj.back()[i].z);
+          glVertex3d(cm->traj.back()[i-1].x,
+                     cm->traj.back()[i-1].y,
+                     cm->traj.back()[i-1].z);
+          glEnd();
 		    
-  }
-  //	}
-  }else{
-  if(cm->char_state){
-  glColor3f(0.0,0.0,1.0);
-  for (int i = 0; i < strlen(idbuf); i++) {
-  glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, idbuf[i]);
-  }
-  }
-  }
-  }
+        }
+        //	}
+      }else{
+        if(cm->char_state){
+          glColor3f(0.0,0.0,1.0);
+          for (int i = 0; i < strlen(idbuf); i++) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, idbuf[i]);
+          }
+        }
+      }
+    }
     
-  bobj->draw_arrow();
-  bobj->draw_line();
+    //    bobj->draw_arrow();
+    //    bobj->draw_line();
   }
-  cm->save_image();
+  //  cm->save_image();
   glPopMatrix();
-  }
-*/
+}
+
 
 void display_func(void)
 {
@@ -725,9 +728,16 @@ void reshape_func(int width, int height)
   glMatrixMode(GL_MODELVIEW);
 
   /* ライトの設定 */
-  init_light();
+  //  init_light();
 }
 
+
+void timer(int value) {
+
+  glutPostRedisplay();
+  step();
+  glutTimerFunc(50 , timer , 0);
+}
 
 
 
@@ -743,18 +753,21 @@ int main(int argc, char *argv[])
   }
   //	cout << "Input file: " << filename << endl;
   ui = UI::GetInstance();
-  //  cm = Common::GetInstance();
+  cm = Common::GetInstance();
   glutInit(&argc, argv);
   //  CAVEConfigure(&argc, argv, NULL);
   glutInitDisplayMode(GLUT_RGB|GLUT_DEPTH);
   glutInitWindowSize(300,300);
-  //  CAVEInitApplication((CAVECALLBACK)init, 1, filename.c_str());
   glutCreateWindow("Sample 7");
+  init(filename.c_str());
+  //  CAVEInitApplication((CAVECALLBACK)init, 1, filename.c_str());
+
   //  CAVEDisplay(display, 0);
-  glutDisplayFunc(display_func);
+  //  glutDisplayFunc(display_func);
+  glutDisplayFunc(display);
   //  CAVEFrameFunction(step, 0);
   glutReshapeFunc(reshape_func);
-          
+  glutTimerFunc(100,timer,0);
   //  CAVEInit();
   //  float headpos[3];
   //  CAVEGetPosition(CAVE_HEAD, headpos);

@@ -29,6 +29,11 @@ void Particle_Objs::set_color(double cl[][4]){
 
 void Particle_Objs::draw(){
   int id_num = cm->data.getIDNum();
+  printf("%s(%d)\n",__FILE__,__LINE__);
+  printf("%d\n",id_num);
+  for(int i=0;i<id_num;i++){
+    printf("x %f y %f z %f\n",x[i][0],x[i][1],x[i][2]);
+  }
   glPushMatrix();
   ps->drawPointSprite(x[0], color[0],id_num);
   glPopMatrix();
