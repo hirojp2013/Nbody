@@ -12,7 +12,7 @@ Common::Common()
   t_dat_max = 0.0; 
   frame_dat = 0;
   frame_dat_prev = -1;
-  runstate = 0;          // status (0:stop  1:run)
+  runstate = 1;          // status (0:stop  1:run)
   inc = 1;               // frame increment per step
   char_state = 1;        // Display the character
   is_acc = false;        // accelerate
