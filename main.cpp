@@ -30,15 +30,10 @@ static Common *cm = NULL;
 static Particle_Objs *pobjs;  
 double SCALE = 0.01;
 
-//static GLUquadricObj *sphereObj[CAVE_MAX_WALLS] = { NULL };
-//static GLUquadricObj *clyndObj[CAVE_MAX_WALLS] = {NULL};
-//static GLUquadricObj *discObj[CAVE_MAX_WALLS] = {NULL};
-
 static GLUquadricObj *sphereObj;
 static GLUquadricObj *clyndObj; 
 static GLUquadricObj *discObj;
 
-//GLuint theBeam[CAVE_MAX_WALLS];
 GLuint theBeam;
 GLuint theArrow[CAVE_MAX_WALLS];
 
@@ -87,12 +82,6 @@ void init(const char *filename)
   GLfloat light_position[] = { 0.0f, 30.0f, 50.0f, 0.0f };
   //  texture
  
-  static GLubyte image[TEXHEIGHT][TEXWIDTH][4];
-  printf("%s(%d)\n",__FILE__,__LINE__);
-
-  //  if (CAVEMasterDisplay()) {
-  //    cm->display_num = CAVENumPipes();
-  //    cout << "display_num: " << cm->display_num << endl;
     bool ret = cm->data.readData((const char *)filename);
     if (!ret) {
       cout << "Can't read the input data." << endl;
@@ -110,8 +99,6 @@ void init(const char *filename)
     cout << setprecision(15)
          << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
 
-
-    printf("%s(%d)\n",__FILE__,__LINE__);
     pobjs = new Particle_Objs;
 
 
@@ -147,12 +134,7 @@ void init(const char *filename)
     }
     printf("INPUT end ----------------------------------------\n");
 #endif
-    //  }
-    //  CAVEDisplayBarrier();
-    //texture start
-    printf("%s(%d)\n",__FILE__,__LINE__);
   pobjs->init();
-  printf("%s(%d)\n",__FILE__,__LINE__);
   //texture end
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glShadeModel(GL_SMOOTH);
@@ -161,30 +143,21 @@ void init(const char *filename)
   glEnable(GL_NORMALIZE);
 
   glBlendFunc(GL_SRC_ALPHA,GL_DST_ALPHA);
-  //multithead tID
-  //sphereObj[CAVEUniqueIndex()] = gluNewQuadric();
-  //clyndObj[CAVEUniqueIndex()] = gluNewQuadric();
-  //discObj[CAVEUniqueIndex()] = gluNewQuadric();
-  //theBeam[CAVEUniqueIndex()] = glGenLists(1);
-
   sphereObj = gluNewQuadric();
   clyndObj = gluNewQuadric();
   discObj = gluNewQuadric();
   theBeam = glGenLists(1);
   
-  //glNewList(theBeam[CAVEUniqueIndex()],GL_COMPILE);
   glNewList(theBeam,GL_COMPILE);
   the_beam();
   glEndList();
   printf("%s(%d)\n",__FILE__,__LINE__);
   //  bobj = new binary(TARGET_DIST_THRESH/10.);
-
   PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
   vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
   poslistV.resize(cm->data.getIDNum(),pos_inf);
   vector<int> curlist = cm->data.getCurrentList();
   vector<int>::iterator p;
-
   double pos[PARTICLE_NUMBER_MAX][3];
   double color[PARTICLE_NUMBER_MAX][4];
   int num=0;
@@ -203,8 +176,6 @@ void init(const char *filename)
 
     num++;
   }
-
-
   //  Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
   //  bobj->color_set(color);
   pobjs->set_x(pos);
@@ -226,8 +197,6 @@ void step(void)
   double pos[PARTICLE_NUMBER_MAX][3];
   double color[PARTICLE_NUMBER_MAX][4];
   if (cm->runstate == 0) {
-    //    printf("%s(%d)\n",__FILE__,__LINE__)
-    //    if (CAVEMasterDisplay()) {
     double incl = 0.0001;
     if (cm->is_acc && cm->interval + incl < 1.0) {
       cm->interval += incl;
@@ -243,10 +212,7 @@ void step(void)
     }else if(cm->beam_clear_flag){
       cm->allClear();
     }
-    //    }
-    //    CAVEDisplayBarrier();
   }else{
-    //    if(CAVEMasterDisplay()){
     vector<int> curlist = cm->data.getCurrentList();
     vector<int>::iterator p;
     double incl = 0.001;
@@ -318,12 +284,12 @@ void step(void)
           t_queue.front().push_back(tpos); 
         }else if(!cm->target_id.empty()
                  &&pt->getId()==cm->target_id.back()){
-	  
+  
           float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
           TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1],
                               pos_inf.pos[2], { color_val, color_val, color_val }  };
           if(!cm->traj.empty()){
-	    
+    
             if (cm->traj.back().size() == TRAJ_MAX) {
               vector<TARGET_POS>::iterator st = cm->traj.back().begin();
               cm->traj.back().erase(st);
@@ -349,8 +315,6 @@ void step(void)
       }else if(cm->beam_clear_flag){
         cm->allClear();
       }
-      //    }
-      //    CAVEDisplayBarrier();
   }
 }
 
@@ -561,10 +525,10 @@ void display(void)
         if (!cm->target_id.empty()
             &&(p->id == cm->target_id.front()
                ||p->id==cm->target_id.back())) {
-		
+
           glColor3d( 1.0, 1.0, 1.0 );
         }
-	    
+    
         glRotated(cm->theta, 0.0, 0.0, 1.0);
         glRotated(cm->phi, 1.0, 0.0, 0.0);
         glTranslated(p->pos[0],
@@ -578,7 +542,7 @@ void display(void)
       glRasterPos3d(p->pos[0] + r,
                     p->pos[1] + r,
                     p->pos[2] + r);
-	
+
       //trajectory
 
 
