@@ -490,9 +490,15 @@ void display(void)
   {
     //    CAVENavTransform();
     //    draw_beam();
+        vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
+    vector<PARTICLE_INF>::iterator p;
+    p = poslistV.begin();
+    gluLookAt(p->pos[0],p->pos[1],p->pos[2],
+              0,0,0,
+              0,1,0);
     glTranslated(ORIG[0], ORIG[1], ORIG[2]);
     glRotatef(cm->rot,0.0,1.0,0.0); 
-        draw_grid();
+    draw_grid();
     //    glEnable(GL_LIGHTING);
     glRotated(cm->theta, 0.0, 0.0, 1.0);
     glRotated(cm->phi, 1.0, 0.0, 0.0);
@@ -511,9 +517,12 @@ void display(void)
 
     double r = cm->GetRadius();
     //    Motion *mo = Motion::GetInstance();
-    vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
-    vector<PARTICLE_INF>::iterator p;
-    
+    //    vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
+    //    vector<PARTICLE_INF>::iterator p;
+    p = poslistV.begin();
+    //    gluLookAt(p->pos[0],p->pos[1],p->pos[2],
+    //              0,0,0,
+    //              0,1,0);
     for(p=poslistV.begin();p!=poslistV.end();p++){
       char idbuf[10];
       glPushMatrix();
