@@ -82,57 +82,57 @@ void init(const char *filename)
   GLfloat light_position[] = { 0.0f, 30.0f, 50.0f, 0.0f };
   //  texture
  
-    bool ret = cm->data.readData((const char *)filename);
-    if (!ret) {
-      cout << "Can't read the input data." << endl;
-      exit(-1);
-    }
-    cm->t_dat_max = cm->data.getData(cm->data.getDataNum() - 1)->getTime();
-    cm->frame_max = (int)(cm->t_dat_max / cm->interval) + 1;
-    cm->frame_dat = cm->data.initList() - 1;
-    cout << setprecision(15)
-         << "time_max: " << cm->t_dat_max
-         << " interval: " << cm->interval
-         << " frame_max: " << cm->frame_max
-         << " vmax: " << cm->vmax
-         << endl;
-    cout << setprecision(15)
-         << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
+  bool ret = cm->data.readData((const char *)filename);
+  if (!ret) {
+    cout << "Can't read the input data." << endl;
+    exit(-1);
+  }
+  cm->t_dat_max = cm->data.getData(cm->data.getDataNum() - 1)->getTime();
+  cm->frame_max = (int)(cm->t_dat_max / cm->interval) + 1;
+  cm->frame_dat = cm->data.initList() - 1;
+  cout << setprecision(15)
+       << "time_max: " << cm->t_dat_max
+       << " interval: " << cm->interval
+       << " frame_max: " << cm->frame_max
+       << " vmax: " << cm->vmax
+       << endl;
+  cout << setprecision(15)
+       << "frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat << endl;
 
-    pobjs = new Particle_Objs;
+  pobjs = new Particle_Objs;
 
 
     
 #if 0
-    printf("INPUT --------------------------------------------\n");
-    for (int i = 0; i < cm->data.getDataNum(); i++) {
-      double va[3], vj[3], vv[3], vx[3];
-      Particle *p = cm->data.getData(i);
-      printf("--- !!Particle \n");
-      p->getA(va);
-      printf("a: \n");
-      for (int j = 0; j < 3; j++) {
-        printf("- %.15g\n", va[j]);
-      }
-      printf("id: %d\n", p->getId());
-      p->getJ(vj);
-      printf("j: \n");
-      for (int j = 0; j < 3; j++) {
-        printf("- %.15g\n", vj[j]);
-      }
-      printf("t: %.15g\n", p->getTime());
-      p->getV(vv);
-      printf("v: \n");
-      for (int j = 0; j < 3; j++) {
-        printf("- %.15g\n", vv[j]);
-      }
-      p->getX(vx);
-      printf("x: \n");
-      for (int j = 0; j < 3; j++) {
-        printf("- %.15g\n", vx[j]);
-      }
+  printf("INPUT --------------------------------------------\n");
+  for (int i = 0; i < cm->data.getDataNum(); i++) {
+    double va[3], vj[3], vv[3], vx[3];
+    Particle *p = cm->data.getData(i);
+    printf("--- !!Particle \n");
+    p->getA(va);
+    printf("a: \n");
+    for (int j = 0; j < 3; j++) {
+      printf("- %.15g\n", va[j]);
     }
-    printf("INPUT end ----------------------------------------\n");
+    printf("id: %d\n", p->getId());
+    p->getJ(vj);
+    printf("j: \n");
+    for (int j = 0; j < 3; j++) {
+      printf("- %.15g\n", vj[j]);
+    }
+    printf("t: %.15g\n", p->getTime());
+    p->getV(vv);
+    printf("v: \n");
+    for (int j = 0; j < 3; j++) {
+      printf("- %.15g\n", vv[j]);
+    }
+    p->getX(vx);
+    printf("x: \n");
+    for (int j = 0; j < 3; j++) {
+      printf("- %.15g\n", vx[j]);
+    }
+  }
+  printf("INPUT end ----------------------------------------\n");
 #endif
   pobjs->init();
   //texture end
@@ -183,11 +183,11 @@ void init(const char *filename)
 
 void end(void)
 {
-//  for (int i = 0; i < CAVE_MAX_WALLS; i++) {
-//    if (sphereObj[i] != NULL) {
-//      gluDeleteQuadric(sphereObj[i]);
-//    }
-//  }
+  //  for (int i = 0; i < CAVE_MAX_WALLS; i++) {
+  //    if (sphereObj[i] != NULL) {
+  //      gluDeleteQuadric(sphereObj[i]);
+  //    }
+  //  }
 }
 
 
@@ -237,83 +237,83 @@ void step(void)
         cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
       }
     }
-      else{
-        if (cm->t_sys > 0) {
-          cm->t_sys -= cm->interval;
-        } else {
-          cm->t_sys = ((int)(cm->t_dat_max / cm->interval) + 1) * cm->interval;
-          cm->frame_dat = cm->data.getDataNum();
-          cm->allClear();
-          //          Motion::GetInstance()->init();
-        }
-        while (cm->frame_dat > 0) {
-          if (cm->data.getData(cm->frame_dat - 1)->getTime() < cm->t_sys) {
-            break;
-          }
-          cm->frame_dat--;
-          cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
-        }
-      }
-
-      int num = 0;
-      for (p = curlist.begin(); p != curlist.end(); p++) {
-        if(*p<0){
-          continue;
-        }
-        Particle *pt = cm->data.getData(*p);
-        pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
-        pos_inf.id = pt->getId();
-        for(int i=0;i<3;i++){
-          pos_inf.pos[i] = pos[num][i];
-        }
-        pt->getV(pos_inf.vel,cm->scale);
-        //	poslistV.push_back(pos_inf);
-        poslistV[pos_inf.id-1] = pos_inf;
-        num++;
-
-        if(!cm->target_id.empty()
-           &&pt->getId()==cm->target_id.front()){
-          float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-          TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1], pos_inf.pos[2], { color_val, color_val, color_val }  };
-          if (cm->traj.front().size() == TRAJ_MAX) {
-            vector<TARGET_POS>::iterator st = cm->traj.front().begin();
-            cm->traj.front().erase(st);
-          }
-          queue< vector<TARGET_POS> >&t_queue = cm->traj;
-          t_queue.front().push_back(tpos); 
-        }else if(!cm->target_id.empty()
-                 &&pt->getId()==cm->target_id.back()){
-  
-          float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
-          TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1],
-                              pos_inf.pos[2], { color_val, color_val, color_val }  };
-          if(!cm->traj.empty()){
-    
-            if (cm->traj.back().size() == TRAJ_MAX) {
-              vector<TARGET_POS>::iterator st = cm->traj.back().begin();
-              cm->traj.back().erase(st);
-            }
-          }
-          queue< vector<TARGET_POS> >&t_queue = cm->traj;
-          t_queue.back().push_back(tpos);
-        }
-      }
-      
-      //      cout << setprecision(15)
-      //           << "interval: " << cm->interval << " t_sys: " << cm->t_sys
-      //           << " frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat 
-      //           << " time: " << CAVEGetTime() << endl;
-      
-      //      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
-      //      bobj->color_set(color);
-      pobjs->set_x(pos);
-      pobjs->set_color(color);
-
-      if(cm->beam_flag){
-        cm->SelectParticle();
-      }else if(cm->beam_clear_flag){
+    else{
+      if (cm->t_sys > 0) {
+        cm->t_sys -= cm->interval;
+      } else {
+        cm->t_sys = ((int)(cm->t_dat_max / cm->interval) + 1) * cm->interval;
+        cm->frame_dat = cm->data.getDataNum();
         cm->allClear();
+        //          Motion::GetInstance()->init();
       }
+      while (cm->frame_dat > 0) {
+        if (cm->data.getData(cm->frame_dat - 1)->getTime() < cm->t_sys) {
+          break;
+        }
+        cm->frame_dat--;
+        cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
+      }
+    }
+
+    int num = 0;
+    for (p = curlist.begin(); p != curlist.end(); p++) {
+      if(*p<0){
+        continue;
+      }
+      Particle *pt = cm->data.getData(*p);
+      pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
+      pos_inf.id = pt->getId();
+      for(int i=0;i<3;i++){
+        pos_inf.pos[i] = pos[num][i];
+      }
+      pt->getV(pos_inf.vel,cm->scale);
+      //	poslistV.push_back(pos_inf);
+      poslistV[pos_inf.id-1] = pos_inf;
+      num++;
+
+      if(!cm->target_id.empty()
+         &&pt->getId()==cm->target_id.front()){
+        float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
+        TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1], pos_inf.pos[2], { color_val, color_val, color_val }  };
+        if (cm->traj.front().size() == TRAJ_MAX) {
+          vector<TARGET_POS>::iterator st = cm->traj.front().begin();
+          cm->traj.front().erase(st);
+        }
+        queue< vector<TARGET_POS> >&t_queue = cm->traj;
+        t_queue.front().push_back(tpos); 
+      }else if(!cm->target_id.empty()
+               &&pt->getId()==cm->target_id.back()){
+  
+        float color_val = (float)( (pt->getVLen() < cm->vmax ? pt->getVLen() : cm->vmax) - TRAJ_COLOR_BASE );
+        TARGET_POS tpos = { pos_inf.pos[0], pos_inf.pos[1],
+                            pos_inf.pos[2], { color_val, color_val, color_val }  };
+        if(!cm->traj.empty()){
+    
+          if (cm->traj.back().size() == TRAJ_MAX) {
+            vector<TARGET_POS>::iterator st = cm->traj.back().begin();
+            cm->traj.back().erase(st);
+          }
+        }
+        queue< vector<TARGET_POS> >&t_queue = cm->traj;
+        t_queue.back().push_back(tpos);
+      }
+    }
+      
+    //      cout << setprecision(15)
+    //           << "interval: " << cm->interval << " t_sys: " << cm->t_sys
+    //           << " frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat 
+    //           << " time: " << CAVEGetTime() << endl;
+      
+    //      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
+    //      bobj->color_set(color);
+    pobjs->set_x(pos);
+    pobjs->set_color(color);
+
+    if(cm->beam_flag){
+      cm->SelectParticle();
+    }else if(cm->beam_clear_flag){
+      cm->allClear();
+    }
   }
 }
 
@@ -486,25 +486,21 @@ void display(void)
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_COLOR_MATERIAL);
+  glLoadIdentity();
   glPushMatrix();
   {
-    //    CAVENavTransform();
-    //    draw_beam();
-        vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
+    vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
     vector<PARTICLE_INF>::iterator p;
     p = poslistV.begin();
     gluLookAt(p->pos[0],p->pos[1],p->pos[2],
-              0,0,0,
+              10,2,0,
               0,1,0);
-    glTranslated(ORIG[0], ORIG[1], ORIG[2]);
-    glRotatef(cm->rot,0.0,1.0,0.0); 
+    //    glTranslated(ORIG[0], ORIG[1], ORIG[2]);
+    //    glRotatef(cm->rot,0.0,1.0,0.0); 
     draw_grid();
-    //    glEnable(GL_LIGHTING);
-    glRotated(cm->theta, 0.0, 0.0, 1.0);
-    glRotated(cm->phi, 1.0, 0.0, 0.0);
+    //    glRotated(cm->theta, 0.0, 0.0, 1.0);
+    //glRotated(cm->phi, 1.0, 0.0, 0.0);
     GLdouble color[PARTICLE_NUMBER_MAX][4];
-    //    bobj->color_set(color);
-
     for(int i=0;i<PARTICLE_NUMBER_MAX;i++){
       color[i][0] = 0.0;
       color[i][1] = 0.0;
@@ -513,16 +509,9 @@ void display(void)
     }
     pobjs->set_color(color);
     pobjs->draw();
-    //    glDisable(GL_LIGHTING);
-
     double r = cm->GetRadius();
-    //    Motion *mo = Motion::GetInstance();
-    //    vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
-    //    vector<PARTICLE_INF>::iterator p;
     p = poslistV.begin();
-    //    gluLookAt(p->pos[0],p->pos[1],p->pos[2],
-    //              0,0,0,
-    //              0,1,0);
+
     for(p=poslistV.begin();p!=poslistV.end();p++){
       char idbuf[10];
       glPushMatrix();
@@ -562,12 +551,6 @@ void display(void)
             glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, idbuf[i]);
           }
         }
-        //	if (cm->runstate == 1) {
-		
-        // trajectory
-        //				cout << "traj: " << pt->getVLen() << " " << cm->vmax << " " << color_val << endl;
-
-		
         glLineWidth(1.0);
         for (int i = cm->traj.front().size() - 1; i > 0; i--) {
           vector<TARGET_POS> target_list = cm->traj.front();
@@ -582,11 +565,8 @@ void display(void)
                      cm->traj.front()[i-1].z);
           glEnd();
         }
-		
-        //	}
       }else if(!cm->target_id.empty()
                &&p->id==cm->target_id.back()){
-	    
         if(cm->char_state == 1){
           glColor3f(0.0,0.0,0.0);
           for (int i = 0; i < strlen(idbuf); i++) {
@@ -594,14 +574,12 @@ void display(void)
           }
         }
 
-        //	if(cm->runstate == 1){
         glLineWidth(1.0);
         for (int i = cm->traj.back().size() - 1; i > 0; i--) {
           vector<TARGET_POS> target_list = cm->traj.back();
           TARGET_POS target = target_list[i];
           glColor3f(target.color[0],target.color[1],target.color[2]);
           glBegin(GL_LINES);
-		    
           glVertex3d(cm->traj.back()[i].x,
                      cm->traj.back()[i].y,
                      cm->traj.back()[i].z);
@@ -609,9 +587,7 @@ void display(void)
                      cm->traj.back()[i-1].y,
                      cm->traj.back()[i-1].z);
           glEnd();
-		    
         }
-        //	}
       }else{
         if(cm->char_state){
           glColor3f(0.0,0.0,1.0);
@@ -621,11 +597,7 @@ void display(void)
         }
       }
     }
-    
-    //    bobj->draw_arrow();
-    //    bobj->draw_line();
   }
-  //  cm->save_image();
   glPopMatrix();
   glFlush();
 }
