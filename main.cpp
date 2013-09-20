@@ -151,7 +151,6 @@ void init(const char *filename)
   glNewList(theBeam,GL_COMPILE);
   the_beam();
   glEndList();
-  printf("%s(%d)\n",__FILE__,__LINE__);
   //  bobj = new binary(TARGET_DIST_THRESH/10.);
   PARTICLE_INF pos_inf = PARTICLE_INF_INIT;
   vector<PARTICLE_INF>&poslistV = cm->data.getCurrentPosInf();
@@ -622,67 +621,6 @@ void display(void)
   glFlush();
 }
 
-
-void display_func(void)
-{
-  static GLfloat mat_amb[4]={0.2, 0.2, 0.2, 0.0};	/* 環境光に対する反射 */
-  static GLfloat mat_dif[4]={0.6, 0.6, 0.6, 0.0};	/* 拡散光に対する反射 */
-  static GLfloat mat_spc[4]={0.2, 0.2, 0.2, 0.0};	/* 鏡面反射 */
-  static GLfloat mat_emi[4]={0.0, 0.0, 0.0, 0.0};	/* 発光 */
-  static GLfloat mat_shi[1]={30.0};	/* 光沢 */
-
-  /*　画面と、デプスバッファを消去 */
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  /* 現在の座標系を保存 */
-  glPushMatrix();
-
-  /* まず、座標系を画面の奥に移動 */
-  glTranslatef(0.0, 0.0, -15.0);
-
-  /* 質感を設定 */
-  //        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_amb);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_dif);
-  //        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_spc);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shi);
-  //        glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emi);
-	
-  /* 球を描く */
-  glutSolidSphere(2.0, 24, 24);
-
-  /* 座標系をもとに戻す */
-  glPopMatrix();	
-	
-  /* 画面を更新 */
-  glFlush();
-}
-
-void init_light(void)
-{
-  static GLfloat lit_amb[4]={0.0, 0.0, 0.0, 0.0};	/* 環境光の強さ */
-  static GLfloat lit_dif[4]={1.0, 1.0, 1.0, 0.0};	/* 拡散光の強さ */
-  static GLfloat lit_spc[4]={1.0, 1.0, 1.0, 0.0};	/* 鏡面反射光の強さ */
-  //	static GLfloat lit_pos[4]={6.0, 6.0, -9.0, 1.0};	/* 光源の位置 */
-
-  static GLfloat lit_pos[4]={1.0, -1.0, 1.0, 0.0};
-        
-  //    static GLfloat lit_dir[3]={0.0, 0.0, 12.0};
-
-
-  glLightfv(GL_LIGHT0, GL_AMBIENT, lit_amb);
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, lit_dif);
-  glLightfv(GL_LIGHT0, GL_SPECULAR, lit_spc);
-  //      glLightf(GL_LIGHT0, GL_SPOT_CUTOFF,10.0);
-  glLightfv(GL_LIGHT0, GL_POSITION, lit_pos);
-  //        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lit_dir);
-        
-
-  /* ライトを有効にする */
-  glEnable(GL_LIGHT0);
-  glEnable(GL_LIGHTING);
-}
-
-
 void reshape_func(int width, int height)
 {
   /* 表示範囲設定 */
@@ -727,22 +665,13 @@ int main(int argc, char *argv[])
   ui = UI::GetInstance();
   cm = Common::GetInstance();
   glutInit(&argc, argv);
-  //  CAVEConfigure(&argc, argv, NULL);
   glutInitDisplayMode(GLUT_RGB|GLUT_DEPTH);
   glutInitWindowSize(300,300);
   glutCreateWindow("Sample 7");
   init(filename.c_str());
-  //  CAVEInitApplication((CAVECALLBACK)init, 1, filename.c_str());
-
-  //  CAVEDisplay(display, 0);
-  //  glutDisplayFunc(display_func);
   glutDisplayFunc(display);
-  //  CAVEFrameFunction(step, 0);
   glutReshapeFunc(reshape_func);
   glutTimerFunc(100,timer,0);
-  //  CAVEInit();
-  //  float headpos[3];
-  //  CAVEGetPosition(CAVE_HEAD, headpos);
   //  while (!CAVEgetbutton(CAVE_ESCKEY)) {
   //    ui->Keyboard();
   //    ui->Joystick();
@@ -750,9 +679,7 @@ int main(int argc, char *argv[])
   //
   //    CAVEUSleep(10);
   //  }
-
   //  end();
-  //  CAVEExit();
   glutMainLoop();
   return 0;
 }

@@ -40,7 +40,6 @@ void PointSprite::drawPointSprite(GLdouble* vertices, GLdouble* color, GLsizei c
   glEnableClientState(GL_COLOR_ARRAY);
 
   glPointSize(SIZE);
-  printf("%s(%d)\n",__FILE__,__LINE__);
 
   glVertexPointer(3, GL_DOUBLE, 0, vertices);
   glColorPointer (4, GL_DOUBLE, 0, color);
@@ -101,30 +100,22 @@ void PointSprite::loadTexture(){
   unsigned char **pngimage;
  
   fp = fopen( "SP_W.png", "rb" );
-  printf("%s(%d)\n",__FILE__,__LINE__);
   png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL );
-    printf("%s(%d)\n",__FILE__,__LINE__);
   info_ptr = png_create_info_struct( png_ptr );
-  printf("%s(%d)\n",__FILE__,__LINE__);
-
   png_init_io( png_ptr, fp );
   png_read_info( png_ptr, info_ptr );
   png_get_IHDR( png_ptr, info_ptr, &width, &height,
                 &bit_depth, &color_type, &interlace_type,
                 NULL, NULL);
-  printf("%s(%d)\n",__FILE__,__LINE__);
   pngimage = ( png_bytepp )malloc( height * sizeof( png_bytep ) );
   for ( int i = 0; i < height; i++ )
     {
       pngimage[ i ] = ( png_bytep )malloc( png_get_rowbytes( png_ptr, info_ptr ) );
     }
   png_read_image( png_ptr, pngimage );
-  printf("%s(%d)\n",__FILE__,__LINE__);
-
   GLubyte *texture;
   texture = ( unsigned char* )malloc( sizeof( unsigned char ) * width * height * 4 );
   unsigned char	*pbuff;
-  printf("%s(%d)\n",__FILE__,__LINE__);
   for ( int y = 0; y < height; y++ )
     {
       pbuff = pngimage[ ( height - 1 ) - y ];
