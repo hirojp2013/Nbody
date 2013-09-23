@@ -261,7 +261,8 @@ void step(void)
           continue;
         }
         Particle *pt = cm->data.getData(*p);
-        pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
+        //        pt->extrapolate(cm->t_dat, cm->scale, pos[num]);
+        pt->extrapolate(cm->t_sys, cm->scale, pos[num]);
         pos_inf.id = pt->getId();
         for(int i=0;i<3;i++){
           pos_inf.pos[i] = pos[num][i];
