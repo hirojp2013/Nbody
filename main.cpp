@@ -226,7 +226,7 @@ void step(void)
         cm->t_sys = 0;
         cm->frame_dat = -1;
         cm->allClear();
-        //        Motion::GetInstance()->init();
+        Motion::GetInstance()->init();
       }
 	
       while (cm->frame_dat < cm->data.getDataNum() - 1) {
@@ -244,7 +244,7 @@ void step(void)
         cm->t_sys = ((int)(cm->t_dat_max / cm->interval) + 1) * cm->interval;
         cm->frame_dat = cm->data.getDataNum();
         cm->allClear();
-        //          Motion::GetInstance()->init();
+        Motion::GetInstance()->init();
       }
       while (cm->frame_dat > 0) {
         if (cm->data.getData(cm->frame_dat - 1)->getTime() < cm->t_sys) {
@@ -254,7 +254,10 @@ void step(void)
         cm->t_dat = cm->data.setCurrentParticle(cm->frame_dat);
       }
     }
-
+    /*
+    printf("%s(%d)\n",__FILE__,__LINE__);
+    printf("time %f\n",cm->t_sys);
+    */
     int num = 0;
     for (p = curlist.begin(); p != curlist.end(); p++) {
       if(*p<0){
@@ -304,8 +307,11 @@ void step(void)
     //           << " frame_dat: " << cm->frame_dat << " t_dat: " << cm->t_dat 
     //           << " time: " << CAVEGetTime() << endl;
       
-    //      Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
+    Motion::GetInstance()->FindBinary(cm->t_dat,cm->scale);
     //      bobj->color_set(color);
+    printf("x:%f\n",pos[0][0]);
+    printf("y:%f\n",pos[0][1]);
+    printf("y:%f\n",pos[0][2]);
     pobjs->set_x(pos);
     pobjs->set_color(color);
 
@@ -317,7 +323,7 @@ void step(void)
   }
 }
 
-
+/*
 void draw_grid(void)
 {
   char buf[4];
@@ -367,6 +373,97 @@ void draw_grid(void)
   //z_axes end
   glEnd();
 
+  glRasterPos3d(0.0, 0.0, label_pos);
+  for (int i = 0; i < strlen(buf); i++) {
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, buf[i]);
+  }
+
+  // grid
+  glColor3d(0.5, 0.5, 0.5);
+  glLineWidth(1.0);
+  for (int i = 1; i <= GRID_NUM; i++) {
+    double hpos = GRID_INTERVAL * i;
+    glBegin(GL_LINES);
+    glVertex3d(GRID_MIN, 0.0, hpos);
+    glVertex3d(GRID_MAX, 0.0, hpos);
+    glVertex3d(GRID_MIN, 0.0, -hpos);
+    glVertex3d(GRID_MAX, 0.0, -hpos);
+    glEnd();
+    glBegin(GL_LINES);
+    glVertex3d(hpos, 0.0, GRID_MIN);
+    glVertex3d(hpos, 0.0, GRID_MAX);
+    glVertex3d(-hpos, 0.0, GRID_MIN);
+    glVertex3d(-hpos, 0.0, GRID_MAX);
+    glEnd();
+  }
+
+  glPopAttrib();
+}
+*/
+
+void draw_grid2(void)
+{
+  char buf[4];
+  double label_pos = 5.0;
+  sprintf(buf, "%.1f", label_pos);
+  glPushAttrib(GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT);
+  glDisable(GL_LIGHTING);
+
+  // axes
+  //x_axes
+  glLineWidth(2.0);
+  //red
+  
+  glColor3d(0.8, 0.0, 0.0);
+  glBegin(GL_LINES);
+  glVertex3d(GRID_MIN, 0.0, 0.0);
+  glVertex3d(0.0, 0.0, 0.0);
+  glEnd();
+  
+  glColor3d(0.0, 1.0, 1.0);
+  glBegin(GL_LINES);
+  glVertex3d(GRID_MAX, 0.0, 0.0);
+  glVertex3d(0.0, 0.0, 0.0);
+  glEnd();
+  //x_axes end
+
+  if(cm->char_state){
+    glRasterPos3d(label_pos, 0.0, 0.0);
+    for (int i = 0; i < strlen(buf); i++) {
+      glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, buf[i]);
+    }
+  }
+
+  //y_axes
+  //green
+  glColor3d(0.0, 0.8, 0.0);
+  glBegin(GL_LINES);
+  glVertex3d(0.0, GRID_MIN, 0.0);
+  glVertex3d(0.0, GRID_MAX, 0.0);
+  glEnd();
+  //y_axes end
+	
+  glRasterPos3d(0.0, label_pos, 0.0);
+  for (int i = 0; i < strlen(buf); i++) {
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, buf[i]);
+  }
+
+  //z_axes
+  //blue
+  
+  glColor3d(0.0, 0.0, 0.8);
+  glBegin(GL_LINES);
+  glVertex3d(0.0, 0.0, GRID_MIN);
+  glVertex3d(0.0, 0.0, 0.0);
+  //z_axes end
+  glEnd();
+  
+  glColor3d(0.627, 0.125, 0.941);
+  glBegin(GL_LINES);
+  glVertex3d(0.0, 0.0, 0.0);
+  glVertex3d(0.0, 0.0, GRID_MAX);
+  glEnd();
+  
   glRasterPos3d(0.0, 0.0, label_pos);
   for (int i = 0; i < strlen(buf); i++) {
     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, buf[i]);
@@ -492,12 +589,64 @@ void display(void)
     vector<PARTICLE_INF> poslistV = cm->data.getCurrentPosInf();
     vector<PARTICLE_INF>::iterator p;
     p = poslistV.begin();
-    gluLookAt(p->pos[0],p->pos[1],p->pos[2],
-              10,2,0,
-              0,1,0);
-    //    glTranslated(ORIG[0], ORIG[1], ORIG[2]);
+      Motion *mo = Motion::GetInstance();
+    vector< pair<string,BINARY> >binlist(mo->GetBinaryMap().begin(),
+                                         mo->GetBinaryMap().end());
+
+    
+    if(binlist.empty()){
+      printf("%s(%d)\n",__FILE__,__LINE__);
+      gluLookAt(p->pos[0],p->pos[1],p->pos[2],
+                10,2,0,
+                0,1,0);
+    }else{
+
+      BINARY bi_buff;
+      bi_buff = (binlist.begin())->second;
+      /*
+      printf("%s(%d)\n",__FILE__,__LINE__);
+      printf("bi_buff 0 %f %f %f\n",
+             bi_buff.pos[0][0],bi_buff.pos[0][1],
+             bi_buff.pos[0][2]);
+      printf("bi_buff 1 %f %f %f\n",
+             bi_buff.pos[1][0],bi_buff.pos[1][1],
+             bi_buff.pos[1][2]);
+      */
+      // gluLookAt(bi_buff.pos[0][0],bi_buff.pos[0][1],bi_buff.pos[0][2],
+      //                bi_buff.pos[1][0],bi_buff.pos[1][1],bi_buff.pos[1][2],
+      //                0,1,0);
+
+      //      gluLookAt(bi_buff.pos[0][0]+5,bi_buff.pos[0][1]+5,bi_buff.pos[0][2]+5,bi_buff.pos[1][0],bi_buff.pos[1][1],bi_buff.pos[1][2],0,1,0);
+    vector<PARTICLE_INF>::iterator next_p = p+1;
+    double aa,bb,cc;
+    if(p->pos[0]-next_p->pos[0]>0){
+      aa = 2.0;
+    }else{
+      aa=-2.0;
+    }
+
+    if(p->pos[1]-next_p->pos[1]>0){
+      bb = 2.0;
+    }else{
+      bb=-2.0;
+    }
+    
+    if(p->pos[2]-next_p->pos[2]>0){
+      cc = 2.0;
+    }else{
+      cc=-2.0;
+    }
+    printf("%s(%d)\n",__FILE__,__LINE__);
+    printf("id %d\n",p->id);
+    gluLookAt(p->pos[0],p->pos[1],p->pos[2],next_p->pos[0],next_p->pos[1],next_p->pos[2],0,0,1);
+    }
+    
+    //    gluLookAt(p->pos[0],p->pos[1],p->pos[2],
+    //              10,2,0,
+    //              0,1,0);
+    //glTranslated(ORIG[0], ORIG[1], ORIG[2]);
     //    glRotatef(cm->rot,0.0,1.0,0.0); 
-    draw_grid();
+    draw_grid2();
     //    glRotated(cm->theta, 0.0, 0.0, 1.0);
     //glRotated(cm->phi, 1.0, 0.0, 0.0);
     GLdouble color[PARTICLE_NUMBER_MAX][4];
@@ -597,6 +746,7 @@ void display(void)
         }
       }
     }
+
   }
   glPopMatrix();
   glFlush();
@@ -614,7 +764,8 @@ void reshape_func(int width, int height)
   glLoadIdentity();
 
   /* 投影範囲を設定 */
-  glFrustum(-1.0, 1.0, -1.0, 1.0, 3.0, 10000.0);
+  //  glFrustum(-1.0, 1.0, -1.0, 1.0, 3.0, 10000.0);
+  gluPerspective(30.0, (double)width / (double)height, 1.0, 100.0);
 
   glMatrixMode(GL_MODELVIEW);
 

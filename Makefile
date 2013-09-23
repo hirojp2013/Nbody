@@ -10,7 +10,7 @@ TARGET = viewptc
 #	 angular_vel.o arrow.o color_legend_hue.o \
 #	hsv.o Particle_Objs.o pointsprite.o snapshot.o
 
-OBJS = main.o common.o Particle.o ui.o Particle_Objs.o pointsprite.o
+OBJS = main.o common.o Particle.o ui.o Particle_Objs.o pointsprite.o motion.o
 
 .SUFFIXES : .cpp .o
 

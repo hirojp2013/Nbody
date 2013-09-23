@@ -105,6 +105,10 @@ void Particle::getKin(double *kin,double *v,double scale){
 
 void Particle::extrapolate(double tcur, GLdouble scale, double *pos) {
   double dt = tcur - t;
+  /*
+  printf("%s(%d)\n",__FILE__,__LINE__);
+  printf("tcur %f t %f\n",tcur, t);
+  */
   for (int i = 0; i < 3; i++) {
     pos[i] = ( (a[i] * dt * 0.5 + v[i]) * dt + x[i] ) / scale;
   }
