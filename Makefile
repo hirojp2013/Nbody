@@ -1,9 +1,9 @@
 .PHONY: all clean
 CXX = g++ -framework OpenGL -framework GLUT -framework Foundation
 
-CFLAGS = `pkg-config --cflags libpng`
+CFLAGS = `/opt/local/bin/pkg-config --cflags libpng`
 
-LDLIBS = `pkg-config --libs libpng`
+LDLIBS = `/opt/local/bin/pkg-config --libs libpng`
 
 TARGET = viewptc
 #OBJS = Particle.o common.o ui.o binary.o motion.o main.o \
