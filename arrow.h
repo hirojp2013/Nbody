@@ -25,10 +25,10 @@ class arrow{
 
   void the_arrow();
  private:
-  GLUquadricObj *clyndObj[CAVE_MAX_WALLS];
-  GLUquadricObj *discObj[CAVE_MAX_WALLS];
-  GLUquadricObj *sphereObj[CAVE_MAX_WALLS];
-  GLuint theArrow[CAVE_MAX_WALLS];
+  GLUquadricObj *clyndObj;
+  GLUquadricObj *discObj;
+  GLUquadricObj *sphereObj;
+  GLuint theArrow;
   Common *cm;
 
 };
