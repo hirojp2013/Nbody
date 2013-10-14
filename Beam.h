@@ -8,11 +8,11 @@
 #ifndef BEAM_H_
 #define BEAM_H_
 
-class beam {
+class Beam {
 public:
-    beam();
-    virtual ~beam();
-    void draw beam();
+    Beam();
+    virtual ~Beam();
+    void draw Beam();
 
 private:
     GLUquadricObj *clyndObj;

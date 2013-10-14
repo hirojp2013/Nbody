@@ -8,7 +8,7 @@
 #include "beam.h"
 #include<GLUT/glut.h>
 
-beam::beam() {
+Beam::Beam() {
     sphereObj = gluNewQuadric();
     clyndObj = gluNewQuadric();
     discObj = gluNewQuadric();
@@ -19,11 +19,11 @@ beam::beam() {
     glEndList();
 }
 
-beam::~beam() {
+Beam::~Beam() {
 	// TODO Auto-generated destructor stub
 }
 
-void beam::make_beam(){
+void Beam::make_beam(){
 
   glTranslated(0.0,0.0,-CROSS_LENGTH);
   gluCylinder(clyndObj,BEAM_WIDTH,BEAM_WIDTH,CROSS_LENGTH,16,16);
