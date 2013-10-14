@@ -2,7 +2,7 @@
 #define BINARY_H
 
 #include "color_legend_hue.hpp"
-
+#include "VisualState.h"
 class Common;
 class angular_vel;
 struct inf_t;
@@ -18,6 +18,7 @@ class binary{
   Common *cm;
   angular_vel *ang_vel; 
   color_legend_hue clh;
+  VisualState& state;
   const static double MIN =0.,MAX = 1.;
   const double LENGTH; 
   double around_alpha_boundary(struct inf_t par_inf);
@@ -25,5 +26,7 @@ class binary{
   double eng_sum_color_boundary(struct inf_t par_inf);
   double nearby_alpha_boundary(struct inf_t par_inf);
 
+  void setState(const VisualState& state);
+  void requestVisualize();
 };
 #endif

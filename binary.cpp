@@ -29,7 +29,6 @@ void binary::draw_line(){
     for(bp = binlist.begin();bp!=binlist.end();bp++){
       bi_buff = (*bp).second;
       glVertex3d(bi_buff.pos[0][0],bi_buff.pos[0][1],bi_buff.pos[0][2]);
-
       glVertex3d(bi_buff.pos[1][0],bi_buff.pos[1][1],bi_buff.pos[1][2]);
     }
     glEnd();
