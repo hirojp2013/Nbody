@@ -12,7 +12,7 @@ class VisualState {
 public:
     VisualState();
     virtual ~VisualState();
-    virtual void visuzlize() = 0;
+    virtual void visualize() = 0;
 };
 
 #endif /* VISUALSTATE_H_ */
