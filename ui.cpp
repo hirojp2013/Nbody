@@ -1,4 +1,5 @@
 #include "ui.h"
+#include "Visualize.h"
 
 void UI::Navigation(void) {
 	/*
@@ -57,9 +58,9 @@ void UI::Navigation(void) {
 // 		 << endl;
 // }
 
-void UI::Keyboard(void) {
+void UI::Keyboard(unsigned char key, int x, int y) {
 	Common *cm = Common::GetInstance();
-
+	Visualize vo = new Visualize();
 	bool is_acc_prev = cm->is_acc;
 	bool is_dec_prev = cm->is_dec;
 	GLdouble scale_prev = cm->scale;
@@ -69,129 +70,7 @@ void UI::Keyboard(void) {
 	//  GLdouble dx_prev = cm->dx;
 	//  GLdouble dy_prev = cm->dy;
 	//  GLdouble dd_prev = cm->dd;
-
-	if (CAVEgetbutton (CAVE_HKEY)) {
-		//		cm->runstate = 0;
-
-		//	show_help();
-
-	} else if (CAVEgetbutton (CAVE_AKEY)) {
-		if (cm->inc <= 0 && cm->runstate == 1) {
-			cm->inc = 1;
-		}
-		if (cm->runstate == 0 && !cm->is_acc) {
-			cm->is_acc = true;
-			cout << "is_acc: " << is_acc_prev << " -> " << cm->is_acc << endl;
-		}
-	} else if (CAVEgetbutton (CAVE_QKEY)) {
-		if (cm->inc > 0 && cm->runstate == 1) {
-			cm->inc = -1;
-		}
-		if (cm->runstate == 0 && !cm->is_dec) {
-			cm->is_dec = true;
-			cout << "is_dec: " << is_dec_prev << " -> " << cm->is_dec << endl;
-		}
-	} else if (CAVEgetbutton (CAVE_SKEY)) {
-		if (CAVEgetbutton (CAVE_ZKEY)) {
-			/* s */
-			cm->scale *= SCALE_UNIT;
-			cout << "scale: " << scale_prev << " -> " << cm->scale << endl;
-		} else {
-			/*z_s*/
-			cm->scale /= SCALE_UNIT;
-			cout << "scale: " << scale_prev << " -> " << cm->scale << endl;
-		}
-	} else if (CAVEgetbutton (CAVE_RKEY)) {
-		if (!CAVEgetbutton(CAVE_ZKEY)) {
-			/*z_r */
-			cm->radius *= SCALE_UNIT;
-			cout << "radius: " << radius_prev << " -> " << cm->radius << endl;
-		} else {
-			/* r */
-			cm->radius /= SCALE_UNIT;
-			cout << "radius: " << radius_prev << " -> " << cm->radius << endl;
-		}
-	} else if (CAVEgetbutton (CAVE_XKEY)) {
-		if (CAVEgetbutton (CAVE_ZKEY)) {
-			/*x*/
-			cm->phi += 0.03;
-			cm->phi += 3;
-			cout << "phi: " << phi_prev << " -> " << cm->phi << endl;
-		} else {
-			/*z_x*/
-			cm->phi -= 0.03;
-			cm->phi -= 3;
-			cout << "phi: " << phi_prev << " -> " << cm->phi << endl;
-		}
-	} else if (CAVEgetbutton (CAVE_WKEY)) {
-		if (CAVEgetbutton (CAVE_CTRLKEY)) {
-			/* y */
-			cm->theta += 0.03;
-			cm->theta += 3;
-			cout << "theta: " << theta_prev << " -> " << cm->theta << endl;
-		} else {
-			/*z_y */
-			cm->theta -= 0.03;
-			cm->theta -= 3;
-			cout << "theta: " << theta_prev << " -> " << cm->theta << endl;
-		}
-	} else if (CAVEgetbutton (CAVE_MKEY)) {
-		if (!CAVEgetbutton(CAVE_CTRLKEY)) {
-			/* U */
-			cm->dx += cm->dd;
-			cout << "dx: " << dx_prev << " -> " << cm->dx << endl;
-		} else {
-
-			/* u */
-			cm->dx -= cm->dd;
-			cout << "dx: " << dx_prev << " -> " << cm->dx << endl;
-		}
-	} else if (CAVEgetbutton (CAVE_NKEY)) {
-		if (!CAVEgetbutton(CAVE_CTRLKEY)) {
-			/* N */
-			cm->dy += cm->dd;
-			cout << "dy: " << dy_prev << " -> " << cm->dy << endl;
-		} else {
-			/* n */
-			cm->dy -= cm->dd;
-			cout << "dy: " << dy_prev << " -> " << cm->dy << endl;
-		}
-	} else if (CAVEgetbutton (CAVE_EKEY)) {
-		if (!CAVEgetbutton(CAVE_CTRLKEY)) {
-			/* T */
-			cm->dd *= 1.3;
-			cout << "dd: " << dd_prev << " -> " << cm->dd << endl;
-		} else {
-			/* t */
-			cm->dd /= 1.3;
-			cout << "dd: " << dd_prev << " -> " << cm->dd << endl;
-		}
-	} else if (CAVEgetbutton (CAVE_CKEY)) {
-
-		cm->char_state = 1;
-		if (CAVEgetbutton (CAVE_ZKEY))
-			cm->char_state = 0;
-	} else if (CAVEgetbutton (CAVE_PERIODKEY)) {
-		/* . */
-		showstep(1);
-	} else if (CAVEgetbutton (CAVE_COMMAKEY)) {
-		/* , */
-		showstep(-1);
-	} else if (CAVEgetbutton (CAVE_PKEY)) {
-		cm->binary_state = ARROW;
-	} else if (CAVEgetbutton (CAVE_OKEY)) {
-		cm->binary_state = NEARBY;
-	} else if (CAVEgetbutton (CAVE_IKEY)) {
-		cm->binary_state = AROUND;
-	} else if (CAVEgetbutton (CAVE_UKEY)) {
-		cm->binary_state = ENG_SUM;
-	} else if (CAVEgetbutton (CAVE_YKEY)) {
-		cm->binary_state = LINE;
-	} else if (CAVEgetbutton (CAVE_TKEY)) {
-		cm->binary_state = NOTHING;
-	} else if (CAVEgetbutton(CAVE_EKEY)) {
-		cm->button_has_pressed();
-	}
+	vo.SetState(key);
 }
 
 //void UI::Joystick(void)
