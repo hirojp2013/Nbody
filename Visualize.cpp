@@ -3,6 +3,7 @@
 #include "common.h"
 #include "motion.h"
 #include "VisualState.h"
+#include "NoVisualizeState.h"
 #include <cmath>
 
 const double MIN = 0;
@@ -16,32 +17,32 @@ Visualize::Visualize(const double length) :
 	cm = Common::GetInstance();
 }
 
-void Visualize::setState(unsigned char key) {
+void Visualize::SetState(unsigned char key) {
 	switch (key) {
 	case 'a':
-		vo.setState(AroundState.getInstance());
+		SetState(AroundState.getInstance());
 		break;
 	case 'b':
-		vo.setState(ArrowState.getInstance());
+		SetState(ArrowState.getInstance());
 		break;
 	case 'c':
-		vo.setState(EnergyState.getInstance());
+		SetState(EnergyState.getInstance());
 		break;
 	case 'd':
-		vo.setState(NearByState.getInstance());
+		SetState(LineState.getInstance());
 		break;
 	case 'e':
-		vo.setState(NoVisualizeState.getInstance());
+		SetState(NearByState.getInstance());
 		break;
 	case 'f':
-		vo.setState(LineState.getInstance());
+		this->SetState(NoVisualizeState::GetInstance());
 		break;
+
 	default:
 		exit(1);
-
 	}
 }
-void Visualize::setState(const VisualState& state) {
+void Visualize::SetState(VisualState* state) {
 	this->state = state;
 }
 void Visualize::draw_line() {

@@ -13,7 +13,7 @@ public:
 	Visualize(const double length);
 	void draw_arrow();
 	void draw_line();
-	void setState(unsigned char key);
+	void SetState(unsigned char key);
 	//  void color_set(struct inf_t p_inf,GLdouble color[4]);
 	void color_set(GLdouble color[][4]);
 private:
@@ -28,7 +28,7 @@ private:
 	double eng_sum_color_boundary(struct inf_t par_inf);
 	double nearby_alpha_boundary(struct inf_t par_inf);
 
-	void setState(const VisualState& state);
+	void SetState(VisualState* state);
 	void requestVisualize();
 };
 #endif
