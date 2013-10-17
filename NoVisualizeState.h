@@ -10,16 +10,18 @@
 
 #include "VisualState.h"
 
+using namespace std;
+
 class NoVisualizeState: public VisualState {
 public:
 
-	static VisualState *GetInstance(){
-		static NoVisualizeState singleton;
-		return &singleton;
-	}
+    static VisualState *GetInstance() {
+        static NoVisualizeState singleton;
+        return &singleton;
+    }
 
-	void Visualize();
-
+    void Visualize();
+    void SetColor();
 private:
     NoVisualizeState();
     virtual ~NoVisualizeState();

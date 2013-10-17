@@ -6,6 +6,7 @@
  */
 
 #include "NoVisualizeState.h"
+#include "<vector>""
 
 NoVisualizeState::NoVisualizeState() {
     // TODO Auto-generated constructor stub
@@ -14,6 +15,10 @@ NoVisualizeState::NoVisualizeState() {
 
 NoVisualizeState::~NoVisualizeState() {
     // TODO Auto-generated destructor stub
+}
+
+void NoVisualizeState::SetColor(vector<Particle> particles) {
+    vector<Particle>::iterator it = new particles.begin();
 }
 
 void NoVisualizeState::Visualize() {
