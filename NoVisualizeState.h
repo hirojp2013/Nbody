@@ -12,9 +12,18 @@
 
 class NoVisualizeState: public VisualState {
 public:
+
+	static VisualState *GetInstance(){
+		static NoVisualizeState singleton;
+		return &singleton;
+	}
+
+	void Visualize();
+
+private:
     NoVisualizeState();
     virtual ~NoVisualizeState();
-    void visualize();
+    NoVisualizeState& operator=(const NoVisualizeState& rhs);
 };
 
 #endif /* NOVISUALIZESTATE_H_ */

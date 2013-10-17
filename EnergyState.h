@@ -12,9 +12,19 @@
 
 class EnergyState: public VisualState {
 public:
+
+	static VisualState *GetInstance(){
+		static EnergyState singleton;
+		return &singleton;
+	}
+
+    void Visualize();
+
+private:
     EnergyState();
     virtual ~EnergyState();
-    void visualize();
+    EnergyState& operator=(const EnergyState& rhs);
+
 };
 
 #endif /* ENERGYSTATE_H_ */

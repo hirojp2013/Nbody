@@ -12,9 +12,18 @@
 
 class ArrowState: public VisualState {
 public:
-    ArrowState();
+
+	static VisualState *GetInstance(){
+		static ArrowState singleton;
+		return &singleton;
+	}
+
+	void visualize();
+
+private:
+	ArrowState();
     virtual ~ArrowState();
-    void visualize();
+    ArrowState& operator=(const NoVisualizeState& rhs);
 
 };
 

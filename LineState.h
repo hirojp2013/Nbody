@@ -15,6 +15,11 @@
 #include <utility>
 class LineState: public VisualState {
 public:
+	static VisualState *GetInstance(){
+		static EnergyState singleton;
+		return &singleton;
+	}
+
     LineState();
     virtual ~LineState();
     void visualize();

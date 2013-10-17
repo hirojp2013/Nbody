@@ -12,6 +12,14 @@
 
 class NearByState: public VisualState {
 public:
+
+	static VisualState *GetInstance(){
+		static EnergyState singleton;
+		return &singleton;
+	}
+
+	void Visualize();
+private:
     NearByState();
     virtual ~NearByState();
     void visualization();

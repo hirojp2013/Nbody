@@ -12,6 +12,12 @@
 
 class AroundState: public VisualState {
 public:
+
+	static VisualState *GetInstance(){
+		static NoVisualizeState singleton;
+		return &singleton;
+	}
+
     AroundState();
     virtual ~AroundState();
     void visualize();
